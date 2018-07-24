@@ -1,0 +1,59 @@
+{
+  "name": "simple-syntax-highlighter-documentation",
+  "version": "1.0.0",
+  "description": "Documentation page for simple Syntax Highlighter",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack --config webpack.config.dev.js --progress --watch",
+    "start": "webpack-dev-server --config webpack.config.dev.js --hot --inline --open",
+    "start:prod": "webpack-dev-server --config webpack.config.prod.js --hot --inline --open",
+    "build": "webpack --config webpack.config.dev.js",
+    "build:prod": "webpack --config webpack.config.prod.js"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.1.1",
+    "autoprefixer": "^9.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^0.28.11",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "hoek": "^5.0.3",
+    "html-loader": "^0.5.4",
+    "html-webpack-plugin": "^2.30.1",
+    "node-sass": "^4.9.2",
+    "postcss-loader": "^2.1.6",
+    "pug-html-loader": "^1.1.5",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.1",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "vue": "^2.5.16",
+    "vue-loader": "^13.7.2",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.13",
+    "vuetify": "^1.1.1",
+    "webpack": "^3.12.0",
+    "webpack-dev-server": "^2.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/disadb/resume.git"
+  },
+  "author": "antoni andre",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/disadb/resume#readme",
+  "dependencies": {},
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "last 5 version",
+    "ie 9",
+    "iOS >= 9"
+  ]
+}
