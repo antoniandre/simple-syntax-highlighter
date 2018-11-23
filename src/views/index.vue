@@ -1,4 +1,5 @@
-div.documentation
+<template lang="pug">
+.documentation
   v-layout.max-widthed(row wrap align-center-center justify-center)
     v-layout.flex.xs12.md9(column align-center-center)
       div.mb-3.title Github project
@@ -28,19 +29,18 @@ div.documentation
   h2
     a(href="#installation") Installation
     a(name="installation")
-  p You have two options: #[em NPM] #[strong or] #[span.code &lt;script&gt;] tag.
+  p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
   h3 Via NPM
   ssh-pre(language="shell" label="Shell") npm install simple-syntax-highlighter --save-dev
-  p Then import the 2 components and use it:
+  p Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
-    import { simpleSyntaxHighlighter } from 'simple-syntax-highlighter'
-    import 'simple-syntax-highlighter/dist/simple-syntax-highlighter.min.css'
+    import { sshPre } from 'simple-syntax-highlighter'
+    import 'simple-syntax-highlighter/dist/sshPre.css'
     ...
 
     export default {
-      // If like me you like short names, I recommend to rename component into sshPre.
-      components: { sshPre: simpleSyntaxHighlighter },
+      components: { sshPre },
       template: ...,
       data: () => ({
         ...
@@ -53,9 +53,9 @@ div.documentation
   ssh-pre(language="html" label="HTML").
     &lt;head&gt;
       ...
-      &lt;script src="https://unpkg.com/vue/dist/vue.min.js"&gt;&lt;/script&gt;
-      &lt;script src="https://unpkg.com/simple-syntax-highlighter/dist/simple-syntax-highlighter.min.js"&gt;&lt;/script&gt;
-      &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/simple-syntax-highlighter.min.css" rel="stylesheet"&gt;
+      &lt;script src="https://unpkg.com/vue/"&gt;&lt;/script&gt;
+      &lt;script src="https://unpkg.com/simple-syntax-highlighter/"&gt;&lt;/script&gt;
+      &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/sshPre.css" rel="stylesheet"&gt;
     &lt;/head&gt;
 
   h2
@@ -256,3 +256,19 @@ div.documentation
         "iOS >= 9"
       ]
     }
+</template>
+
+<script>
+import SimpleSyntaxHighlighter from '@/components/simple-syntax-highlighter'
+import Highlight from '@/components/highlight-message'
+
+export default {
+  components: { sshPre: SimpleSyntaxHighlighter, Highlight },
+}
+</script>
+
+<style lang="scss">
+.code {
+  font-family: monospace, monospace;
+}
+</style>

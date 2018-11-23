@@ -1,6 +1,6 @@
 # Simple Syntax Highlighter
 
-A read-only simple Syntax highlighter for Vue JS, not a WYSIWYG.
+A non editable simple Syntax highlighter for Vue JS.
 
 ## Installation
 

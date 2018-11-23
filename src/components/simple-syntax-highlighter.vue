@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import './styles.scss'
-
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
@@ -46,10 +44,10 @@ const dictionary = {
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
     selector: /((?:[.#-\w\*+ >:,\[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|animation|background-size|box-shadow))/,
-    'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|background(?:-(?:color|position|image|repeat|size))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-radius)|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor)(?=\s*:)/,
+    'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|background(?:-(?:color|position|image|repeat|size))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
     'value keyword vendor': /(-(?:moz|o|webkit|ms)-(?=linear-gradient))/,
     'value keyword important': /( ?\!important)/,
-    'value keyword': /\b(inline-block|inline|block|absolute|relative|static|fixed|inherit|initial|normal|none|auto|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|linear(?:-gradient)?|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|!important|url|inset|pointer|flex)(?=\s*[,;}(]|\s+[\da-z])/,
+    'value keyword': /\b(inline-block|inline|block|absolute|relative|static|fixed|sticky|inherit|initial|normal|none|unset|auto|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|linear(?:-gradient)?|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|inset|pointer|flex|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z])/,
     number: regexBasics.number,
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
     // punctuation: /([:,;{}@#()]+)/,// @todo Why can't use this one if text contains '<' or '>' ??
@@ -103,7 +101,7 @@ const attributesRegex = {
 }
 
 export default {
-  name: 'ssh-pre',
+  // name: 'sshpre',
   props: {
     language: {
       type: String,
@@ -249,3 +247,75 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+pre.ssh-pre {
+  position: relative;
+  padding: 0.5em;
+  margin: 2.5em 0 2em;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: rgba(0, 0, 0, 0.025);
+  border-radius: 4px;
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  &[data-label]:before {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 100%;
+    right: 1em;
+    padding: 0.1em 0.5em;
+    background-color: #f8f8f8;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: none;
+    border-radius: 3px;
+    margin-bottom: -1px;
+    font-size: 11px;
+  }
+
+  // Syntax highlighting.
+  .txt {color: #333;}
+  .comment {font-style: italic;color: #aaa;}
+  .comment * {color: #aaa !important;}
+  .quote {color: #c11;}
+  .quote * {color: #c11 !important;}
+  .number {color: #c11;}
+  .boolean {color: #c11;}
+  .keyword {color: #33c;font-weight: bold;}
+  .this {color: #c6d;font-weight: bold;}
+  .punctuation {color: #99f;}
+  .dollar,
+  .special {color: #f63;}
+  .variable {color: #29e;}
+  .objAttr {color: #0bc;}
+
+  &[data-type="shell"] .keyword {color: #ff5252;}
+  &[data-type="shell"] .param {color: #f63;}
+
+  &[data-type="html"] .tag-name {color: #11c;}
+  &[data-type="html"] .attribute {color: #f63;}
+
+  &[data-type="html-vue"] .tag-name {color: #42b983;}
+  &[data-type="html-vue"] .punctuation {color: #128953;}
+  &[data-type="html-vue"] .attribute {color: #ff5252;}
+
+  &[data-type="xml"] .tag-name {color: #11c;}
+  &[data-type="xml"] .attribute {color: #f93;}
+
+  &[data-type="css"] .selector {color: #f0d;}
+  &[data-type="css"] .selector.class-id {color: #f0d;}
+  &[data-type="css"] .pseudo {color: #f35;}
+  &[data-type="css"] .selector.keyword {color: #f5f;}
+  &[data-type="css"] .selector.keyword.vendor {color: #0c8;}
+  &[data-type="css"] .keyword {color: #c06;}
+  &[data-type="css"] .attribute {color: #70d;}
+  &[data-type="css"] .attribute.keyword {color: #e28;}
+  &[data-type="css"] .attribute.keyword.vendor {color: #0c8;}
+  &[data-type="css"] .value {color: #c11;}
+  &[data-type="css"] .value.vendor {color: #0c8;}
+  &[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0,0,0,.1);border-radius: 3px;}
+  &[data-type="css"] .unit {color: #0bc;}
+  &[data-type="css"] .important {color: #f00;font-weight: bold;}
+}
+</style>
