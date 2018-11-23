@@ -101,7 +101,7 @@ const attributesRegex = {
 }
 
 export default {
-  // name: 'sshpre',
+  name: 'sshpre',
   props: {
     language: {
       type: String,
