@@ -1,6 +1,6 @@
 {
   "name": "simple-syntax-highlighter",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A non editable simple Syntax highlighter for Vue JS.",
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
@@ -16,8 +16,7 @@
     "ui"
   ],
   "files": [
-    "dist/",
-    "src/"
+    "dist/"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",

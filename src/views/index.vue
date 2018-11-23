@@ -35,13 +35,12 @@
   p Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
-    import { sshPre } from 'simple-syntax-highlighter'
-    import 'simple-syntax-highlighter/dist/sshPre.css'
+    import Sshpre from 'simple-syntax-highlighter'
+    import 'simple-syntax-highlighter/dist/sshpre.css'
     ...
 
     export default {
-      components: { sshPre },
-      template: ...,
+      components: { SshPre },
       data: () => ({
         ...
       }),
@@ -55,7 +54,7 @@
       ...
       &lt;script src="https://unpkg.com/vue/"&gt;&lt;/script&gt;
       &lt;script src="https://unpkg.com/simple-syntax-highlighter/"&gt;&lt;/script&gt;
-      &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/sshPre.css" rel="stylesheet"&gt;
+      &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/sshpre.css" rel="stylesheet"&gt;
     &lt;/head&gt;
 
   h2
@@ -63,32 +62,32 @@
     a(name="how-to-use")
   p.
     Once included in your project, use as follows.#[br]
-    Check the #[a(href="#examples") examples] & #[a(href="#ssh-pre--api") API] sections to know more.
+    Check the #[a(href="#examples") examples] &amp; #[a(href="#ssh-pre--api") API] sections to know more.
 
-  h3 XML based languages
-  ssh-pre(language="html-vue" label="HTML Vue Template").
-    &lt;ssh-pre language="html" label="HTML"&gt;
-      &amp;lt;html lang="en"&amp;gt;
-        &amp;lt;head&amp;gt;
-          &amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;
-        &amp;lt;/head&amp;gt;
-        &amp;lt;body&amp;gt;
-          Some content.
-        &amp;lt;/body&amp;gt;
-      &amp;lt;/html&amp;gt;
-    &lt;/ssh-pre&gt;
-
-  highlight(type="warning")
-    strong Caution: To use XML/HTML-like languages, you must escape the chevrons: &amp;lt; for &lt; &amp;gt; for &gt;
-
-  h3 Any other language
+  h3 Any other language than HTML
   ssh-pre(language="html-vue" label="HTML Vue Template").
     &lt;ssh-pre language="js" label="Javascript"&gt;
       // Some Javascript content.
     &lt;/ssh-pre&gt;
 
+  h3 XML based languages
+  highlight(type="warning")
+    strong To use XML/HTML-like languages, you must escape the chevrons: &amp;lt; for &lt; &amp;gt; for &gt;
+
+  ssh-pre(language="html-vue" label="HTML Vue Template").
+    &lt;ssh-pre language="html" label="HTML"&gt;
+      &amp;amp;lt;html lang="en"&amp;amp;gt;
+        &amp;amp;lt;head&amp;amp;gt;
+          &amp;amp;lt;title&amp;amp;gt;Title&amp;amp;lt;/title&amp;amp;gt;
+        &amp;amp;lt;/head&amp;amp;gt;
+        &amp;amp;lt;body&amp;amp;gt;
+          Some content.
+        &amp;amp;lt;/body&amp;amp;gt;
+      &amp;amp;lt;/html&amp;amp;gt;
+    &lt;/ssh-pre&gt;
+
   h2
-    a(href="#examples") Examples of Use
+    a(href="#examples") Examples of rendering with different languages
     a(name="examples")
 
   h3
