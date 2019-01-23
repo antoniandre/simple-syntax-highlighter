@@ -42,7 +42,7 @@ export default {
     goTopHidden: true
   }),
   methods: {
-    onScroll (e) {
+    onScroll () {
       this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
       this.goTopHidden = this.offsetTop < 200
     }
