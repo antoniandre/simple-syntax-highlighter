@@ -1,6 +1,6 @@
 {
   "name": "simple-syntax-highlighter",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A non editable simple Syntax highlighter for Vue JS.",
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
