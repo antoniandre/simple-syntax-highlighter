@@ -7,7 +7,7 @@ const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
-  punctuation: /(!==?|(?:[[\](){}.:;,+\-?=]|&lt;|&gt;)+|&&|\|\|)/, // punctuation not in html tag.
+  punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
 }
@@ -42,7 +42,7 @@ const dictionary = {
     pseudo: /(:(?:hover|active|focus|visited|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
-    selector: /((?:[.#-\w\*+ >:,\[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
+    selector: /((?:[.#-\w*+ >:,\[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|animation|background-size|box-shadow))/,
     'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|background(?:-(?:color|position|image|repeat|size))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
     'value keyword vendor': /(-(?:moz|o|webkit|ms)-(?=linear-gradient))/,
@@ -52,9 +52,9 @@ const dictionary = {
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
     // punctuation: /([:,;{}@#()]+)/,// @todo Why can't use this one if text contains '<' or '>' ??
     htmlentity: /(&.*?;)/,
-    punctuation: /([:,;{}@#()]+|&lt;|&gt;)/,
+    punctuation: /([:,;{}@#()!]+|&lt;|&gt;)/,
     attribute: /([a-zA-Z-]+)(?=\s*:)/,
-    unit: /(px|pt|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}}\)]|\s+[\-\da-z#]))/
+    unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/
   },
   json: {
     quote: regexBasics.quote,
@@ -69,20 +69,21 @@ const dictionary = {
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
     this: /\b(this)(?=\W)/,
-    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|arguments|if|else|do|return|case|default|function|typeof|undefined|instanceof|document|window|while|for|forEach|switch|in|break|continue|length|var|let|const|export|import|require|from|Number|Boolean|String|Array|Object|(?:clear|set)(?:Timeout|Interval)|Math(?=\.)|Date)(?=\W)/,
-    punctuation: /(!==?|(?:[[\](){}:;,+\-%*/?=]|&lt;|&gt;)+|\.+(?![a-zA-Z])|&amp;&amp;|\|\|)/, // Override default since '.' can be part of js variable.
-    variable: /(\.?[a-zA-Z]\w*)/,
+    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|arguments|if|else|do|return|case|default|function|typeof|undefined|instanceof|document|window|while|for|forEach|switch|in|break|continue|length|var|let|const|export|import|require|from|Number|Boolean|String|Array|Object|RegExp|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|Date)(?=\W)/,
+    punctuation: /(!==?|(?:[[\]!(){}:;,+\-%*/?=]|&lt;|&gt;)+|\.+(?![a-zA-Z])|&amp;&amp;|\|\|)/, // Override default since '.' can be part of js variable.
+    variable: /(\.?[a-zA-Z_][\w\d]*)/,
     htmlentity: /(&.*?;)/,
-    dollar: /(\$|jQuery)(?=\W|$)/// jQuery or $.
+    'external-var': /(\$|jQuery|JSON)(?=\W|$)/// jQuery or $ or JSON.
   },
   php: {
     quote: regexBasics.quote,
     comment: regexBasics.comment,
+    special: /(&lt;\?php|\?&gt;|__(?:DIR|FILE|LINE)__)/,
     punctuation: regexBasics.punctuation,
     number: regexBasics.number,
     boolean: regexBasics.boolean,
-    keyword: /\b(define|echo|die|print_r|var_dump|if|else|do|return|case|default|function|\$this|while|for|switch|in|break|continue)(?=\W|$)/,
-    variable: /(?:(?=\W))(\$\w+)/
+    variable: /(\$[\w\d_]+)/,
+    keyword: /\b(define|echo|die|exit|print_r|var_dump|if|else|elseif|do|return|case|default|function|\$this|while|foreach|for|switch|in|break|continue|empty|isset|unset|parse_ini_file|session_(?:start|destroy|id)|header|json_(?:encode|decode)|error_log|(require|include)(:?_once)?|try|throw|new|Exception|catch|finally|preg_(?:match|replace)|list|strlen|substr|str_replace|array_(?:keys|values))(?=\W|$)/,
   },
   sql: {
     quote: regexBasics.quote,
@@ -96,8 +97,8 @@ const dictionary = {
 
 const attributesRegex = {
   xml: /(\s*)([a-zA-Z\-:]+)=("|')(.*?)\3/g,
-  html: /(\s*)([a-zA-Z\-]+)=("|')(.*?)\3/g,
-  'html-vue': /(\s*)(:?[a-zA-Z\-]+)(?:(?:=("|')(.*?)\3)|)/g
+  html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
+  'html-vue': /(\s*)(:?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
 export default {
@@ -120,9 +121,11 @@ export default {
     htmlize (string) {
       return string.replace(/&(lt|gt|amp);/g, (m0, m1) => ({ lt: '<', gt: '>', amp: '&' }[m1]))
     },
+
     unhtmlize (string) {
       return string.replace(/[<>]/g, m => ({ '<': '&lt;', '>': '&gt;' }[m]))
     },
+
     isColorDark (colorString) {
       let rgbColor, hexColor, rDark, gDark, bDark, alphaLow
 
@@ -141,9 +144,10 @@ export default {
       // #00f blue is also a dark color...
       return ((rDark && gDark && bDark) || (rDark && gDark && !bDark) || (!rDark && gDark && bDark)) && !alphaLow
     },
+
     // Create a single regex pattern from assembling the regex pieces of the selected language.
     // This regex pattern will be used all at once for the string replacement.
-    createRegexPattern (string) {
+    createRegexPattern () {
       let pattern = ''
       let classMap = []
 
@@ -164,6 +168,7 @@ export default {
 
       return [pattern, classMap]
     },
+
     syntaxHighlightHtmlTag (dictionaryMatches) {
       let tagPieces = dictionaryMatches.slice(3)
 
@@ -193,6 +198,7 @@ export default {
         `<span class="punctuation">${tagPieces[3]}</span>`
       )
     },
+
     syntaxHighlightContent (string) {
       // Only proceed if the language is supported.
       if (this.knownLanguages.indexOf(this.language) > -1) {
@@ -237,6 +243,7 @@ export default {
       return string
     }
   },
+
   created () {
     (this.$slots.default || []).forEach(pieceOfCode => {
       if (pieceOfCode.text) {
@@ -285,8 +292,7 @@ pre.ssh-pre {
   .keyword {color: #33c;font-weight: bold;}
   .this {color: #c6d;font-weight: bold;}
   .punctuation {color: #99f;}
-  .dollar,
-  .special {color: #f63;}
+  .external-var, .special {color: #f63;}
   .variable {color: #29e;}
   .objAttr {color: #0bc;}
 

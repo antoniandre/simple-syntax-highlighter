@@ -255,6 +255,70 @@
         "iOS >= 9"
       ]
     }
+
+  h3
+    a(href="#ex--php") PHP
+    a(name="ex--php")
+  ssh-pre(language="php" label="index.php").
+    &lt;?php
+
+    require_once __DIR__ . '/../autoload.php';
+    $config = parse_ini_file('config.ini');
+
+    if (!empty($_POST["session"]))
+    {
+        unset($_SESSION);
+        session_id($_POST["session"]);
+    }
+
+    header('Content-type: application/json');
+
+    try
+    {
+        if (empty($_POST["user"]))
+        {
+            throw new Exception("Bad Request:user", 400);
+        }
+
+        if (empty($_POST["session"]))
+        {
+            throw new Exception("Bad Request:session", 400);
+        }
+
+        if (!$isLoggedIn)
+        {
+            throw new Exception("Cannot login.");
+        }
+
+        echo json_encode(true);
+    }
+    catch (Exception $e)
+    {
+        if ($e->getCode() === 0)
+        {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+        }
+
+        else
+        {
+            header($_SERVER['SERVER_PROTOCOL'] . ' ' . $e->getCode() . ' ' . $e->getMessage(), true, $e->getCode());
+        }
+
+        error_log('There was an error here');
+
+        echo json_encode([
+            'exception' => [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ]
+        ]);
+    }
+    finally
+    {
+        // Something.
+    }
+
+    ?&gt;
 </template>
 
 <script>
