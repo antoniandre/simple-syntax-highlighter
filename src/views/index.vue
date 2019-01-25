@@ -52,8 +52,8 @@
   ssh-pre(language="html" label="HTML").
     &lt;head&gt;
       ...
-      &lt;script src="https://unpkg.com/vue/"&gt;&lt;/script&gt;
-      &lt;script src="https://unpkg.com/simple-syntax-highlighter/"&gt;&lt;/script&gt;
+      &lt;script src="https://unpkg.com/vue"&gt;&lt;/script&gt;
+      &lt;script src="https://unpkg.com/simple-syntax-highlighter"&gt;&lt;/script&gt;
       &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/sshpre.css" rel="stylesheet"&gt;
     &lt;/head&gt;
 
