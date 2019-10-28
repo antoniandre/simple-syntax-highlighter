@@ -1,6 +1,7 @@
 # Simple Syntax Highlighter
 
-A non editable simple Syntax highlighter for Vue JS.
+A basic syntax highlighter for Vue.js, supports multiple coding languages, read only.
+What I use in all my libs documentations. ;)
 
 ## Installation
 
