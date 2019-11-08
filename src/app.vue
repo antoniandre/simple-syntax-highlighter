@@ -1,22 +1,23 @@
 <template lang="pug">
-v-app(light v-scroll="onScroll")
-  v-toolbar(app light color="white" dense flat fixed align-center :class="{'scrolled': offsetTop > 104}")
-    v-toolbar-title
-      h1.primary--text
-        a.v-toolbar__logo-link(href="#top")
-          v-icon(color="lightgrey").v-toolbar__logo fa-terminal
-          span.code.mr-3.lightgrey--text.v-toolbar__ssh SSH
-          div.v-toolbar__logo-title Simple Syntax Highlighter
+v-app(v-scroll="onScroll")
+  v-container
+    v-app-bar.top-bar(app color="white" dense flat fixed align-center :class="{ scrolled: offsetTop > 104 }")
+      v-toolbar-title.top-bar__title
+        h1.primary--text
+          a.top-bar__logo-link(href="#top")
+            v-icon(color="lightgrey").top-bar__logo fa-terminal
+            span.code.mr-3.lightgrey--text.top-bar__ssh SSH
+            div.top-bar__logo-title Simple Syntax Highlighter
 
-  documentation
+    documentation
 
-  v-footer
-    v-layout.max-widthed(row wrap align-center justify-center)
-      v-flex.xs12.sm6.text-xs-center.text-sm-left.copyright.
-        Copyright © 2018 Antoni André, all rights reserved.
-      v-flex.xs12.sm6.text-xs-center.text-sm-right.made-with.
-        This documentation is made with #[v-icon fab fa-vuejs], #[v-icon fab fa-html5], #[v-icon fab fa-css3], #[v-icon fab fa-sass] &amp; #[v-icon.heart favorite]#[br]
-        View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[v-icon fab fa-github] Github].
+  v-footer.px-2(color="white")
+    v-layout.mx-auto.container.grey--text.text--darken-1(row wrap align-center justify-center)
+      v-flex.xs12.sm6.text-center.text-sm-left.copyright.
+        Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
+      v-flex.xs12.sm6.text-center.text-sm-right.made-with
+        .mb-1 This documentation is made with #[v-icon fab fa-vuejs], #[v-icon fab fa-html5], #[v-icon fab fa-css3], #[v-icon fab fa-sass] &amp; #[v-icon.heart favorite]
+        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[v-icon fab fa-github] Github].
 </template>
 
 <script>
@@ -58,11 +59,9 @@ $dark-text: #666;
 $darker-text: #333;
 $light-text: #ccc;
 $lighter-text: #ddd;
-// $light-link: #fff;
-$page-max-width: 1100px;
 
 // GLOBAL
-//=================================================//
+// =================================================
 a[name] {
   position: relative;
   top: -4em;
@@ -82,12 +81,6 @@ pre {
   border-radius: 4px;
   display: block;
   box-shadow: none;
-}
-
-.max-widthed, h2, h3, h4, p, pre {
-  max-width: $page-max-width;
-  margin-left: auto !important;
-  margin-right: auto !important;
 }
 
 body {
@@ -160,8 +153,8 @@ p b {
 }
 
 // APPLICATION
-//=================================================//
-.application {
+// =================================================
+#app {
   background-color: #fff !important;
   padding-top: 8em;
 }
@@ -171,16 +164,20 @@ p b {
   overflow-x: hidden;
 }
 
-// TOOLBAR
-//=================================================//
-.v-toolbar {
-  z-index: 100;
-  position: absolute;
-  border-bottom: 1px solid transparent !important;
-  transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
-  top: 0;
+.documentation {padding-top: 12em;}
 
-  &__content {
+// TOOLBAR
+// =================================================
+.top-bar {
+  &.v-app-bar--fixed {
+    z-index: 100;
+    position: absolute;
+    border-bottom: 1px solid transparent !important;
+    transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
+    top: 0;
+  }
+
+  .v-toolbar__content {
     padding-left: 0;
     padding-right: 0;
   }
@@ -211,7 +208,7 @@ p b {
     font-size: 0.8em;
   }
 
-  & .v-toolbar__logo, & .v-toolbar__ssh {
+  & .top-bar__logo, & .top-bar__ssh {
     transition: 0.4s ease-in-out;
   }
 
@@ -225,63 +222,45 @@ p b {
   }
 
   &.scrolled {
-    transition: 0.6s ease-in-out all, 0.3s 0.5s ease-in-out border-color;
-    border-bottom-color: $lighter-text !important;
-    position: fixed;
+    &.v-app-bar--fixed {
+      transition: 0.6s ease-in-out all, 0.3s 0.5s ease-in-out border-color;
+      border-bottom-color: $lighter-text !important;
+      position: fixed;
+    }
 
-    & .v-toolbar__title {
+    & .top-bar__title {
       background-color: #fff;
       width: 100%;
       transition: 0.6s ease-in-out all, 0.3s 0.3s ease-in-out background-color;
     }
 
-    & .v-toolbar__logo, & .v-toolbar__ssh {
+    & .top-bar__logo, & .top-bar__ssh {
       color: $dark-text !important;
     }
 
-    & .v-toolbar__logo-title {
+    & .top-bar__logo-title {
       font-size: 0.6em;
     }
   }
 }
 
 // FOOTER
-//=================================================//
-.application--wrap footer.v-footer {
-  background: none;
+// =================================================
+.v-footer {
+  font-size: 0.9em;
   font-style: italic;
-  color: $main-text;
-  font-size: .9em;
-  margin: 3em 0 5em;
+  margin: 3em 0 3.5em;
 
-  i {
+  .v-icon {
     font-size: 1.2em;
-    vertical-align: middle;
-    transition: 1s ease-out;
-    cursor: pointer;
 
-    &.fa-vuejs:hover,
-    &.fa-html5:hover,
-    &.fa-css3:hover,
-    &.fa-sass:hover {
-      transform: rotate(360deg);
-    }
-
-    &.heart:hover {
-      animation: pulse 1.8s ease-out infinite;
-    }
+    &.heart {transition: 1s ease-out;cursor: pointer;}
+    &.heart:hover {animation: pulse 1.8s ease-out infinite;}
   }
 }
 
 @keyframes pulse {
-	0%, 20%, 30%, 35%, 45%, 100% {transform: scale(1);}
-	25%, 40% {transform: scale(1.3);}
-}
-
-@media screen and (max-width: 1119px) {
-  .max-widthed, h2, h3, h4, p, pre {
-    margin-left: 10px !important;
-    margin-right: 10px !important;
-  }
+  0%, 20%, 30%, 35%, 45%, 100% {transform: scale(1);}
+  25%, 40% {transform: scale(1.3);}
 }
 </style>

@@ -1,11 +1,9 @@
 <template lang="pug">
 .documentation
-  v-layout.max-widthed(row wrap align-center-center justify-center)
-    v-layout.flex.xs12.md9(column align-center-center)
-      div.mb-3.title Github project
-      v-layout.mb-5(align-center shrink)
-        v-icon.pr-4.lightgrey--text(x-large) fab fa-github
-        a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
+  div.mb-3.title Github project
+  v-layout.mb-5(align-center shrink)
+    v-icon.pr-4.lightgrey--text(x-large) fab fa-github
+    a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
     a(href="#notes") Notes
@@ -15,7 +13,7 @@
     #[br]This is a basic syntax highlighter, but new features will come soon along with more languages support.
     #[br]You will be able to provide your own vocabulary and color theme.
   h3 Supported languages
-  ul.max-widthed
+  ul
     li XML
     li HTML
     li HTML Vue JS Template
@@ -72,7 +70,7 @@
 
   h3 XML based languages
   highlight(type="warning")
-    strong To use XML/HTML-like languages, you must escape the chevrons: &amp;lt; for &lt; &amp;gt; for &gt;
+    strong To use XML/HTML-like languages, you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;]
 
   ssh-pre(language="html-vue" label="HTML Vue Template").
     &lt;ssh-pre language="html" label="HTML"&gt;
