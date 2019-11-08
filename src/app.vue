@@ -1,7 +1,7 @@
 <template lang="pug">
 v-app(v-scroll="onScroll")
   v-container
-    v-app-bar.top-bar(app color="white" dense flat fixed align-center :class="{ scrolled: offsetTop > 104 }")
+    v-app-bar.top-bar(color="white" dense flat fixed align-center :class="{ scrolled: offsetTop > 104 }")
       v-toolbar-title.top-bar__title
         h1.primary--text
           a.top-bar__logo-link(href="#top")
