@@ -9,9 +9,8 @@
     a(href="#notes") Notes
     a(name="notes")
   p.
-    This syntax highlighter is for Vue JS only.
-    #[br]This is a basic syntax highlighter, but new features will come soon along with more languages support.
-    #[br]You will be able to provide your own vocabulary and color theme.
+    This is a Vue JS syntax highlighter.
+    #[br]It reads the source code you give it and highlights it, for Humans.
   h3 Supported languages
   ul
     li XML
