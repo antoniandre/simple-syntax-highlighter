@@ -324,7 +324,7 @@ import SimpleSyntaxHighlighter from '@/components/simple-syntax-highlighter'
 import Highlight from '@/components/highlight-message'
 
 export default {
-  components: { sshPre: SimpleSyntaxHighlighter, Highlight },
+  components: { sshPre: SimpleSyntaxHighlighter, Highlight }
 }
 </script>
 

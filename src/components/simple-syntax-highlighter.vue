@@ -42,11 +42,11 @@ const dictionary = {
     pseudo: /(:(?:hover|active|focus|visited|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
-    selector: /((?:[.#-\w*+ >:,\[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
+    selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|animation|background-size|box-shadow))/,
     'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|background(?:-(?:color|position|image|repeat|size))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
     'value keyword vendor': /(-(?:moz|o|webkit|ms)-(?=linear-gradient))/,
-    'value keyword important': /( ?\!important)/,
+    'value keyword important': /( ?!important)/,
     'value keyword': /\b(inline-block|inline|block|absolute|relative|static|fixed|sticky|inherit|initial|normal|none|unset|auto|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|linear|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|(?:repeating-)?(?:linear|radial)-gradient|inset|pointer|flex|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z])/,
     number: regexBasics.number,
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
@@ -83,7 +83,7 @@ const dictionary = {
     number: regexBasics.number,
     boolean: regexBasics.boolean,
     variable: /(\$[\w\d_]+)/,
-    keyword: /\b(define|echo|die|exit|print_r|var_dump|if|else|elseif|do|return|case|default|function|\$this|while|foreach|for|switch|in|break|continue|empty|isset|unset|parse_ini_file|session_(?:start|destroy|id)|header|json_(?:encode|decode)|error_log|(require|include)(:?_once)?|try|throw|new|Exception|catch|finally|preg_(?:match|replace)|list|strlen|substr|str_replace|array_(?:keys|values))(?=\W|$)/,
+    keyword: /\b(define|echo|die|exit|print_r|var_dump|if|else|elseif|do|return|case|default|function|\$this|while|foreach|for|switch|in|break|continue|empty|isset|unset|parse_ini_file|session_(?:start|destroy|id)|header|json_(?:encode|decode)|error_log|(require|include)(:?_once)?|try|throw|new|Exception|catch|finally|preg_(?:match|replace)|list|strlen|substr|str_replace|array_(?:keys|values))(?=\W|$)/
   },
   sql: {
     quote: regexBasics.quote,
@@ -135,7 +135,7 @@ export default {
         bDark = parseInt(rgbColor[3]) <= 100
         alphaLow = parseFloat(rgbColor[4]) < 0.3
       } else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
-        let has3chars = hexColor[1].length === 3
+        const has3chars = hexColor[1].length === 3
         rDark = parseInt(hexColor[1][0]) <= 9
         gDark = parseInt(hexColor[1][has3chars ? 1 : 2]) <= 9
         bDark = parseInt(hexColor[1][has3chars ? 2 : 4]) <= 9
@@ -149,9 +149,9 @@ export default {
     // This regex pattern will be used all at once for the string replacement.
     createRegexPattern () {
       let pattern = ''
-      let classMap = []
+      const classMap = []
 
-      for (let Class in dictionary[this.language]) {
+      for (const Class in dictionary[this.language]) {
         classMap.push(Class)
 
         if (Class === 'quote') {
@@ -170,22 +170,22 @@ export default {
     },
 
     syntaxHighlightHtmlTag (dictionaryMatches) {
-      let tagPieces = dictionaryMatches.slice(3)
+      const tagPieces = dictionaryMatches.slice(3)
 
       // Converts every html attribute with syntax highlighting, e.g:
       // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
       // ` checked` => ` <span class="attribute">checked</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`.
-      let renderAttributesList = function () {
+      const renderAttributesList = function () {
         return (
           // `attribute-name`
           `${arguments[1]}<span class="attribute">${arguments[2]}</span>` +
           // `=`
-          (arguments[4] ? `<span class="punctuation">=</span>` : '') +
+          (arguments[4] ? '<span class="punctuation">=</span>' : '') +
           // `"attribute value"`
           (arguments[4] ? `<span class="quote">${arguments[3] || ''}${arguments[4] || ''}${arguments[3] || ''}</span>` : '')
         )
       }
-      let attributesList = (tagPieces[2] || '').replace(attributesRegex[this.language], renderAttributesList)
+      const attributesList = (tagPieces[2] || '').replace(attributesRegex[this.language], renderAttributesList)
 
       // Considering these 3 possible captures of html tags:
       // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`,
@@ -202,14 +202,14 @@ export default {
     syntaxHighlightContent (string) {
       // Only proceed if the language is supported.
       if (this.knownLanguages.indexOf(this.language) > -1) {
-        let [regexPattern, classMap] = this.createRegexPattern()
+        const [regexPattern, classMap] = this.createRegexPattern()
 
         string = this.unhtmlize(string).replace(new RegExp(regexPattern, 'g'), (...args) => {
           let match, Class
 
           // "arguments.length - 2" because the function is called with arguments like so:
           // function(strMatch, c1, c2, ..., cn, matchOffset, sourceString){}. With c = the captures.
-          let dictionaryMatches = Array.prototype.slice.call(args, 1, args.length - 2)
+          const dictionaryMatches = Array.prototype.slice.call(args, 1, args.length - 2)
           for (let i = 0; i < dictionaryMatches.length; i++) {
             if (dictionaryMatches[i]) {
               match = dictionaryMatches[i]
