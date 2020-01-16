@@ -1,7 +1,7 @@
 {
   "name": "simple-syntax-highlighter",
   "version": "1.0.6",
-  "description": "A basic syntax highlighter for Vue.js, supports multiple coding languages, read only.",
+  "description": "A Vue.js syntax highlighter that reads the source code you give it and highlights it, for Humans.",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
   "scripts": {
     "serve": "vue-cli-service serve",
