@@ -9,7 +9,7 @@
     a(href="#notes") Notes
     a(name="notes")
   p.
-    This is a Vue JS syntax highlighter.
+    This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
     #[br]It reads the source code you give it and highlights it, for Humans.
   h3 Supported languages
   ul
@@ -27,7 +27,7 @@
     a(href="#installation") Installation
     a(name="installation")
   p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
-  h3 Via NPM
+  h3.mt-8 Via NPM
   ssh-pre(language="shell" label="Shell") npm i --S simple-syntax-highlighter
   p Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
@@ -38,13 +38,10 @@
 
     export default {
       components: { SshPre },
-      data: () => ({
-        ...
-      }),
       ...
     }
 
-  h3 Via #[span.code &lt;script&gt;] tag
+  h3.mt-8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
   ssh-pre(language="html" label="HTML").
     &lt;head&gt;
@@ -58,30 +55,43 @@
     a(href="#how-to-use") How to use
     a(name="how-to-use")
   p.
-    Once included in your project, use as follows.#[br]
-    Check the #[a(href="#examples") examples] &amp; #[a(href="#ssh-pre--api") API] sections to know more.
+    Once included in your project, use as follows.
 
-  h3 Any other language than HTML
+  h3.mt-8 For any other language than HTML
   ssh-pre(language="html-vue" label="HTML Vue Template").
     &lt;ssh-pre language="js" label="Javascript"&gt;
       // Some Javascript content.
     &lt;/ssh-pre&gt;
 
-  h3 XML based languages
+  h3.mt-8 For XML based languages
   highlight(type="warning")
     strong To use XML/HTML-like languages, you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;]
 
-  ssh-pre(language="html-vue" label="HTML Vue Template").
-    &lt;ssh-pre language="html" label="HTML"&gt;
-      &amp;amp;lt;html lang="en"&amp;amp;gt;
-        &amp;amp;lt;head&amp;amp;gt;
-          &amp;amp;lt;title&amp;amp;gt;Title&amp;amp;lt;/title&amp;amp;gt;
-        &amp;amp;lt;/head&amp;amp;gt;
-        &amp;amp;lt;body&amp;amp;gt;
+  v-layout(wrap align-center justify-center)
+    ssh-pre.flex(language="html-vue" label="HTML").
+      &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
+        &amp;amp;lt;html lang="en"&amp;amp;gt;
+          &amp;amp;lt;head&amp;amp;gt;
+            &amp;amp;lt;title&amp;amp;gt;Title&amp;amp;lt;/title&amp;amp;gt;
+          &amp;amp;lt;/head&amp;amp;gt;
+          &amp;amp;lt;body&amp;amp;gt;
+            Some content.
+          &amp;amp;lt;/body&amp;amp;gt;
+        &amp;amp;lt;/html&amp;amp;gt;
+      &lt;/ssh-pre&gt;
+    div.mx-4.text-center
+      div renders as:
+      v-icon arrow_right_alt
+    ssh-pre.flex(language="html-vue" label="HTML Vue Template").
+      &lt;html lang="en"&gt;
+        &lt;head&gt;
+          &lt;title&gt;Title&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
           Some content.
-        &amp;amp;lt;/body&amp;amp;gt;
-      &amp;amp;lt;/html&amp;amp;gt;
-    &lt;/ssh-pre&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+
 
   h2
     a(href="#examples") Examples of rendering with different languages
