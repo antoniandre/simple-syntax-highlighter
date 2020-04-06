@@ -1,5 +1,7 @@
 <template>
+<div :content="checkSlots()">
   <pre class="ssh-pre" v-html="content" :data-type="language" :data-label="label"></pre>
+</div>
 </template>
 
 <script>
@@ -104,19 +106,16 @@ const attributesRegex = {
 export default {
   name: 'sshpre',
   props: {
-    language: {
-      type: String,
-      default: ''
-    },
-    label: {
-      type: [String, Boolean],
-      default: false
-    }
+    language: { type: String, default: '' },
+    label: { type: [String, Boolean], default: false }
   },
+
   data: () => ({
     knownLanguages: Object.keys(dictionary),
-    content: ''
+    content: '',
+    slotTexts: ''
   }),
+
   methods: {
     htmlize (string) {
       return string.replace(/&(lt|gt|amp);/g, (m0, m1) => ({ lt: '<', gt: '>', amp: '&' }[m1]))
@@ -241,16 +240,23 @@ export default {
       }
 
       return string
+    },
+
+    // Keep watching the slot text content.
+    checkSlots () {
+      let slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
+      if (this.slotTexts !== slotTexts) this.slotTexts = slotTexts
+    },
+
+    onContentUpdate () {
+      this.content = this.syntaxHighlightContent(this.slotTexts)
     }
   },
 
-  created () {
-    (this.$slots.default || []).forEach(pieceOfCode => {
-      if (pieceOfCode.text) {
-        this.content += pieceOfCode.text
-      }
-    })
-    this.content = this.syntaxHighlightContent(this.content)
+  watch: {
+    slotTexts () {
+      this.onContentUpdate()
+    }
   }
 }
 </script>
