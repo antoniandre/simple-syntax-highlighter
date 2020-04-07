@@ -1,7 +1,5 @@
 <template>
-<div :content="checkSlots()">
   <pre class="ssh-pre" v-html="content" :data-type="language" :data-label="label"></pre>
-</div>
 </template>
 
 <script>
@@ -107,7 +105,8 @@ export default {
   name: 'sshpre',
   props: {
     language: { type: String, default: '' },
-    label: { type: [String, Boolean], default: false }
+    label: { type: [String, Boolean], default: false },
+    reactive: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -244,19 +243,20 @@ export default {
 
     // Keep watching the slot text content.
     checkSlots () {
-      let slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
-      if (this.slotTexts !== slotTexts) this.slotTexts = slotTexts
-    },
-
-    onContentUpdate () {
-      this.content = this.syntaxHighlightContent(this.slotTexts)
+      const slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
+      if (this.slotTexts !== slotTexts) {
+        this.slotTexts = slotTexts
+        this.content = this.syntaxHighlightContent(this.slotTexts)
+      }
     }
   },
 
-  watch: {
-    slotTexts () {
-      this.onContentUpdate()
-    }
+  mounted () {
+    this.checkSlots()
+  },
+
+  beforeUpdate () {
+    if (this.reactive) this.checkSlots()
   }
 }
 </script>
