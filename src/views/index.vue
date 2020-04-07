@@ -92,6 +92,25 @@
         &lt;/body&gt;
       &lt;/html&gt;
 
+  h2
+    a(href="#options") options
+    a(name="options")
+  ul
+    li
+      code label
+      span.code.cyan--text.text--darken-3.mx-2 {String}
+      span.code.blue--text.text--darken-1.mx-2 Default: #[strong '']
+      p A label to show on the top right of the ssh-pre box. If empty no label will show up.
+    li
+      code language
+      span.code.cyan--text.text--darken-3.mx-2 {String}
+      span.code.blue--text.text--darken-1.mx-2 Default: #[strong '']
+      p One of the supported programming languages to syntax highlight.
+    li
+      code reactive
+      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
+      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      p Makes this ssh-pre box reactive to variable changes.
 
   h2
     a(href="#examples") Examples of rendering with different languages
