@@ -7,24 +7,44 @@
 > A basic syntax highlighter for Vue.js, supports multiple coding languages, read only.
 > What I use in all my libs documentations. ;)
 
+___
+
 ## Installation
 
 ```
 npm i --S simple-syntax-highlighter
 ```
+___
 
 ## Demo & Documentation
 > [https://antoniandre.github.io/simple-syntax-highlighter](https://antoniandre.github.io/simple-syntax-highlighter)
+
+___
 
 ## Browser Support
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
 --- | --- | --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 10+ ✔ |
 
+___
+
+## Donating
+
+If you like this library, you can buy me a beer!
+
+[![paypal](https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/antoniandre1)
+Thank you!
 
 ___
 
+## Contributing
+
+If you have any idea, feel free to open an issue to discuss a new feature or fork Simple Syntax Highlighter and submit your changes back to me.
+
+___
 
 ## Release Notes
 
+- __Version 1.2.0__ Added the `dark` option
+- __Version 1.1.0__ Added the `reactive` option
 - __Version 1.0.0__ First public release
