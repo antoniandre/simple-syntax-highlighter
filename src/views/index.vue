@@ -40,6 +40,24 @@
       components: { SshPre },
       ...
     }
+  highlight
+    | In some cases, like in vue-cli, you might need to preserve the white spaces in the project
+    | if you see a minified output from Simple Syntax Highlighter.#[br]
+    | Here is how to preserve whitespaces, add this in your vue.config.js file:
+    ssh-pre.my-1(language="js").
+      module.exports = {
+        chainWebpack: config =&gt; {
+          // Preserve white spaces for ssh-pre component.
+          config.module
+            .rule('vue')
+            .use('vue-loader')
+            .loader('vue-loader')
+            .tap(options =&gt; {
+              options.compilerOptions.whitespace = 'preserve'
+              return options
+            })
+        }
+      }
 
   h3.mt-8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
