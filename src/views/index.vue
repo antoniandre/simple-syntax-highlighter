@@ -137,6 +137,11 @@
       span.code.cyan--text.text--darken-3.mx-2 {Boolean}
       span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
       p Makes this ssh-pre box reactive to variable changes.
+    li
+      code dark
+      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
+      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      p Switches this ssh-pre box to a dark theme.
 
   h2
     a(href="#examples") Examples of rendering with different languages
@@ -371,6 +376,96 @@
     }
 
     ?&gt;
+
+  h2
+    a(href="#dark-mode") Dark mode
+    a(name="dark-mode")
+  p The #[span.code dark] option switches the color theme to dark.
+
+  ssh-pre(language="js" label="Javascript" dark).
+    import Vue from 'vue'
+    import router from './router'
+    import Vuetify from 'vuetify'
+    import 'vuetify/dist/vuetify.min.css'
+    import '@fortawesome/fontawesome-free/css/all.css'
+    import './styles/index.scss'
+
+    Vue.use(Vuetify, {
+      iconfont: 'fa',
+      theme: {
+        primary: '#1b4',
+        secondary: '#666',
+        maintext: '#999',
+        lightgrey: '#eee'
+      }
+    })
+
+    new Vue({ // eslint-disable-line no-new
+      el: '#app',
+      router,
+      template: require('./template.pug'),
+      data: () => ({
+        offsetTop: 0,
+        goTopHidden: true
+      }),
+      methods: {
+        onScroll (e) {
+          this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
+
+          this.goTopHidden = this.offsetTop < 200
+        }
+      }
+    })
+
+  h2
+    a(href="#custom-theme") Custom theme
+    a(name="custom-theme")
+  p.
+    You can easily create your own color theme, as the highlighting is already done,
+    you just need to override the colors of these classes in your css:
+
+  ssh-pre(language="css" label="CSS").
+    .txt {color: #333;}
+    .comment {color: #aaa;}
+    .comment * {color: #aaa !important;}
+    .quote {color: #c11;}
+    .quote * {color: #c11 !important;}
+    .number {color: #c11;}
+    .boolean {color: #c11;}
+    .keyword {color: #33c;}
+    .this {color: #c6d;}
+    .punctuation {color: #99f;}
+    .external-var, .special {color: #f63;}
+    .variable {color: #29e;}
+    .objAttr {color: #0bc;}
+
+    [data-type="shell"] .keyword {color: #ff5252;}
+    [data-type="shell"] .param {color: #f63;}
+
+    [data-type="html"] .tag-name {color: #11c;}
+    [data-type="html"] .attribute {color: #f63;}
+
+    [data-type="html-vue"] .tag-name {color: #42b983;}
+    [data-type="html-vue"] .punctuation {color: #128953;}
+    [data-type="html-vue"] .attribute {color: #ff5252;}
+
+    [data-type="xml"] .tag-name {color: #11c;}
+    [data-type="xml"] .attribute {color: #f93;}
+
+    [data-type="css"] .selector {color: #f0d;}
+    [data-type="css"] .selector.class-id {color: #f0d;}
+    [data-type="css"] .pseudo {color: #f35;}
+    [data-type="css"] .selector.keyword {color: #f5f;}
+    [data-type="css"] .selector.keyword.vendor {color: #0c8;}
+    [data-type="css"] .keyword {color: #c06;}
+    [data-type="css"] .attribute {color: #70d;}
+    [data-type="css"] .attribute.keyword {color: #e28;}
+    [data-type="css"] .attribute.keyword.vendor {color: #0c8;}
+    [data-type="css"] .value {color: #c11;}
+    [data-type="css"] .value.vendor {color: #0c8;}
+    [data-type="css"] .color {background: #eee;}
+    [data-type="css"] .unit {color: #0bc;}
+    [data-type="css"] .important {color: #f00;}
 </template>
 
 <script>

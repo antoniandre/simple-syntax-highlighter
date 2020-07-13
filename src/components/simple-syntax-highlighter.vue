@@ -1,5 +1,11 @@
 <template>
-  <pre class="ssh-pre" v-html="content" :data-type="language" :data-label="label"></pre>
+  <pre
+    class="ssh-pre"
+    :class="{ dark }"
+    v-html="content"
+    :data-type="language"
+    :data-label="label">
+  </pre>
 </template>
 
 <script>
@@ -106,7 +112,8 @@ export default {
   props: {
     language: { type: String, default: '' },
     label: { type: [String, Boolean], default: false },
-    reactive: { type: Boolean, default: false }
+    reactive: { type: Boolean, default: false },
+    dark: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -262,7 +269,7 @@ export default {
 </script>
 
 <style lang="scss">
-pre.ssh-pre {
+.ssh-pre {
   position: relative;
   padding: 0.5em;
   margin: 2.5em 0 2em;
@@ -278,12 +285,11 @@ pre.ssh-pre {
     position: absolute;
     bottom: 100%;
     right: 1em;
-    padding: 0.1em 0.5em;
-    background-color: #f8f8f8;
+    padding: 0.1em 0.7em 0;
+    background-color: inherit;
     border: 1px solid rgba(0, 0, 0, 0.06);
-    border-bottom: none;
-    border-radius: 3px;
-    margin-bottom: -1px;
+    border-bottom: 1px solid #f9f9f9;
+    border-radius: 3px 3px 0 0;
     font-size: 11px;
   }
 
@@ -329,5 +335,51 @@ pre.ssh-pre {
   &[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0,0,0,.1);border-radius: 3px;}
   &[data-type="css"] .unit {color: #0bc;}
   &[data-type="css"] .important {color: #f00;font-weight: bold;}
+}
+
+.ssh-pre.dark {
+  background-color: #262626;
+  color: rgba(255, 255, 255, 0.85);
+
+  &[data-label]:before {border-bottom-color: #262626;}
+
+  .txt {color: #ccc;}
+  .comment {font-style: italic;color: #7c6;}
+  .comment * {color: #7c6 !important;}
+  .quote {color: #da8e72;}
+  .quote * {color: #da8e72 !important;}
+  .boolean, .number {color: #adcfa4;}
+  .keyword {color: #e67ad2;}
+  .this {color: #329ddb;}
+  .punctuation {color: #aac;}
+  .external-var, .special {color: #7bcced;}
+  .variable {color: #84deff;}
+  .objAttr {color: #0dc;}
+
+  &[data-type=shell] .keyword {color: #ff5252;}
+  &[data-type=shell] .param {color: #7bcced;}
+
+  &[data-type=html] .tag-name {color: #339cda;}
+  &[data-type=html] .attribute {color: #7bcced;}
+  &[data-type=html-vue] .tag-name {color: #339cda;}
+  &[data-type=html-vue] .punctuation {color: #99c;}
+  &[data-type=html-vue] .attribute {color: #7bcced;}
+  &[data-type=xml] .tag-name {color: #339cda;}
+  &[data-type=xml] .attribute {color: #f93;}
+
+  &[data-type=css] .selector,
+  &[data-type=css] .selector.class-id {color: #ff9a57;}
+  &[data-type=css] .pseudo {color: #ff516e;}
+  &[data-type=css] .selector.keyword {color: #ff73ff;}
+  &[data-type=css] .selector.keyword.vendor {color: #0c8;}
+  &[data-type=css] .keyword {color: #c06;}
+  &[data-type=css] .attribute {color: #70d;}
+  &[data-type=css] .attribute.keyword {color: #ee499b;}
+  &[data-type=css] .attribute.keyword.vendor {color: #0c8;}
+  &[data-type=css] .value {color: #cf3838;}
+  &[data-type=css] .value.vendor {color: #0c8;}
+  &[data-type=css] .color {background: #111;border-color: rgba(255, 255, 255, 0.25);}
+  &[data-type=css] .unit {color: #0bc;}
+  &[data-type=css] .important {color: #fe4848;}
 }
 </style>
