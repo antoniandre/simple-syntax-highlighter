@@ -76,10 +76,18 @@
     Once included in your project, use as follows.
 
   h3.mt-8 For any other language than HTML
-  ssh-pre(language="html-vue" label="HTML Vue Template").
-    &lt;ssh-pre language="js" label="Javascript"&gt;
-      // Some Javascript content.
-    &lt;/ssh-pre&gt;
+  v-layout(wrap align-center justify-center)
+    ssh-pre.flex(language="html-vue" label="HTML Vue Template").
+      &lt;ssh-pre language="js" label="Javascript"&gt;
+        const i = 3;
+        // Some more Javascript content.
+      &lt;/ssh-pre&gt;
+    div.mx-4.text-center
+      div renders as:
+      v-icon arrow_right_alt
+    ssh-pre.flex(language="js" label="Javascript").
+      const i = 3;
+      // Some more Javascript content.
 
   h3.mt-8 For XML based languages
   highlight(type="warning")
@@ -111,7 +119,7 @@
       &lt;/html&gt;
 
   h2
-    a(href="#options") options
+    a(href="#options") Options
     a(name="options")
   ul
     li
@@ -375,6 +383,7 @@ export default {
 </script>
 
 <style lang="scss">
+.layout .ssh-pre {flex-basis: 0;}
 .code {
   font-family: monospace, monospace;
 }
