@@ -45,6 +45,7 @@ ___
 
 ## Release Notes
 
+- __Version 1.3.0__ Added the `copy-button` option
 - __Version 1.2.0__ Added the `dark` option
 - __Version 1.1.0__ Added the `reactive` option
 - __Version 1.0.0__ First public release
