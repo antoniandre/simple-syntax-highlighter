@@ -218,9 +218,9 @@
     /* Syntax highlighting */
     .ssh-pre .txt {color: #333;}
     .ssh-pre .comment {font-style: italic;color: #aaa;}
-    .ssh-pre .comment * {color: #aaa !important;}
+    .ssh-pre .comment * {color: inherit !important;}
     .ssh-pre .quote {color: #c11;}
-    .ssh-pre .quote * {color: #c11 !important;}
+    .ssh-pre .quote * {color: inherit !important;}
     .ssh-pre .number {color: #c11;}
     .ssh-pre .boolean {color: #c11;}
     .ssh-pre .keyword {color: #33c;font-weight: bold;}
@@ -229,7 +229,7 @@
     .ssh-pre .dollar,
     .ssh-pre .special {color: #f63;}
     .ssh-pre .variable {color: #29e;}
-    .ssh-pre .objAttr {color: #0bc;}
+    .ssh-pre .obj-attr {color: #0bc;}
 
     .ssh-pre[data-type="shell"] .keyword {color: #ff5252;}
     .ssh-pre[data-type="shell"] .param {color: #f63;}
@@ -245,14 +245,14 @@
     .ssh-pre[data-type="xml"] .attribute {color: #f93;}
 
     .ssh-pre[data-type="css"] .selector {color: #f0d;}
-    .ssh-pre[data-type="css"] .selector.class-id {color: #f0d;}
+    .ssh-pre[data-type="css"] .class-id {color: #f0d;}
     .ssh-pre[data-type="css"] .pseudo {color: #f35;}
-    .ssh-pre[data-type="css"] .selector.keyword {color: #f5f;}
-    .ssh-pre[data-type="css"] .selector.keyword.vendor {color: #0c8;}
+    .ssh-pre[data-type="css"] .keyword {color: #f5f;}
+    .ssh-pre[data-type="css"] .vendor {color: #0c8;}
     .ssh-pre[data-type="css"] .keyword {color: #c06;}
     .ssh-pre[data-type="css"] .attribute {color: #70d;}
-    .ssh-pre[data-type="css"] .attribute.keyword {color: #e28;}
-    .ssh-pre[data-type="css"] .attribute.keyword.vendor {color: #0c8;}
+    .ssh-pre[data-type="css"] .keyword {color: #e28;}
+    .ssh-pre[data-type="css"] .vendor {color: #0c8;}
     .ssh-pre[data-type="css"] .value {color: #c11;}
     .ssh-pre[data-type="css"] .value.vendor {color: #0c8;}
     .ssh-pre[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0,0,0,.1);border-radius: 3px;}
@@ -427,9 +427,7 @@
   ssh-pre(language="css" label="CSS").
     .txt {color: #333;}
     .comment {color: #aaa;}
-    .comment * {color: #aaa !important;}
     .quote {color: #c11;}
-    .quote * {color: #c11 !important;}
     .number {color: #c11;}
     .boolean {color: #c11;}
     .keyword {color: #33c;}
@@ -437,7 +435,7 @@
     .punctuation {color: #99f;}
     .external-var, .special {color: #f63;}
     .variable {color: #29e;}
-    .objAttr {color: #0bc;}
+    .obj-attr {color: #0bc;}
 
     [data-type="shell"] .keyword {color: #ff5252;}
     [data-type="shell"] .param {color: #f63;}
@@ -453,16 +451,16 @@
     [data-type="xml"] .attribute {color: #f93;}
 
     [data-type="css"] .selector {color: #f0d;}
-    [data-type="css"] .selector.class-id {color: #f0d;}
+    [data-type="css"] .class-id {color: #f0d;}
     [data-type="css"] .pseudo {color: #f35;}
-    [data-type="css"] .selector.keyword {color: #f5f;}
-    [data-type="css"] .selector.keyword.vendor {color: #0c8;}
+    [data-type="css"] .keyword {color: #f5f;}
+    [data-type="css"] .vendor {color: #0c8;}
     [data-type="css"] .keyword {color: #c06;}
     [data-type="css"] .attribute {color: #70d;}
-    [data-type="css"] .attribute.keyword {color: #e28;}
-    [data-type="css"] .attribute.keyword.vendor {color: #0c8;}
+    [data-type="css"] .keyword {color: #e28;}
+    [data-type="css"] .vendor {color: #0c8;}
     [data-type="css"] .value {color: #c11;}
-    [data-type="css"] .value.vendor {color: #0c8;}
+    [data-type="css"] .vendor {color: #0c8;}
     [data-type="css"] .color {background: #eee;}
     [data-type="css"] .unit {color: #0bc;}
     [data-type="css"] .important {color: #f00;}

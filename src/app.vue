@@ -73,16 +73,6 @@ ul, ol {
   padding-left: 1.3em;
 }
 
-pre {
-  padding: 0.5em;
-  margin: 1.5em 0;
-  border: 1px solid $lighter-text;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  display: block;
-  box-shadow: none;
-}
-
 body {
   font: 13px Roboto, Tahoma, Geneva, sans-serif;
   color: $main-text;

@@ -233,7 +233,7 @@ export default {
             /**
              * @todo don't apply variable color if char before '.' is not '\w'.
              */
-            return `<span class="punctuation">.</span><span class="objAttr">${match.substr(1)}</span>`
+            return `<span class="punctuation">.</span><span class="obj-attr">${match.substr(1)}</span>`
           }
 
           let styles = ''
@@ -271,8 +271,8 @@ export default {
 <style lang="scss">
 .ssh-pre {
   position: relative;
+  margin-top: 1.5em;
   padding: 0.5em;
-  margin: 2.5em 0 2em;
   border: 1px solid rgba(0, 0, 0, 0.06);
   background-color: rgba(0, 0, 0, 0.025);
   border-radius: 4px;
@@ -280,6 +280,12 @@ export default {
   white-space: pre-wrap;
   word-break: break-word;
 
+  &.dark {
+    background-color: #262626;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  &[data-label] {margin-top: 2.5em;}
   &[data-label]:before {
     content: attr(data-label);
     position: absolute;
@@ -292,13 +298,16 @@ export default {
     border-radius: 3px 3px 0 0;
     font-size: 11px;
   }
+  &.dark[data-label]:before {border-bottom-color: #262626;}
+}
 
-  // Syntax highlighting.
+// Syntax highlighting.
+.ssh-pre {
   .txt {color: #333;}
   .comment {font-style: italic;color: #aaa;}
-  .comment * {color: #aaa !important;}
+  .comment * {color: inherit !important;}
   .quote {color: #c11;}
-  .quote * {color: #c11 !important;}
+  .quote * {color: inherit !important;}
   .number {color: #c11;}
   .boolean {color: #c11;}
   .keyword {color: #33c;font-weight: bold;}
@@ -306,7 +315,7 @@ export default {
   .punctuation {color: #99f;}
   .external-var, .special {color: #f63;}
   .variable {color: #29e;}
-  .objAttr {color: #0bc;}
+  .obj-attr {color: #0bc;}
 
   &[data-type="shell"] .keyword {color: #ff5252;}
   &[data-type="shell"] .param {color: #f63;}
@@ -328,33 +337,26 @@ export default {
   &[data-type="css"] .selector.keyword.vendor {color: #0c8;}
   &[data-type="css"] .keyword {color: #c06;}
   &[data-type="css"] .attribute {color: #70d;}
-  &[data-type="css"] .attribute.keyword {color: #e28;}
-  &[data-type="css"] .attribute.keyword.vendor {color: #0c8;}
+  &[data-type="css"] .keyword {color: #e28;}
+  &[data-type="css"] .vendor {color: #0c8;}
   &[data-type="css"] .value {color: #c11;}
-  &[data-type="css"] .value.vendor {color: #0c8;}
-  &[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0,0,0,.1);border-radius: 3px;}
+  &[data-type="css"] .vendor {color: #0c8;}
+  &[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 3px;}
   &[data-type="css"] .unit {color: #0bc;}
   &[data-type="css"] .important {color: #f00;font-weight: bold;}
 }
 
 .ssh-pre.dark {
-  background-color: #262626;
-  color: rgba(255, 255, 255, 0.85);
-
-  &[data-label]:before {border-bottom-color: #262626;}
-
   .txt {color: #ccc;}
   .comment {font-style: italic;color: #7c6;}
-  .comment * {color: #7c6 !important;}
   .quote {color: #da8e72;}
-  .quote * {color: #da8e72 !important;}
   .boolean, .number {color: #adcfa4;}
   .keyword {color: #e67ad2;}
   .this {color: #329ddb;}
   .punctuation {color: #aac;}
   .external-var, .special {color: #7bcced;}
   .variable {color: #84deff;}
-  .objAttr {color: #0dc;}
+  .obj-attr {color: #0dc;}
 
   &[data-type=shell] .keyword {color: #ff5252;}
   &[data-type=shell] .param {color: #7bcced;}
@@ -368,16 +370,16 @@ export default {
   &[data-type=xml] .attribute {color: #f93;}
 
   &[data-type=css] .selector,
-  &[data-type=css] .selector.class-id {color: #ff9a57;}
+  &[data-type=css] .class-id {color: #ff9a57;}
   &[data-type=css] .pseudo {color: #ff516e;}
-  &[data-type=css] .selector.keyword {color: #ff73ff;}
-  &[data-type=css] .selector.keyword.vendor {color: #0c8;}
+  &[data-type=css] .keyword {color: #ff73ff;}
+  &[data-type=css] .vendor {color: #0c8;}
   &[data-type=css] .keyword {color: #c06;}
   &[data-type=css] .attribute {color: #70d;}
-  &[data-type=css] .attribute.keyword {color: #ee499b;}
-  &[data-type=css] .attribute.keyword.vendor {color: #0c8;}
+  &[data-type=css] .keyword {color: #ee499b;}
+  &[data-type=css] .vendor {color: #0c8;}
   &[data-type=css] .value {color: #cf3838;}
-  &[data-type=css] .value.vendor {color: #0c8;}
+  &[data-type=css] .vendor {color: #0c8;}
   &[data-type=css] .color {background: #111;border-color: rgba(255, 255, 255, 0.25);}
   &[data-type=css] .unit {color: #0bc;}
   &[data-type=css] .important {color: #fe4848;}
