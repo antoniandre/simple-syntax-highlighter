@@ -1,11 +1,14 @@
 <template>
-  <pre
+  <div
     class="ssh-pre"
-    :class="{ dark }"
-    v-html="content"
+    :class="{ 'ssh-pre--dark': dark }"
     :data-type="language"
     :data-label="label">
-  </pre>
+    <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
+      <slot name="copy-button">Copy</slot>
+    </button>
+    <pre ref="code" class="ssh-pre__content" v-html="content"></pre>
+  </div>
 </template>
 
 <script>
@@ -113,7 +116,8 @@ export default {
     language: { type: String, default: '' },
     label: { type: [String, Boolean], default: false },
     reactive: { type: Boolean, default: false },
-    dark: { type: Boolean, default: false }
+    dark: { type: Boolean, default: false },
+    copyButton: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -255,6 +259,21 @@ export default {
         this.slotTexts = slotTexts
         this.content = this.syntaxHighlightContent(this.slotTexts)
       }
+    },
+
+    copyCode (e) {
+      e.target.insertAdjacentHTML(
+        'afterend',
+        `<textarea id="clipboard-textarea">${this.$refs.code.innerText}</textarea>`
+      )
+      const textarea = document.getElementById('clipboard-textarea')
+
+      textarea.select()
+      textarea.setSelectionRange(0, 99999) // For mobile devices.
+      document.execCommand('copy')
+      textarea.remove()
+
+      this.$emit('copied', this.$refs.code.innerText)
     }
   },
 
@@ -271,18 +290,33 @@ export default {
 <style lang="scss">
 .ssh-pre {
   position: relative;
-  margin-top: 1.5em;
+  margin-top: 1em;
   padding: 0.5em;
   border: 1px solid rgba(0, 0, 0, 0.06);
   background-color: rgba(0, 0, 0, 0.025);
   border-radius: 4px;
   display: block;
-  white-space: pre-wrap;
-  word-break: break-word;
 
-  &.dark {
+  &--dark {
     background-color: #262626;
     color: rgba(255, 255, 255, 0.85);
+  }
+
+  &__content {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  &__copy {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+  }
+
+  #clipboard-textarea {
+    position: absolute;
+    z-index: -100;
+    opacity: 0;
   }
 
   &[data-label] {margin-top: 2.5em;}
@@ -298,7 +332,7 @@ export default {
     border-radius: 3px 3px 0 0;
     font-size: 11px;
   }
-  &.dark[data-label]:before {border-bottom-color: #262626;}
+  &--dark[data-label]:before {border-bottom-color: #262626;}
 }
 
 // Syntax highlighting.
@@ -346,7 +380,7 @@ export default {
   &[data-type="css"] .important {color: #f00;font-weight: bold;}
 }
 
-.ssh-pre.dark {
+.ssh-pre--dark {
   .txt {color: #ccc;}
   .comment {font-style: italic;color: #7c6;}
   .quote {color: #da8e72;}

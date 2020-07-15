@@ -29,7 +29,7 @@
   p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
   h3.mt-8 Via NPM
   ssh-pre(language="shell" label="Shell") npm i --S simple-syntax-highlighter
-  p Then import the component and use it:
+  p.mt-2 Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
     import SshPre from 'simple-syntax-highlighter'
@@ -40,7 +40,7 @@
       components: { SshPre },
       ...
     }
-  highlight
+  highlight.mt-4
     | In some cases, like in vue-cli, you might need to preserve the white spaces in the project
     | if you see a minified output from Simple Syntax Highlighter.#[br]
     | Here is how to preserve whitespaces, add this in your vue.config.js file:
@@ -142,6 +142,47 @@
       span.code.cyan--text.text--darken-3.mx-2 {Boolean}
       span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
       p Switches this ssh-pre box to a dark theme.
+    li
+      code copy-button
+      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
+      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      p Allow copying this ssh-pre box content to the clipboard.
+
+  h2
+    a(href="#copy-button") Copy button
+    a(name="copy-button")
+  p.
+    With the option #[span.code copy-button], you can add a button that allows copying the
+    content to the clipboard.
+  p The button content can be customized through the #[span.code copy-button] slot.
+
+  .layout.wrap.justify-center
+    div.flex.mr-4(style="max-width: 300px")
+      .subtitle-2 Default
+      ssh-pre(language="html" copy-button).
+        &lt;body&gt;
+          &lt;div id="app"&gt;&lt;/div&gt;
+        &lt;/body&gt;
+    div.flex(style="max-width: 300px")
+      .subtitle-2 Custom button content
+      ssh-pre(language="html" copy-button)
+        template(#copy-button)
+          v-icon(small color="primary") content_copy
+        | &lt;body&gt;
+        |   &lt;div id="app"&gt;&lt;/div&gt;
+        | &lt;/body&gt;
+
+  p.mt-4.
+    On copy button press, the #[span.code copied] event is emitted containing the copied text.#[br]
+    Here is how to use the copy-button slot and the copied event.
+
+  ssh-pre(language="html-vue").
+    &lt;ssh-pre language="html-vue" copy-button @copied="onCopiedDoSomething"&gt;
+      &lt;template v-slot:copy-button&gt;
+        &lt;i class="icon material-icons"&gt;content_copy&lt;/i&gt;
+      &lt;/template&gt;
+      ...
+    &lt;/ssh-pre&gt;
 
   h2
     a(href="#examples") Examples of rendering with different languages
@@ -380,7 +421,7 @@
   h2
     a(href="#dark-mode") Dark mode
     a(name="dark-mode")
-  p The #[span.code dark] option switches the color theme to dark.
+  p The #[span.code dark] option switches the color theme to dark. Here is an example of Javascript code in dark mode.
 
   ssh-pre(language="js" label="Javascript" dark).
     import Vue from 'vue'
