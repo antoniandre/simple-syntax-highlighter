@@ -107,7 +107,7 @@ const dictionary = {
 const attributesRegex = {
   xml: /(\s*)([a-zA-Z\-:]+)=("|')(.*?)\3/g,
   html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
-  'html-vue': /(\s*)(:?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
+  'html-vue': /(\s*)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
 export default {
