@@ -14,15 +14,16 @@
 <script>
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
+  comment: /(\/\/.*?\n|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
-  punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // punctuation not in html tag.
+  punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
 }
 
 // The html tags names, attribute and inner special chars are treated inside the
 // htmlTag regex above because javascript does not support lookbehind.
+// In this dictionary the order of regexs is important as it is all concatenated later in the process.
 const dictionary = {
   shell: {
     quote: regexBasics.quote,
@@ -33,17 +34,28 @@ const dictionary = {
   xml: {
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
+    // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
   },
   html: {
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
+    // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
   },
   'html-vue': {
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
-    tag: /(&lt;\/?)([a-z][a-z_-]*)((?:.|\s)*?)(\/?&gt;)/
+    // A tag captures everything between < and > including the chevrons.
+    tag: /(&lt;\/?)([a-zA-Z][a-zA-Z_-]*)((?:.|\s)*?)(\/?&gt;)/
+  },
+  pug: {
+    quote: regexBasics.quote,
+    comment: /(?:^|\n)( +|^)(\/\/- *(?:[^\n]*?(?:\n\1 +[^\n]*)+|[^\n]+\n))/,
+    // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
+    // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))? *([^\n]+)?(?:\n|$)/,
+    punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
     quote: regexBasics.quote,
@@ -107,7 +119,8 @@ const dictionary = {
 const attributesRegex = {
   xml: /(\s*)([a-zA-Z\-:]+)=("|')(.*?)\3/g,
   html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
-  'html-vue': /(\s*)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
+  'html-vue': /(\s*)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g,
+  pug: /(\s*|,)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
 export default {
@@ -163,12 +176,13 @@ export default {
       for (const Class in dictionary[this.language]) {
         classMap.push(Class)
 
-        if (Class === 'quote') {
-          // Add twice because 2 captures are made in the quote regexp.
-          classMap.push(Class)
-        }
+        // Add a second quote capture because 2 captures are made in the quote regexp.
+        if (Class === 'quote') classMap.push(Class)
 
-        if (['xml', 'html', 'html-vue'].indexOf(this.language) > -1 && Class === 'tag') {
+        // Add a second comment capture because 2 captures are made in the pug comment regexp.
+        if (this.language === 'pug' && Class === 'comment') classMap.push(Class)
+
+        if (['xml', 'html', 'html-vue', 'pug'].includes(this.language) && Class === 'tag') {
           classMap.push(Class, Class, Class)
         }
 
@@ -179,41 +193,55 @@ export default {
     },
 
     syntaxHighlightHtmlTag (dictionaryMatches) {
-      const tagPieces = dictionaryMatches.slice(3)
+      // The 3 first matches are comments and quotes captures. Pug has 1 more capture in the comments regexp.
+      const tagPieces = dictionaryMatches.slice(this.language === 'pug' ? 4 : 3)
 
       // Converts every html attribute with syntax highlighting, e.g:
       // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
       // ` checked` => ` <span class="attribute">checked</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`.
-      const renderAttributesList = function () {
+      const renderAttributesList = (_, a, b, c, d) => (
+        // `attribute-name`
+        `${a}<span class="attribute">${b}</span>` +
+        // `=`
+        (d ? '<span class="punctuation">=</span>' : '') +
+        // `"attribute value"`
+        (d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
+      )
+      let attributesList = (tagPieces[2] || '').replace(attributesRegex[this.language], renderAttributesList)
+
+      if (this.language === 'pug') {
+        const idAndClasses = (tagPieces[1] || '').replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
+        if (attributesList) {
+          attributesList = `<span class="punctuation">(</span>` +
+                           attributesList +
+                           `<span class="punctuation">)</span>`
+        }
+
         return (
-          // `attribute-name`
-          `${arguments[1]}<span class="attribute">${arguments[2]}</span>` +
-          // `=`
-          (arguments[4] ? '<span class="punctuation">=</span>' : '') +
-          // `"attribute value"`
-          (arguments[4] ? `<span class="quote">${arguments[3] || ''}${arguments[4] || ''}${arguments[3] || ''}</span>` : '')
+          // The tag-name + attributes list if any.
+          `<span class="tag-name">${tagPieces[0] || ''}</span>` +
+          `${idAndClasses}${attributesList}${tagPieces[3] ? ` ${tagPieces[3]}` : '' }\n`
         )
       }
-      const attributesList = (tagPieces[2] || '').replace(attributesRegex[this.language], renderAttributesList)
 
       // Considering these 3 possible captures of html tags:
-      // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`,
+      // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
       return (
-        // Will be the tag opening: `</` or `<`.
+        // The tag opening: `</` or `<`.
         `<span class="punctuation">${tagPieces[0]}</span>` +
-        // Will be the tag-name + attributes list if any.
+        // The tag-name + attributes list if any.
         `<span class="tag-name">${tagPieces[1]}</span>` + attributesList +
-        // Will be the tag end `>` or `/>`.
+        // The tag end `>` or `/>`.
         `<span class="punctuation">${tagPieces[3]}</span>`
       )
     },
 
     syntaxHighlightContent (string) {
-      // Only proceed if the language is supported.
-      if (this.knownLanguages.indexOf(this.language) > -1) {
+      // Only process the string if the language is supported.
+      if (this.knownLanguages.includes(this.language)) {
         const [regexPattern, classMap] = this.createRegexPattern()
 
-        string = this.unhtmlize(string).replace(new RegExp(regexPattern, 'g'), (...args) => {
+        string = this.unhtmlize(string).replace(new RegExp(regexPattern, 'gs'), (...args) => {
           let match, Class
 
           // "arguments.length - 2" because the function is called with arguments like so:
@@ -229,7 +257,7 @@ export default {
 
           if (Class === 'quote') match = this.unhtmlize(args[1] || args[2])
           if (Class === 'comment') match = this.unhtmlize(match)
-          if (Class === 'tag' && ['xml', 'html', 'html-vue'].indexOf(this.language) > -1) {
+          if (Class === 'tag' && ['xml', 'html', 'html-vue', 'pug'].includes(this.language)) {
             return this.syntaxHighlightHtmlTag(dictionaryMatches)
           }
 
@@ -245,7 +273,7 @@ export default {
             styles = ` style="background-color: ${match};color: #${this.isColorDark(match) ? 'fff' : '000'}"`
           }
 
-          return `<span class="${Class}"${styles}>${match}</span>`
+          return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
         })
       }
 
@@ -361,6 +389,12 @@ export default {
   &[data-type="html-vue"] .punctuation {color: #128953;}
   &[data-type="html-vue"] .attribute {color: #ff5252;}
 
+  &[data-type="pug"] .tag-name {color: #11c;font-weight: bold;}
+  &[data-type="pug"] .punctuation {color: #999;}
+  &[data-type="pug"] .id {color: #e3f;}
+  &[data-type="pug"] .class {color: #09e;}
+  &[data-type="pug"] .attribute {color: #f63;}
+
   &[data-type="xml"] .tag-name {color: #11c;}
   &[data-type="xml"] .attribute {color: #f93;}
 
@@ -400,6 +434,13 @@ export default {
   &[data-type=html-vue] .tag-name {color: #339cda;}
   &[data-type=html-vue] .punctuation {color: #99c;}
   &[data-type=html-vue] .attribute {color: #7bcced;}
+
+  &[data-type="pug"] .tag-name {color: #339cda;font-weight: bold;}
+  &[data-type="pug"] .punctuation {color: #999;}
+  &[data-type="pug"] .id {color: #e67ad2;}
+  &[data-type="pug"] .class {color: #329ddb;}
+  &[data-type="pug"] .attribute {color: #7bcced;}
+
   &[data-type=xml] .tag-name {color: #339cda;}
   &[data-type=xml] .attribute {color: #f93;}
 
