@@ -16,6 +16,7 @@
     li XML
     li HTML
     li HTML Vue JS Template
+    li Pug
     li Javascript
     li JSON
     li CSS
@@ -322,6 +323,47 @@
     &lt;/body&gt;
     &lt;/html&gt;
 
+  h3
+    a(href="#ex--pug") Pug
+    a(name="ex--pug")
+  p.
+    Important: to put parenthesis inside quotes, you have to escape them with: #[code="&amp;#40;"]
+    for #[code (] and #[code="&amp;#41;"] for #[code )].
+  ssh-pre(language="pug" label="index.pug").
+    //- This is pug.
+    .w-flex
+      w-button.px4.mr6(@click="dialog.show = true" bg-color="primary" dark) Open dialog
+      .w-flex.wrap
+        div.ma2
+          .title-3.mb2 Transition names
+          w-radios(
+            v-model="dialog.transition"
+            :items="transitions"
+            item-value="label"
+            @change="dialog.fullscreen = null")
+            template(#label="{ item }")
+              code {{ '\{\{ item.label \}\}' }}
+        div.ma2
+          .title-3.mb2 Slide transitions for fullscreen
+          w-radios(
+            v-model="dialog.transition"
+            :items="transitionsForFullscreen"
+            item-value="label"
+            @change="dialog.fullscreen = null")
+            template(#label="{ item }")
+              code {{ '\{\{ item.label \}\}' }}
+          w-checkbox.mt2(
+            :value="dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen"
+            @change="dialog.fullscreen = $event"
+            label="Fullscreen dialog")
+    w-dialog(
+      v-model="dialog.show"
+      :max-width="&amp;#40;dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen&amp;#41; ? 0 : 400"
+      :fullscreen="dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen"
+      :transition="dialog.transition")
+      template(#title="") Dialog with custom transition
+      .w-flex.fill-height.align-center.justify-center
+        w-button.my6(@click="dialog.show = false",bg-color="error",dark) Close
   h3
     a(href="#ex--json") JSON
     a(name="ex--json")
