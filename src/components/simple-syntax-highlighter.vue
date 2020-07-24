@@ -54,7 +54,7 @@ const dictionary = {
     comment: /(?:^|\n)( +|^)(\/\/- *(?:[^\n]*?(?:\n\1 +[^\n]*)+|[^\n]+\n))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))? *([^\n]+)?(?:\n|$)/,
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)( *)([^\n]+)?(?:\n|$)/,
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
@@ -220,7 +220,10 @@ export default {
         return (
           // The tag-name + attributes list if any.
           `<span class="tag-name">${tagPieces[0] || ''}</span>` +
-          `${idAndClasses}${attributesList}${tagPieces[3] ? ` ${tagPieces[3]}` : '' }\n`
+          `${idAndClasses}${attributesList}` +
+          (tagPieces[3] ? '<span class="punctuation">.</span>' : '') +
+          (tagPieces[4] || '') +
+          `${tagPieces[5] ? tagPieces[5] : '' }\n`
         )
       }
 
