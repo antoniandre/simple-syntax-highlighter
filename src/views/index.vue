@@ -92,8 +92,8 @@
 
   h3.mt-8 For XML based languages
   highlight(type="warning")
-    strong To use XML/HTML-like languages, you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;]
-
+    strong To use XML/HTML-like languages: you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;].
+    | #[br]If you want to display an #[code &amp;] character, you need to escape it with: #[code &amp;amp;amp;].
   v-layout(wrap align-center justify-center)
     ssh-pre.flex(language="html-vue" label="HTML").
       &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
@@ -331,39 +331,43 @@
     for #[code (] and #[code="&amp;#41;"] for #[code )].
   ssh-pre(language="pug" label="index.pug").
     //- This is pug.
-    .w-flex
-      w-button.px4.mr6(@click="dialog.show = true" bg-color="primary" dark) Open dialog
-      .w-flex.wrap
-        div.ma2
-          .title-3.mb2 Transition names
-          w-radios(
-            v-model="dialog.transition"
-            :items="transitions"
-            item-value="label"
-            @change="dialog.fullscreen = null")
-            template(#label="{ item }")
-              code {{ '\{\{ item.label \}\}' }}
-        div.ma2
-          .title-3.mb2 Slide transitions for fullscreen
-          w-radios(
-            v-model="dialog.transition"
-            :items="transitionsForFullscreen"
-            item-value="label"
-            @change="dialog.fullscreen = null")
-            template(#label="{ item }")
-              code {{ '\{\{ item.label \}\}' }}
-          w-checkbox.mt2(
-            :value="dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen"
-            @change="dialog.fullscreen = $event"
-            label="Fullscreen dialog")
-    w-dialog(
-      v-model="dialog.show"
-      :max-width="&amp;#40;dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen&amp;#41; ? 0 : 400"
-      :fullscreen="dialog.fullscreen === null ? fullscreenTransition : dialog.fullscreen"
-      :transition="dialog.transition")
-      template(#title="") Dialog with custom transition
-      .w-flex.fill-height.align-center.justify-center
-        w-button.my6(@click="dialog.show = false",bg-color="error",dark) Close
+    div.mb-3.title Github project
+
+    v-layout.mb-5(align-center shrink)
+      v-icon.pr-4.lightgrey--text(x-large) fab fa-github
+      a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
+
+    h2
+      a(href="#notes") Notes
+      a(name="notes")
+    p.
+      This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
+      #[br]It reads the source code you give it and highlights it, for Humans.
+    h3 Supported languages
+    ul
+      li XML
+      li HTML
+      li HTML Vue JS Template
+      li Pug
+      li Javascript
+      li JSON
+      li CSS
+      li PHP
+      li MySQL
+      li No support for nested languages
+
+    h2
+      a(href="#installation") Installation
+      a(name="installation")
+    p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
+    h3.mt-8 Via NPM
+    ssh-pre(language="shell" label="Shell") npm i --S simple-syntax-highlighter
+
+    h2
+      a(href="#how-to-use") How to use
+      a(name="how-to-use")
+    p.
+      Once included in your project, use as follows.
   h3
     a(href="#ex--json") JSON
     a(name="ex--json")
