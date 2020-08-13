@@ -12,9 +12,13 @@
 </template>
 
 <script>
+/**
+ * IMPORTANT: IE and Edge don't support the `s` dotAll flag - workaround with [\s\S].
+ */
+
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*?\n|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
+  comment: /(\/\/.*?\n|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
@@ -32,30 +36,36 @@ const dictionary = {
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
+    doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-zA-Z\-:]+)([\s\S]*?)(\/?&gt;)/
   },
   html: {
+    doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-z]\w*)([\s\S]*?)(\/?&gt;)/
   },
   'html-vue': {
+    doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--[\s\S]*?--&gt;)/,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z][a-zA-Z_-]*)((?:.|\s)*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
   },
+  // @todo: in pug, add the `text` regex that should match `tag.\n\s+text`.
   pug: {
-    // text: /(^|\n)([ \t]+|^)([.#-\w\d]+(?:\([^)]*\))*)\.\n((?:\2[ \t]+[^\n]+(?:\n|$))+)/,
+    // text: /(^|\n)([ \t]+|^)([.#-\w\d]+(?:\([^)]*\))*)\.\n((?:\2[ \t]+[^\n]+(?=\n|$))+)/,
+    text2: /((?:^|\n)[ \t]+|^)\|([ \t]*)([^\n]+(?=\n|$))/,
     quote: regexBasics.quote,
-    comment: /(?:^|\n)([ \t]+|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\1[ \t]+[^\n]*)+|[^\n]+\n))/,
+    comment: /(?:^|\n)([ \t]+|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\1[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?:\n|$)/,
+    // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(([\s\S]*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(([\s\S]*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
@@ -118,10 +128,10 @@ const dictionary = {
 }
 
 const attributesRegex = {
-  xml: /(\s*)([a-zA-Z\-:]+)=("|')(.*?)\3/g,
-  html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
-  'html-vue': /(\s*)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g,
-  pug: /(\s*|,)([@:#]?[a-zA-Z-]+)(?:(?:=("|')(.*?)\3)|)/g
+  xml: /(\s*)([a-zA-Z\d\-:]+)=("|')([\s\S]*?)\3/g,
+  html: /(\s*)([a-zA-Z-]+)=("|')([\s\S]*?)\3/g,
+  'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')([\s\S]*?)\3)|)/g,
+  pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')([\s\S]*?)\3)|)/g
 }
 
 // Only list the classes that need multiple captures.
@@ -130,7 +140,7 @@ const multiCapturesMapping = {
   xml: { quote: 2, tag: 4 },
   html: { quote: 2, tag: 4 },
   'html-vue': { quote: 2, tag: 4 },
-  pug: { quote: 2, comment: 2, text: 4, tag: 6 },
+  pug: { quote: 2, comment: 2, text: 4, text2: 3, tag: 6 },
   json: { quote: 2 },
   php: { quote: 2 },
   sql: { quote: 2 },
@@ -210,6 +220,7 @@ export default {
         // `"attribute value"`
         (d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
       )
+
       let attributesList = (matches[2] || '').replace(attributesRegex[this.language], renderAttributesList)
 
       if (this.language === 'pug') {
@@ -226,7 +237,7 @@ export default {
           `${idAndClasses}${attributesList}` +
           (matches[3] ? '<span class="punctuation">.</span>' : '') +
           (matches[4] || '') +
-          `${matches[5] ? matches[5] : '' }\n`
+          `${matches[5] ? matches[5] : '' }`
         )
       }
 
@@ -248,7 +259,7 @@ export default {
 
       const [regexPattern, classMap] = this.createRegexPattern()
 
-      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
+      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'g'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
 
@@ -262,6 +273,9 @@ export default {
         else if (Class === 'comment') match = this.unhtmlize(match)
         else if (Class === 'text' && this.language === 'pug') {
           return `${matches[0]}${matches[1]}${matches[2]}<span class="punctuation">.</span>\n<span class="text">${matches[3]}</span>`
+        }
+        else if (Class === 'text2' && this.language === 'pug') {
+          return `${matches[0]}<span class="punctuation">|</span>${matches[1]}<span class="text">${matches[2]}</span>`
         }
         else if (Class === 'tag' && ['xml', 'html', 'html-vue', 'pug'].includes(this.language)) {
           // Pass the matches param from the first tag capture (remove quotes, commments, etc).
@@ -279,7 +293,6 @@ export default {
         if (Class === 'color' && this.language === 'css') {
           styles = ` style="background-color: ${match};color: #${this.isColorDark(match) ? 'fff' : '000'}"`
         }
-
         return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
       })
     },
@@ -386,9 +399,11 @@ export default {
   &[data-type="shell"] .keyword {color: #ff5252;}
   &[data-type="shell"] .param {color: #f63;}
 
+  &[data-type="html"] .doctype {color: #02027e;}
   &[data-type="html"] .tag-name {color: #11c;}
   &[data-type="html"] .attribute {color: #f63;}
 
+  &[data-type="html-vue"] .doctype {color: #02027e;}
   &[data-type="html-vue"] .tag-name {color: #42b983;}
   &[data-type="html-vue"] .punctuation {color: #128953;}
   &[data-type="html-vue"] .attribute {color: #ff5252;}
@@ -398,8 +413,8 @@ export default {
   &[data-type="pug"] .id {color: #e3f;}
   &[data-type="pug"] .class {color: #09e;}
   &[data-type="pug"] .attribute {color: #f63;}
-  &[data-type="pug"] .text {color: rgb(12, 175, 0);}
 
+  &[data-type="xml"] .doctype {color: #02027e;}
   &[data-type="xml"] .tag-name {color: #11c;}
   &[data-type="xml"] .attribute {color: #f93;}
 

@@ -193,6 +193,10 @@
     a(href="#ex--javascript") javascript
     a(name="ex--javascript")
   ssh-pre(language="js" label="Javascript").
+    /**
+     * This is some
+     * multiline comments.
+     */
     import Vue from 'vue'
     import router from './router'
     import Vuetify from 'vuetify'
@@ -276,13 +280,16 @@
     .ssh-pre[data-type="shell"] .keyword {color: #ff5252;}
     .ssh-pre[data-type="shell"] .param {color: #f63;}
 
+    .ssh-pre[data-type="html"] .doctype {color: #02027e;}
     .ssh-pre[data-type="html"] .tag-name {color: #11c;}
     .ssh-pre[data-type="html"] .attribute {color: #f63;}
 
+    .ssh-pre[data-type="html-vue"] .doctype {color: #02027e;}
     .ssh-pre[data-type="html-vue"] .tag-name {color: #42b983;}
     .ssh-pre[data-type="html-vue"] .punctuation {color: #128953;}
     .ssh-pre[data-type="html-vue"] .attribute {color: #ff5252;}
 
+    .ssh-pre[data-type="xml"] .doctype {color: #02027e;}
     .ssh-pre[data-type="xml"] .tag-name {color: #11c;}
     .ssh-pre[data-type="xml"] .attribute {color: #f93;}
 
@@ -335,14 +342,15 @@
 
     v-layout.mb-5(align-center shrink)
       v-icon.pr-4.lightgrey--text(x-large) fab fa-github
-      a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
+      a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank")
+        | //github.com/antoniandre/simple-syntax-highlighter
 
     h2
       a(href="#notes") Notes
       a(name="notes")
-    p.
-      This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
-      #[br]It reads the source code you give it and highlights it, for Humans.
+    p
+      | This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
+      | #[br]It reads the source code you give it and highlights it, for Humans.
     h3 Supported languages
     ul
       li XML
@@ -366,8 +374,7 @@
     h2
       a(href="#how-to-use") How to use
       a(name="how-to-use")
-    p.
-      Once included in your project, use as follows.
+    p Once included in your project, use as follows.
   h3
     a(href="#ex--json") JSON
     a(name="ex--json")
@@ -470,6 +477,10 @@
   p The #[span.code dark] option switches the color theme to dark. Here is an example of Javascript code in dark mode.
 
   ssh-pre(language="js" label="Javascript" dark).
+    /**
+     * This is some
+     * multiline comments.
+     */
     import Vue from 'vue'
     import router from './router'
     import Vuetify from 'vuetify'
@@ -527,13 +538,16 @@
     [data-type="shell"] .keyword {color: #ff5252;}
     [data-type="shell"] .param {color: #f63;}
 
+    [data-type="html"] .doctype {color: #02027e;}
     [data-type="html"] .tag-name {color: #11c;}
     [data-type="html"] .attribute {color: #f63;}
 
+    [data-type="html-vue"] .doctype {color: #02027e;}
     [data-type="html-vue"] .tag-name {color: #42b983;}
     [data-type="html-vue"] .punctuation {color: #128953;}
     [data-type="html-vue"] .attribute {color: #ff5252;}
 
+    [data-type="xml"] .doctype {color: #02027e;}
     [data-type="xml"] .tag-name {color: #11c;}
     [data-type="xml"] .attribute {color: #f93;}
 
