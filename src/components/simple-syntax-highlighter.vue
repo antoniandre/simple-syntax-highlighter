@@ -226,9 +226,9 @@ export default {
       if (this.language === 'pug') {
         const idAndClasses = (matches[1] || '').replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
         if (attributesList) {
-          attributesList = `<span class="punctuation">(</span>` +
+          attributesList = '<span class="punctuation">(</span>' +
                            attributesList +
-                           `<span class="punctuation">)</span>`
+                           '<span class="punctuation">)</span>'
         }
 
         return (
@@ -237,7 +237,7 @@ export default {
           `${idAndClasses}${attributesList}` +
           (matches[3] ? '<span class="punctuation">.</span>' : '') +
           (matches[4] || '') +
-          `${matches[5] ? matches[5] : '' }`
+          `${matches[5] ? matches[5] : ''}`
         )
       }
 

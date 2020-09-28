@@ -8,7 +8,7 @@ module.exports = {
       .use('vue-loader')
       .loader('vue-loader')
       .tap(options => {
-        options.compilerOptions.whitespace = "preserve"
+        options.compilerOptions.whitespace = 'preserve'
         return options
       })
   }
