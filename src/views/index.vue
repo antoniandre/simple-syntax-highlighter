@@ -9,8 +9,15 @@
     a(href="#notes") Notes
     a(name="notes")
   p.
-    This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
-    #[br]It reads the source code you give it and highlights it, for Humans.
+    This is a lightweight yet efficient and reactive Vue JS syntax highlighter.#[br]
+    It reads the source code you give it and highlights it, for Humans.
+  h3 Supports Vue 2 &amp; Vue 3
+  p
+    | All the features of Simple Syntax Highlighter are working as expected in Vue 3.#[br]
+    | but if you use Vue CLI, Vue 3 compiler doesn't support whitespace preserving yet.#[br]
+    | Check the status of this PR (and add a thumb-up!):
+    a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
+      | feat(compiler-core): whitespace handling strategy
   h3 Supported languages
   ul
     li XML
@@ -29,7 +36,12 @@
     a(name="installation")
   p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
   h3.mt-8 Via NPM
-  ssh-pre(language="shell" label="Shell") npm i --S simple-syntax-highlighter
+  ssh-pre(language="shell").
+    npm i simple-syntax-highlighter # Vue 2.x.
+
+  ssh-pre(language="shell").
+    npm i simple-syntax-highlighter@next # Vue 3.
+
   p.mt-2 Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
@@ -59,6 +71,12 @@
             })
         }
       }
+
+    .mt-4
+      | Vue 3 compiler doesn't support whitespace preserving yet.#[br]
+      | Check the status of this PR (and add a thumb-up!):
+      a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
+        | feat(compiler-core): whitespace handling strategy
 
   h3.mt-8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
