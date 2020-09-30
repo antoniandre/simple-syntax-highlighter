@@ -226,7 +226,7 @@
         onScroll (e) {
           this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
 
-          this.goTopHidden = this.offsetTop < 200
+          this.goTopHidden = this.offsetTop &lt; 200
         }
       }
     })
@@ -510,7 +510,7 @@
         onScroll (e) {
           this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
 
-          this.goTopHidden = this.offsetTop < 200
+          this.goTopHidden = this.offsetTop &lt; 200
         }
       }
     })
