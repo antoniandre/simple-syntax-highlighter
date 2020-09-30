@@ -299,7 +299,7 @@ export default {
 
     // Keep watching the slot text content.
     checkSlots () {
-      const slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
+      const slotTexts = (this.$slots.default && this.$slots.default() || []).map(slot => slot.children || '').join('')
       if (this.slotTexts !== slotTexts) {
         this.slotTexts = slotTexts
         this.content = this.syntaxHighlightContent(this.slotTexts)
