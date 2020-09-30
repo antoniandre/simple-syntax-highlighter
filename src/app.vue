@@ -1,5 +1,6 @@
 <template lang="pug">
-v-app(v-scroll="onScroll")
+documentation
+//- v-app(v-scroll="onScroll")
   v-container
     v-app-bar.top-bar(color="white" dense flat fixed align-center :class="{ scrolled: offsetTop > 104 }")
       v-toolbar-title.top-bar__title
@@ -21,19 +22,19 @@ v-app(v-scroll="onScroll")
 </template>
 
 <script>
-import Vue from 'vue'
+// import Vue from 'vue'
 import Index from '@/views'
 
-Vue.directive('scroll', {
-  inserted: function (el, binding) {
-    const f = function (evt) {
-      if (binding.value(evt, el)) {
-        window.removeEventListener('scroll', f)
-      }
-    }
-    window.addEventListener('scroll', f)
-  }
-})
+// Vue.directive('scroll', {
+//   inserted: function (el, binding) {
+//     const f = function (evt) {
+//       if (binding.value(evt, el)) {
+//         window.removeEventListener('scroll', f)
+//       }
+//     }
+//     window.addEventListener('scroll', f)
+//   }
+// })
 
 export default {
   name: 'app',
