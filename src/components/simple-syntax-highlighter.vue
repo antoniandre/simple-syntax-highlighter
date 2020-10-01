@@ -3,7 +3,7 @@
     class="ssh-pre"
     :class="{ 'ssh-pre--dark': dark }"
     :data-type="language"
-    :data-label="label">
+    :data-label="label || null">
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
