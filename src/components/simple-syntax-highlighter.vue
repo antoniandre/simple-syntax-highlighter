@@ -148,6 +148,12 @@ const multiCapturesMapping = {
   js: { quote: 2 }
 }
 
+const getSlotChildrenText = children => children.map(node => {
+  if (!node.children || typeof node.children === 'string') return node.children || ''
+  else if (Array.isArray(node.children)) return getSlotChildrenText(node.children)
+  else if (node.children.default) return getSlotChildrenText(node.children.default())
+}).join('')
+
 export default {
   name: 'sshpre',
   props: {
@@ -299,7 +305,7 @@ export default {
 
     // Keep watching the slot text content.
     checkSlots () {
-      const slotTexts = (this.$slots.default && this.$slots.default() || []).map(slot => slot.children || '').join('')
+      const slotTexts = this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
       if (this.slotTexts !== slotTexts) {
         this.slotTexts = slotTexts
         this.content = this.syntaxHighlightContent(this.slotTexts)
