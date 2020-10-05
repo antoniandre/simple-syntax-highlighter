@@ -42,7 +42,11 @@
   ssh-pre(language="shell").
     npm i simple-syntax-highlighter@next # Vue 3.
 
-  p.mt-2 Then import the component and use it:
+  p.mt-2.grey--text.text--darken-1
+    | Edit a working Vue 3 example on Codepen:
+    a.ml-2(href="https://codepen.io/antoniandre/pen/jOqgoKR" target="_blank") //codepen.io/antoniandre/pen/jOqgoKR
+
+  p.mt-12 Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
     import SshPre from 'simple-syntax-highlighter'
