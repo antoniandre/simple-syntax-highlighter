@@ -6,19 +6,25 @@
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
-    a(href="#notes") Notes
-    a(name="notes")
-  p.
-    This is a lightweight yet efficient and reactive Vue JS syntax highlighter.#[br]
-    It reads the source code you give it and highlights it, for Humans.
-  h3 Supports Vue 2 &amp; Vue 3
+    a(href="#What-is-it") What is it?
+    a(name="What-is-it")
+  .subtitle-1
+    strong Simple Syntax Highlighter is is a lightweight yet efficient - and very easy to use - syntax highlighter for Vue JS.#[br]
+    | It reads the source code you give it and syntax-highlights it, for Humans.
+  p With its very small size, it is not an editor but a parser.
+
+  h3.mt-8
+    v-icon.ml-n1 chevron_right
+    | Supports Vue 2 &amp; Vue 3
   p
     | All the features of Simple Syntax Highlighter are working as expected in Vue 3.#[br]
     | but if you use Vue CLI, Vue 3 compiler doesn't support whitespace preserving yet.#[br]
     | Check the status of this PR (and add a thumb-up!):
     a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
       | feat(compiler-core): whitespace handling strategy
-  h3 Supported languages
+  h3.mt-8
+    v-icon.ml-n1 chevron_right
+    | Supported languages
   ul
     li XML
     li HTML
@@ -330,6 +336,8 @@
     .ssh-pre[data-type="css"] .unit {color: #0bc;}
     .ssh-pre[data-type="css"] .important {color: #f00;font-weight: bold;}
 
+    .ssh-pre[data-type="sql"] .var-type {color: #f63;font-weight: bold;}
+
   h3
     a(href="#ex--html") HTML
     a(name="ex--html")
@@ -391,7 +399,7 @@
       a(name="installation")
     p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
     h3.mt-8 Via NPM
-    ssh-pre(language="shell" label="Shell") npm i --S simple-syntax-highlighter
+    ssh-pre(language="shell" label="Shell") npm i simple-syntax-highlighter
 
     h2
       a(href="#how-to-use") How to use
@@ -493,6 +501,63 @@
 
     ?&gt;
 
+  h3
+    a(href="#ex--sql") SQL
+    a(name="ex--sql")
+
+  ssh-pre(language="sql" label="SQL").
+    SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+    SET time_zone = "+00:00";
+
+
+    -- Table: `articles`
+
+    CREATE TABLE `articles` (
+      `id` int(10) UNSIGNED NOT NULL,
+      `title` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT 'The article title',
+      `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+      `author` mediumint(9) DEFAULT NULL,
+      `image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `category` smallint(6) DEFAULT NULL,
+      `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      `status` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'published'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+    INSERT INTO `articles` (`id`, `title`, `content`, `author`, `image`, `category`, `created`, `updated`, `status`) VALUES
+    (1, 'Not found (404)', 'Lorem Ipsum.', 1, '', 1, '2019-04-24 22:30:35', NULL, 'published');
+
+    ALTER TABLE `articles` ADD PRIMARY KEY (`id`);
+
+    ALTER TABLE `articles`
+      MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+
+    -- Table: `users`
+
+    CREATE TABLE `users` (
+      `id` int(10) UNSIGNED NOT NULL,
+      `type` enum('admin','user') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
+      `user_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+      `first_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+      `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+      `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+      `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+      `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+      `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+    INSERT INTO `users` (`id`, `type`, `user_name`, `first_name`, `last_name`, `email`, `password`, `created`, `updated`) VALUES
+    (1, 'user', 'test', 'first name', 'last name', 'test@test.com', '$2y$10$8TQo5uNyB.bnrVu4TrbxG.2mZxYtghHAswS3Fn/jcxI/WtMQkuewy', '2019-08-11 08:11:28', NULL);
+
+    ALTER TABLE `users`
+      ADD PRIMARY KEY (`id`),
+      ADD UNIQUE KEY `username` (`user_name`),
+      ADD UNIQUE KEY `email` (`email`);
+
+    ALTER TABLE `users`
+      MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
   h2
     a(href="#dark-mode") Dark mode
     a(name="dark-mode")
@@ -587,6 +652,8 @@
     [data-type="css"] .color {background: #eee;}
     [data-type="css"] .unit {color: #0bc;}
     [data-type="css"] .important {color: #f00;}
+
+    [data-type="sql"] .var-type {color: #f63;font-weight: bold;}
 </template>
 
 <script>

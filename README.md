@@ -4,7 +4,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![npm](https://img.shields.io/npm/dt/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter)
 <!-- [![npm](https://img.shields.io/npm/dw/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter) -->
-> A very lightweight syntax highlighter (not an editor) for Vue.js, supports Vue 3 and multiple coding languages.
+> A very lightweight and easy to use syntax highlighter (not an editor) for Vue.js and Vue 3. Multiple coding languages supported.
 > What I use in all my libs documentations. ;)
 
 ___
@@ -30,13 +30,13 @@ ___
 ## Browser Support
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
 --- | --- | --- | --- | --- | --- |
-Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 10+ ✔ |
+Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 11+ ✔ |
 
 ___
 
 ## Donating
 
-If you like this library, you can buy me a beer!
+If you like this library, you can buy me a beer or [become a sponsor](https://github.com/sponsors/antoniandre)!
 
 [![paypal](https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/antoniandre1)
 Thank you!
