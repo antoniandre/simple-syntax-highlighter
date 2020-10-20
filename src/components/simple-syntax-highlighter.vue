@@ -18,7 +18,7 @@
 
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*?\n|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
+  comment: /(\/\/.*?(?:\n|$)|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
@@ -31,7 +31,7 @@ const regexBasics = {
 const dictionary = {
   shell: {
     quote: regexBasics.quote,
-    comment: /(#.*?)\n/,
+    comment: /(#.*?)(?:\n|$)/,
     keyword: /(?:^|\b)(npm|yarn|install|run)(?:\b|$)/,
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
@@ -119,11 +119,12 @@ const dictionary = {
   },
   sql: {
     quote: regexBasics.quote,
-    comment: regexBasics.comment,
+    comment: /((?:\-\-|#)\s.*?(?:\n|$)|\/\*[\s\S]*?\*\/)/,
     punctuation: regexBasics.punctuation,
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
-    keyword: /\b(\*|CREATE|ALL|DATABASE|TABLE|GRANT|PRIVILEGES|IDENTIFIED|FLUSH|SELECT|UPDATE|DELETE|INSERT|FROM|WHERE|(?:ORDER|GROUP) BY|LIMIT|(?:(?:LEFT|RIGHT|INNER|OUTER) |)JOIN|AS|ON|COUNT|CASE|TO|IF|WHEN|BETWEEN|AND|OR|CONCAT)(?=\W|$)/
+    keyword: /\b(\*|CREATE|DATABASE|TABLE|GRANT|ALL|PRIVILEGES|IDENTIFIED|FLUSH|ALTER|MODIFY|DROP|TRUNCATE|CONSTRAINT|ADD|(?:(?:PRIMARY|FOREIGN|UNIQUE) )?KEY|REFERENCES|AUTO_INCREMENT|COMMENT|DEFAULT|UNSIGNED|CHARSET|COLLATE|CHARACTER|ENGINE|SQL_MODE|USE|IF|NOT|NULL|EXISTS|SELECT|UPDATE|DELETE|INSERT(?: INTO)?|VALUES|SET|FROM|WHERE|(?:ORDER|GROUP) BY|LIMIT|(?:(?:LEFT|RIGHT|INNER|OUTER) |)JOIN|AS|ON|COUNT|CASE|TO|WHEN|BETWEEN|AND|OR|IN|LIKE|CONCAT|CURRENT_TIMESTAMP)(?=\W|$)/,
+    'var-type': /\b((?:var)?char|(?:tiny|small|medium|big)?int|decimal|float|double|real|bit|boolean|date(?:time)?|time(?:stamp)?|year|(?:tiny|medium|long)?(?:text|blob)|enum)\b/
   }
 }
 
@@ -389,7 +390,7 @@ export default {
 // Syntax highlighting.
 .ssh-pre {
   .txt {color: #333;}
-  .comment {font-style: italic;color: #aaa;}
+  .comment {font-style: italic;color: #999;}
   .comment * {color: inherit !important;}
   .quote {color: #c11;}
   .quote * {color: inherit !important;}
@@ -402,42 +403,44 @@ export default {
   .variable {color: #29e;}
   .obj-attr {color: #0bc;}
 
-  &[data-type="shell"] .keyword {color: #ff5252;}
-  &[data-type="shell"] .param {color: #f63;}
+  &[data-type=shell] .keyword {color: #ff5252;}
+  &[data-type=shell] .param {color: #f63;}
 
-  &[data-type="html"] .doctype {color: #02027e;}
-  &[data-type="html"] .tag-name {color: #11c;}
-  &[data-type="html"] .attribute {color: #f63;}
+  &[data-type=html] .doctype {color: #02027e;}
+  &[data-type=html] .tag-name {color: #11c;}
+  &[data-type=html] .attribute {color: #f63;}
 
-  &[data-type="html-vue"] .doctype {color: #02027e;}
-  &[data-type="html-vue"] .tag-name {color: #42b983;}
-  &[data-type="html-vue"] .punctuation {color: #128953;}
-  &[data-type="html-vue"] .attribute {color: #ff5252;}
+  &[data-type=html-vue] .doctype {color: #02027e;}
+  &[data-type=html-vue] .tag-name {color: #42b983;}
+  &[data-type=html-vue] .punctuation {color: #128953;}
+  &[data-type=html-vue] .attribute {color: #ff5252;}
 
-  &[data-type="pug"] .tag-name {color: #11c;font-weight: bold;}
-  &[data-type="pug"] .punctuation {color: #999;}
-  &[data-type="pug"] .id {color: #e3f;}
-  &[data-type="pug"] .class {color: #09e;}
-  &[data-type="pug"] .attribute {color: #f63;}
+  &[data-type=pug] .tag-name {color: #11c;font-weight: bold;}
+  &[data-type=pug] .punctuation {color: #999;}
+  &[data-type=pug] .id {color: #e3f;}
+  &[data-type=pug] .class {color: #09e;}
+  &[data-type=pug] .attribute {color: #f63;}
 
-  &[data-type="xml"] .doctype {color: #02027e;}
-  &[data-type="xml"] .tag-name {color: #11c;}
-  &[data-type="xml"] .attribute {color: #f93;}
+  &[data-type=xml] .doctype {color: #02027e;}
+  &[data-type=xml] .tag-name {color: #11c;}
+  &[data-type=xml] .attribute {color: #f93;}
 
-  &[data-type="css"] .selector {color: #f0d;}
-  &[data-type="css"] .selector.class-id {color: #f0d;}
-  &[data-type="css"] .pseudo {color: #f35;}
-  &[data-type="css"] .selector.keyword {color: #f5f;}
-  &[data-type="css"] .selector.keyword.vendor {color: #0c8;}
-  &[data-type="css"] .keyword {color: #c06;}
-  &[data-type="css"] .attribute {color: #70d;}
-  &[data-type="css"] .keyword {color: #e28;}
-  &[data-type="css"] .vendor {color: #0c8;}
-  &[data-type="css"] .value {color: #c11;}
-  &[data-type="css"] .vendor {color: #0c8;}
-  &[data-type="css"] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 3px;}
-  &[data-type="css"] .unit {color: #0bc;}
-  &[data-type="css"] .important {color: #f00;font-weight: bold;}
+  &[data-type=css] .selector {color: #f0d;}
+  &[data-type=css] .selector.class-id {color: #f0d;}
+  &[data-type=css] .pseudo {color: #f35;}
+  &[data-type=css] .selector.keyword {color: #f5f;}
+  &[data-type=css] .selector.keyword.vendor {color: #0c8;}
+  &[data-type=css] .keyword {color: #c06;}
+  &[data-type=css] .attribute {color: #70d;}
+  &[data-type=css] .keyword {color: #e28;}
+  &[data-type=css] .vendor {color: #0c8;}
+  &[data-type=css] .value {color: #c11;}
+  &[data-type=css] .vendor {color: #0c8;}
+  &[data-type=css] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 3px;}
+  &[data-type=css] .unit {color: #0bc;}
+  &[data-type=css] .important {color: #f00;font-weight: bold;}
+
+  &[data-type=sql] .var-type {color: #f63;font-weight: bold;}
 }
 
 .ssh-pre--dark {
@@ -461,11 +464,11 @@ export default {
   &[data-type=html-vue] .punctuation {color: #99c;}
   &[data-type=html-vue] .attribute {color: #7bcced;}
 
-  &[data-type="pug"] .tag-name {color: #339cda;font-weight: bold;}
-  &[data-type="pug"] .punctuation {color: #999;}
-  &[data-type="pug"] .id {color: #e67ad2;}
-  &[data-type="pug"] .class {color: #329ddb;}
-  &[data-type="pug"] .attribute {color: #7bcced;}
+  &[data-type=pug] .tag-name {color: #339cda;font-weight: bold;}
+  &[data-type=pug] .punctuation {color: #999;}
+  &[data-type=pug] .id {color: #e67ad2;}
+  &[data-type=pug] .class {color: #329ddb;}
+  &[data-type=pug] .attribute {color: #7bcced;}
 
   &[data-type=xml] .tag-name {color: #339cda;}
   &[data-type=xml] .attribute {color: #f93;}
@@ -484,5 +487,7 @@ export default {
   &[data-type=css] .color {background: #111;border-color: rgba(255, 255, 255, 0.25);}
   &[data-type=css] .unit {color: #0bc;}
   &[data-type=css] .important {color: #fe4848;}
+
+  &[data-type=sql] .var-type {color: #7bcced;font-weight: bold;}
 }
 </style>
