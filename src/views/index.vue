@@ -1,32 +1,32 @@
 <template lang="pug">
 .documentation
-  div.mb-3.title Github project
-  v-layout.mb-5(align-center shrink)
-    v-icon.pr-4.lightgrey--text(x-large) fab fa-github
+  div.mb3.title3.black Github project
+  w-flex.mb5(align-center shrink)
+    w-icon.mr4.lightgrey(size="40") fab fa-github
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
     a(href="#What-is-it") What is it?
     a(name="What-is-it")
-  .subtitle-1
+  .title4.mt5.mb3.lh3
     strong Simple Syntax Highlighter is is a lightweight yet efficient - and very easy to use - syntax highlighter for Vue JS.#[br]
     | It reads the source code you give it and syntax-highlights it, for Humans.
   p With its very small size, it is not an editor but a parser.
 
-  h3.mt-8
-    v-icon.ml-n1 chevron_right
+  h3.mt8
+    w-icon.ml-1 material-icons chevron_right
     | Supports Vue 2 &amp; Vue 3
   div All the features of Simple Syntax Highlighter are working as expected in Vue 3.
 
-  highlight.mt-2
+  highlight.mt2
     | ...But Vue 3 compiler doesn't support whitespace preserving yet.#[br]
     | Check the status of this PR and add a 👍!
-    a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
+    a.ml2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
       | feat(compiler-core): whitespace handling strategy
-  h3.mt-8
-    v-icon.ml-n1 chevron_right
+  h3.mt8
+    w-icon.ml-1 material-icons chevron_right
     | Supported languages
-  ul
+  ul.lh2.ml1
     li XML
     li HTML
     li HTML Vue JS Template
@@ -41,19 +41,19 @@
   h2
     a(href="#installation") Installation
     a(name="installation")
-  p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
-  h3.mt-8 Via NPM
+  p You have two options: #[em NPM] #[strong.mx2 or] #[span.code &lt;script&gt;] tag.
+  h3.mt8 Via NPM
   ssh-pre(language="shell").
     npm i simple-syntax-highlighter # Vue 2.x.
 
   ssh-pre(language="shell").
     npm i simple-syntax-highlighter@next # Vue 3.
 
-  p.mt-2.grey--text.text--darken-1
+  p.mt2.grey--text.text--darken-1
     | Edit a working Vue 3 example on Codepen:
-    a.ml-2(href="https://codepen.io/antoniandre/pen/jOqgoKR" target="_blank") //codepen.io/antoniandre/pen/jOqgoKR
+    a.ml2(href="https://codepen.io/antoniandre/pen/jOqgoKR" target="_blank") //codepen.io/antoniandre/pen/jOqgoKR
 
-  p.mt-12 Then import the component and use it:
+  p.mt12 Then import the component and use it:
   ssh-pre(language="js" label="Javascript").
     // In your VueJS component.
     import SshPre from 'simple-syntax-highlighter'
@@ -64,11 +64,11 @@
       components: { SshPre },
       ...
     }
-  highlight.mt-4
+  highlight.mt4
     | In some cases, like in vue-cli, you might need to preserve the white spaces in the project
     | if you see a minified output from Simple Syntax Highlighter.#[br]
     | Here is how to preserve whitespaces, add this in your vue.config.js file:
-    ssh-pre.my-1(language="js").
+    ssh-pre.my1(language="js").
       module.exports = {
         chainWebpack: config =&gt; {
           // Preserve white spaces for ssh-pre component.
@@ -83,13 +83,13 @@
         }
       }
 
-    .mt-4
+    .mt4
       | Vue 3 compiler doesn't support whitespace preserving yet.#[br]
       | Check the status of this PR and add a 👍!
-      a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
+      a.ml2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
         | feat(compiler-core): whitespace handling strategy
 
-  h3.mt-8 Via #[span.code &lt;script&gt;] tag
+  h3.mt8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
   ssh-pre(language="html" label="HTML").
     &lt;head&gt;
@@ -105,26 +105,26 @@
   p.
     Once included in your project, use as follows.
 
-  h3.mt-8 For any other language than HTML
-  v-layout(wrap align-center justify-center)
-    ssh-pre.flex(language="html-vue" label="HTML Vue Template").
+  h3.mt8 For any other language than HTML
+  w-flex(wrap align-center justify-center)
+    ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
       &lt;ssh-pre language="js" label="Javascript"&gt;
         const i = 3;
         // Some more Javascript content.
       &lt;/ssh-pre&gt;
-    div.mx-4.text-center
+    div.mx4.text-center
       div renders as:
-      v-icon arrow_right_alt
-    ssh-pre.flex(language="js" label="Javascript").
+      w-icon(xl) material-icons arrow_right_alt
+    ssh-pre.grow.basis-zero(language="js" label="Javascript").
       const i = 3;
       // Some more Javascript content.
 
-  h3.mt-8 For XML based languages
+  h3.mt8 For XML based languages
   highlight(type="warning")
     strong To use XML/HTML-like languages: you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;].
     | #[br]If you want to display an #[code &amp;] character, you need to escape it with: #[code &amp;amp;amp;].
-  v-layout(wrap align-center justify-center)
-    ssh-pre.flex(language="html-vue" label="HTML").
+  w-flex(wrap align-center justify-center)
+    ssh-pre.grow.basis-zero(language="html-vue" label="HTML").
       &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
         &amp;amp;lt;html lang="en"&amp;amp;gt;
           &amp;amp;lt;head&amp;amp;gt;
@@ -135,10 +135,10 @@
           &amp;amp;lt;/body&amp;amp;gt;
         &amp;amp;lt;/html&amp;amp;gt;
       &lt;/ssh-pre&gt;
-    div.mx-4.text-center
+    div.mx4.text-center
       div renders as:
-      v-icon arrow_right_alt
-    ssh-pre.flex(language="html-vue" label="HTML Vue Template").
+      w-icon(xl) material-icons arrow_right_alt
+    ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
       &lt;html lang="en"&gt;
         &lt;head&gt;
           &lt;title&gt;Title&lt;/title&gt;
@@ -154,28 +154,28 @@
   ul
     li
       code label
-      span.code.cyan--text.text--darken-3.mx-2 {String}
-      span.code.blue--text.text--darken-1.mx-2 Default: #[strong '']
+      span.code.cyan--text.text--darken-3.mx2 {String}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong '']
       p A label to show on the top right of the ssh-pre box. If empty no label will show up.
     li
       code language
-      span.code.cyan--text.text--darken-3.mx-2 {String}
-      span.code.blue--text.text--darken-1.mx-2 Default: #[strong '']
+      span.code.cyan--text.text--darken-3.mx2 {String}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong '']
       p One of the supported programming languages to syntax highlight.
     li
       code reactive
-      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
-      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
       p Makes this ssh-pre box reactive to variable changes.
     li
       code dark
-      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
-      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
       p Switches this ssh-pre box to a dark theme.
     li
       code copy-button
-      span.code.cyan--text.text--darken-3.mx-2 {Boolean}
-      span.code.blue--text.text--darken-1.mx-2 Default: #[strong false]
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
       p Allow copying this ssh-pre box content to the clipboard.
 
   h2
@@ -187,7 +187,7 @@
   p The button content can be customized through the #[span.code copy-button] slot.
 
   .layout.wrap.justify-center
-    div.flex.mr-4(style="max-width: 300px")
+    div.flex.mr4(style="max-width: 300px")
       .subtitle-2 Default
       ssh-pre(language="html" copy-button).
         &lt;body&gt;
@@ -197,19 +197,19 @@
       .subtitle-2 Custom button content
       ssh-pre(language="html" copy-button)
         template(#copy-button)
-          v-icon(small color="primary") content_copy
+          w-icon(small color="primary") material-icons content_copy
         | &lt;body&gt;
         |   &lt;div id="app"&gt;&lt;/div&gt;
         | &lt;/body&gt;
 
-  p.mt-4.
+  p.mt4.
     On copy button press, the #[span.code copied] event is emitted containing the copied text.#[br]
     Here is how to use the copy-button slot and the copied event.
 
   ssh-pre(language="html-vue").
     &lt;ssh-pre language="html-vue" copy-button @copied="onCopiedDoSomething"&gt;
       &lt;template v-slot:copy-button&gt;
-        &lt;i class="icon material-icons"&gt;content_copy&lt;/i&gt;
+        &lt;i class="icon material-icons"&gt;material-icons content_copy&lt;/i&gt;
       &lt;/template&gt;
       ...
     &lt;/ssh-pre&gt;
@@ -369,10 +369,10 @@
     for #[code (] and #[code="&amp;#41;"] for #[code )].
   ssh-pre(language="pug" label="index.pug").
     //- This is pug.
-    div.mb-3.title Github project
+    div.mb3.title3.black Github project
 
-    v-layout.mb-5(align-center shrink)
-      v-icon.pr-4.lightgrey--text(x-large) fab fa-github
+    w-flex.mb5(align-center shrink)
+      w-icon.mr4.lightgrey(size="40") fab fa-github
       a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank")
         | //github.com/antoniandre/simple-syntax-highlighter
 
@@ -398,8 +398,8 @@
     h2
       a(href="#installation") Installation
       a(name="installation")
-    p You have two options: #[em NPM] #[strong.mx-2 or] #[span.code &lt;script&gt;] tag.
-    h3.mt-8 Via NPM
+    p You have two options: #[em NPM] #[strong.mx2 or] #[span.code &lt;script&gt;] tag.
+    h3.mt8 Via NPM
     ssh-pre(language="shell" label="Shell") npm i simple-syntax-highlighter
 
     h2
