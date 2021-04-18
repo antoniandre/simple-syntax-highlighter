@@ -16,10 +16,11 @@
   h3.mt-8
     v-icon.ml-n1 chevron_right
     | Supports Vue 2 &amp; Vue 3
-  p
-    | All the features of Simple Syntax Highlighter are working as expected in Vue 3.#[br]
-    | but if you use Vue CLI, Vue 3 compiler doesn't support whitespace preserving yet.#[br]
-    | Check the status of this PR (and add a thumb-up!):
+  div All the features of Simple Syntax Highlighter are working as expected in Vue 3.
+
+  highlight.mt-2
+    | ...But Vue 3 compiler doesn't support whitespace preserving yet.#[br]
+    | Check the status of this PR and add a 👍!
     a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
       | feat(compiler-core): whitespace handling strategy
   h3.mt-8
@@ -84,7 +85,7 @@
 
     .mt-4
       | Vue 3 compiler doesn't support whitespace preserving yet.#[br]
-      | Check the status of this PR (and add a thumb-up!):
+      | Check the status of this PR and add a 👍!
       a.ml-2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
         | feat(compiler-core): whitespace handling strategy
 
