@@ -186,15 +186,16 @@
     content to the clipboard.
   p The button content can be customized through the #[span.code copy-button] slot.
 
-  .layout.wrap.justify-center
-    div.flex.mr4(style="max-width: 300px")
-      .subtitle-2 Default
+  .w-flex.wrap.justify-center.mxa.mt2(style="max-width: 650px")
+    div.grow.basis-zero.my2
+      .text-bold Default
       ssh-pre(language="html" copy-button).
         &lt;body&gt;
           &lt;div id="app"&gt;&lt;/div&gt;
         &lt;/body&gt;
-    div.flex(style="max-width: 300px")
-      .subtitle-2 Custom button content
+    .spacer.mx1.no-grow
+    div.grow.basis-zero.my2
+      .text-bold Custom button content
       ssh-pre(language="html" copy-button)
         template(#copy-button)
           w-icon(small color="primary") material-icons content_copy
@@ -208,7 +209,7 @@
 
   ssh-pre(language="html-vue").
     &lt;ssh-pre language="html-vue" copy-button @copied="onCopiedDoSomething"&gt;
-      &lt;template v-slot:copy-button&gt;
+      &lt;template #copy-button&gt;
         &lt;i class="icon material-icons"&gt;material-icons content_copy&lt;/i&gt;
       &lt;/template&gt;
       ...
@@ -665,10 +666,3 @@ export default {
   components: { sshPre: SimpleSyntaxHighlighter, Highlight }
 }
 </script>
-
-<style lang="scss">
-.layout .ssh-pre {flex-basis: 0;}
-.code {
-  font-family: monospace, monospace;
-}
-</style>

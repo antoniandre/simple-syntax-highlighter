@@ -156,6 +156,10 @@ p b {
   font-weight: 500;
 }
 
+.code {
+  font-family: monospace, monospace;
+}
+
 // APPLICATION
 // =================================================
 .w-app {padding-top: 8em;}
