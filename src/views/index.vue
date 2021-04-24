@@ -112,7 +112,7 @@
         const i = 3;
         // Some more Javascript content.
       &lt;/ssh-pre&gt;
-    div.mx4.text-center.arrow-block
+    div.mt8.mx4.text-center.arrow-block
       div renders as:
       w-icon(xl) material-icons arrow_right_alt
     ssh-pre.grow.basis-zero(language="js" label="Javascript").
