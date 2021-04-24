@@ -3,10 +3,16 @@ import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
 import { createApp, h } from 'vue'
-// import vuetify from './plugins/vuetify'
 import App from './app'
+import WaveUI from './plugins/wave-ui'
+import 'wave-ui/dist/wave-ui.css'
 
-createApp({
-  // vuetify,
+const app = createApp({
   render: () => h(App)
-}).mount('#app')
+})
+
+new WaveUI(app, {
+  // Some Wave UI options.
+})
+
+app.mount('#app')

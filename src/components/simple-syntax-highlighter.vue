@@ -363,6 +363,8 @@ export default {
     position: absolute;
     top: 3px;
     right: 3px;
+    border: none;
+    background: none;
   }
 
   #clipboard-textarea {

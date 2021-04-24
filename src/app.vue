@@ -1,24 +1,25 @@
 <template lang="pug">
-documentation
-//- v-app(v-scroll="onScroll")
-  v-container
-    v-app-bar.top-bar(color="white" dense flat fixed align-center :class="{ scrolled: offsetTop > 104 }")
-      v-toolbar-title.top-bar__title
-        h1.primary--text
-          a.top-bar__logo-link(href="#top")
-            v-icon(color="lightgrey").top-bar__logo fa-terminal
-            span.code.mr-3.lightgrey--text.top-bar__ssh SSH
-            div.top-bar__logo-title Simple Syntax Highlighter
+//- w-app(v-scroll="onScroll")
+w-app
+  .container
+    w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
+      h1.primary.top-bar__title
+        a.top-bar__logo-link(href="#top")
+          w-icon.top-bar__logo.mr1(color="lightgrey" lg) fa fa-terminal
+          span.code.mr3.lightgrey.top-bar__ssh SSH
+          div.top-bar__logo-title Simple Syntax Highlighter
 
     documentation
 
-  v-footer.px-2(color="white")
-    v-layout.mx-auto.container.grey--text.text--darken-1(row wrap align-center justify-center)
-      v-flex.xs12.sm6.text-center.text-sm-left.copyright.
-        Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
-      v-flex.xs12.sm6.text-center.text-sm-right.made-with
-        .mb-1 This documentation is made with #[v-icon fab fa-vuejs], #[v-icon fab fa-html5], #[v-icon fab fa-css3], #[v-icon fab fa-sass] &amp; #[v-icon.heart favorite]
-        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[v-icon fab fa-github] Github].
+  footer
+    w-flex.container.mxa.grey-dark1(wrap justify-center)
+      .copyright.mr2 Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
+      .spacer
+      .made-with
+        .mb1.
+          This documentation is made with #[w-icon fab fa-vuejs], #[w-icon fab fa-html5],
+          #[w-icon fab fa-css3], #[w-icon fab fa-sass] &amp; #[w-icon.heart material-icons favorite]
+        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
 </template>
 
 <script>
@@ -55,7 +56,7 @@ export default {
 <style lang="scss">
 $primary: #1b4;
 $secondary: #666;
-$main-text: #888;
+$main-text: #333;
 $dark-text: #666;
 $darker-text: #333;
 $light-text: #ccc;
@@ -63,6 +64,33 @@ $lighter-text: #ddd;
 
 // GLOBAL
 // =================================================
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font: 13px/1.4 Roboto, Tahoma, Geneva, sans-serif;
+  color: $main-text;
+}
+
+.application.theme--light,
+.application .theme--light.v-card, .theme--light .v-card {
+  color: inherit;
+}
+
+.lh0 {line-height: 1;}
+.lh1 {line-height: 1.2;}
+.lh2 {line-height: 1.4;}
+.lh3 {line-height: 1.6;}
+.lh4 {line-height: 1.8;}
+.lh5 {line-height: 2;}
+
+a {
+  color: $primary;
+  text-decoration: none;
+}
+
 a[name] {
   position: relative;
   top: -4em;
@@ -72,16 +100,6 @@ a[name] {
 ul, ol {
   margin-top: 1em;
   padding-left: 1.3em;
-}
-
-body {
-  font: 13px Roboto, Tahoma, Geneva, sans-serif;
-  color: $main-text;
-}
-
-.application.theme--light,
-.application .theme--light.v-card, .theme--light .v-card {
-  color: inherit;
 }
 
 h1, h2, h3, h4 {
@@ -114,7 +132,7 @@ h2 + a[name] + h3 {
 }
 
 h3 a[href] {
-  color: inherit !important;
+  color: inherit;
 }
 
 h3 a[href]:before {
@@ -134,25 +152,47 @@ h4 {
   color: $dark-text;
 }
 
-a {
-  text-decoration: none;
-}
-
 p b {
   color: $darker-text;
   font-weight: 500;
 }
 
-// APPLICATION
-// =================================================
-#app {
-  background-color: #fff !important;
-  padding-top: 8em;
+code {
+  padding: 0 4px 1px;
+  background-color: rgba(128, 99, 99, 0.1);
+  border-radius: 3px;
+  line-height: 1.2;
+  color: #c33;
 }
 
-.application--wrap {
-  padding-top: 16em;
+.code {
+  font-family: monospace, monospace;
+}
+
+// APPLICATION
+// =================================================
+.w-app {padding-top: 8em;}
+
+.container {
   overflow-x: hidden;
+  padding-top: 16em;
+  position: relative;
+  width: 100%;
+  padding: 12px;
+  margin-right: auto;
+  margin-left: auto
+}
+
+@media (min-width: 960px) {
+  .container {max-width: 900px;}
+}
+
+@media (min-width: 1264px) {
+  .container {max-width: 1185px;}
+}
+
+@media (min-width: 1904px) {
+  .container {max-width: 1785px;}
 }
 
 .documentation {padding-top: 12em;}
@@ -160,18 +200,13 @@ p b {
 // TOOLBAR
 // =================================================
 .top-bar {
-  &.v-app-bar--fixed {
-    z-index: 100;
-    position: absolute;
-    border-bottom: 1px solid transparent !important;
-    transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
-    top: 0;
-  }
-
-  .v-toolbar__content {
-    padding-left: 0;
-    padding-right: 0;
-  }
+  z-index: 100;
+  position: absolute;
+  border-bottom: 1px solid transparent !important;
+  transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
+  top: 0;
+  left: 0;
+  right: 0;
 
   &__title {
     position: relative;
@@ -181,7 +216,7 @@ p b {
     width: 35em;
     transition: 0.3s ease-in-out;
     font-size: 1em;
-    padding: 0 1em;
+    padding: 5px 1em;
     background-color: #000;
   }
 
@@ -191,12 +226,13 @@ p b {
   }
 
   &__logo-link {
-    display: inline-block;
+    display: flex;
+    align-items: center;
   }
 
   &__ssh {
     letter-spacing: -3px;
-    font-size: 0.8em;
+    font-size: 2em;
   }
 
   & .top-bar__logo, & .top-bar__ssh {
@@ -212,46 +248,66 @@ p b {
     word-spacing: -5px;
   }
 
-  &.scrolled {
-    &.v-app-bar--fixed {
-      transition: 0.6s ease-in-out all, 0.3s 0.5s ease-in-out border-color;
-      border-bottom-color: $lighter-text !important;
-      position: fixed;
-    }
+  &--scrolled {
+    transition: 0.6s ease-in-out all, 0.3s 0.3s ease-in-out border-color;
+    border-bottom-color: $lighter-text !important;
+    position: fixed;
+    padding-top: 4px;
+    padding-bottom: 4px;
 
     & .top-bar__title {
       background-color: #fff;
       width: 100%;
-      transition: 0.6s ease-in-out all, 0.3s 0.3s ease-in-out background-color;
+      padding: 0;
+      transition: 0.3s ease-in-out all, 0.25s ease-in-out background-color;
     }
 
     & .top-bar__logo, & .top-bar__ssh {
       color: $dark-text !important;
+      font-size: 1.8em;
     }
+    & .top-bar__logo {font-size: 1.3em;}
 
     & .top-bar__logo-title {
-      font-size: 0.6em;
+      font-size: 1.4em;
+      letter-spacing: -1.5px;
     }
   }
 }
 
 // FOOTER
 // =================================================
-.v-footer {
+footer {
   font-size: 0.9em;
   font-style: italic;
   margin: 3em 0 3.5em;
 
-  .v-icon {
+  .w-icon {
     font-size: 1.2em;
 
     &.heart {transition: 1s ease-out;cursor: pointer;}
     &.heart:hover {animation: pulse 1.8s ease-out infinite;}
   }
+
+  .made-with {text-align: right;}
 }
 
 @keyframes pulse {
   0%, 20%, 30%, 35%, 45%, 100% {transform: scale(1);}
   25%, 40% {transform: scale(1.3);}
+}
+
+@media screen and (max-width: 580px) {
+  .top-bar--scrolled {
+    .top-bar__logo, .top-bar__ssh {font-size: 1.5em;}
+  }
+
+  footer {
+    .container {flex-direction: column;}
+
+    .copyright, .made-with {text-align: center;}
+    .made-with {margin-top: 20px;}
+    .spacer {display: none;}
+  }
 }
 </style>
