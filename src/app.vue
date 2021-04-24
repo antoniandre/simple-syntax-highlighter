@@ -156,6 +156,14 @@ p b {
   font-weight: 500;
 }
 
+code {
+  padding: 0 4px 1px;
+  background-color: rgba(128, 99, 99, 0.1);
+  border-radius: 3px;
+  line-height: 1.2;
+  color: #c33;
+}
+
 .code {
   font-family: monospace, monospace;
 }
