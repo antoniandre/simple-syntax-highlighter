@@ -106,13 +106,13 @@
     Once included in your project, use as follows.
 
   h3.mt8 For any other language than HTML
-  w-flex(wrap align-center justify-center)
+  w-flex.responsive-block(wrap align-center justify-center)
     ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
       &lt;ssh-pre language="js" label="Javascript"&gt;
         const i = 3;
         // Some more Javascript content.
       &lt;/ssh-pre&gt;
-    div.mx4.text-center
+    div.mx4.text-center.arrow-block
       div renders as:
       w-icon(xl) material-icons arrow_right_alt
     ssh-pre.grow.basis-zero(language="js" label="Javascript").
@@ -123,7 +123,7 @@
   highlight(type="warning")
     strong To use XML/HTML-like languages: you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;].
     | #[br]If you want to display an #[code &amp;] character, you need to escape it with: #[code &amp;amp;amp;].
-  w-flex(wrap align-center justify-center)
+  w-flex.responsive-block(wrap align-center justify-center)
     ssh-pre.grow.basis-zero(language="html-vue" label="HTML").
       &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
         &amp;amp;lt;html lang="en"&amp;amp;gt;
@@ -135,7 +135,7 @@
           &amp;amp;lt;/body&amp;amp;gt;
         &amp;amp;lt;/html&amp;amp;gt;
       &lt;/ssh-pre&gt;
-    div.mx4.text-center
+    div.mx4.text-center.arrow-block
       div renders as:
       w-icon(xl) material-icons arrow_right_alt
     ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
@@ -186,7 +186,7 @@
     content to the clipboard.
   p The button content can be customized through the #[span.code copy-button] slot.
 
-  .w-flex.wrap.justify-center.mxa.mt2(style="max-width: 650px")
+  .w-flex.wrap.justify-center.mxa.mt2.responsive-block(style="max-width: 650px")
     div.grow.basis-zero.my2
       .text-bold Default
       ssh-pre(language="html" copy-button).
@@ -666,3 +666,20 @@ export default {
   components: { sshPre: SimpleSyntaxHighlighter, Highlight }
 }
 </script>
+
+<style lang="scss">
+@media screen and (max-width: 640px) {
+  .responsive-block {
+    flex-direction: column;
+
+    .ssh-pre {width: 100%;}
+    .arrow-block {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      margin-top: 2em;
+    }
+    .w-icon {transform: rotate(90deg);}
+  }
+}
+</style>
