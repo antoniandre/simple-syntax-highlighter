@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime'
 
 import { createApp, h } from 'vue'
 import App from './app'
-import WaveUI from './plugins/wave-ui'
+import WaveUI from 'wave-ui'
 import 'wave-ui/dist/wave-ui.css'
 
 const app = createApp({
@@ -12,7 +12,14 @@ const app = createApp({
 })
 
 new WaveUI(app, {
-  // Some Wave UI options.
+  icons: ['md', 'fa'],
+  iconsLigature: 'material-icons',
+  colors: {
+    primary: '#1b4',
+    secondary: '#666',
+    maintext: '#999',
+    lightgrey: '#eee'
+  }
 })
 
 app.mount('#app')
