@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import WaveUI from './plugins/wave-ui'
+import WaveUI from 'wave-ui'
+import 'wave-ui/dist/wave-ui.css'
 import App from './app.vue'
 
 const app = createApp(App)
