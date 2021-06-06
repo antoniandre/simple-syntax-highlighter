@@ -1,15 +1,8 @@
-// Polyfill.
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import { createApp } from 'vue'
+import WaveUI from './plugins/wave-ui'
+import App from './app.vue'
 
-import { createApp, h } from 'vue'
-import App from './app'
-import WaveUI from 'wave-ui'
-import 'wave-ui/dist/wave-ui.css'
-
-const app = createApp({
-  render: () => h(App)
-})
+const app = createApp(App)
 
 new WaveUI(app, {
   icons: ['md', 'fa'],
