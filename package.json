@@ -3,45 +3,12 @@
   "version": "1.4.6",
   "description": "A Vue.js syntax highlighter that reads the source code you give it and highlights it, for Humans.",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name sshpre ./src/components/simple-syntax-highlighter.vue --dest ./dist"
-  },
+  "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
   "main": "dist/sshpre.common.js",
   "unpkg": "dist/sshpre.umd.min.js",
   "files": [
     "dist/"
   ],
-  "dependencies": {},
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-eslint": "^4.5.13",
-    "@vue/cli-plugin-router": "^4.5.13",
-    "@vue/cli-service": "^4.5.13",
-    "@vue/eslint-config-standard": "^6.0.0",
-    "babel-eslint": "^10.1.0",
-    "core-js": "^3.13.1",
-    "eslint": "^7.28.0",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-standard": "^5.0.0",
-    "eslint-plugin-vue": "^7.10.0",
-    "node-sass": "^5.0.0",
-    "pug": "^3.0.2",
-    "pug-plain-loader": "^1.1.0",
-    "sass-loader": "^10.2.0",
-    "vue": "^2.6.13",
-    "vue-template-compiler": "^2.6.13",
-    "wave-ui": "^1.32.4"
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
   "keywords": [
     "syntax highlighter",
     "code highlighter",
@@ -52,5 +19,35 @@
     "ui"
   ],
   "license": "MIT",
-  "repository": "https://github.com/antoniandre/simple-syntax-highlighter"
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base /simple-syntax-highlighter/",
+    "build-bundle": "BUNDLE=true vite build && mv ./dist/style.css ./dist/sshpre.css",
+    "serve": "vite preview --root docs --base /simple-syntax-highlighter/"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.14.4",
+    "@vitejs/plugin-vue": "^1.2.2",
+    "@vue/eslint-config-standard": "^6.0.0",
+    "autoprefixer": "^10.2.6",
+    "core-js": "^3.13.1",
+    "eslint": "^7.28.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^7.10.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "sass": "^1.34.0",
+    "vite": "^2.3.3",
+    "vite-plugin-pug": "^0.3.0",
+    "vite-plugin-vue2": "^1.5.2",
+    "vue": "^2.6.13",
+    "vue-template-compiler": "^2.6.13",
+    "wave-ui": "^1.32.6"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  }
 }

@@ -247,7 +247,7 @@
     new Vue({ // eslint-disable-line no-new
       el: '#app',
       router,
-      template: require('./template.pug'),
+      template: {{ 'require' }}('./template.pug'),
       data: () => ({
         offsetTop: 0,
         goTopHidden: true
@@ -590,7 +590,7 @@
     new Vue({ // eslint-disable-line no-new
       el: '#app',
       router,
-      template: require('./template.pug'),
+      template: {{ 'require' }}('./template.pug'),
       data: () => ({
         offsetTop: 0,
         goTopHidden: true
@@ -659,8 +659,8 @@
 </template>
 
 <script>
-import SimpleSyntaxHighlighter from '@/components/simple-syntax-highlighter'
-import Highlight from '@/components/highlight-message'
+import SimpleSyntaxHighlighter from '@/components/simple-syntax-highlighter.vue'
+import Highlight from '@/components/highlight-message.vue'
 
 export default {
   components: { sshPre: SimpleSyntaxHighlighter, Highlight }

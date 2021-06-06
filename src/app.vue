@@ -23,7 +23,7 @@ w-app(v-scroll="onScroll")
 
 <script>
 import Vue from 'vue'
-import Index from '@/views'
+import Index from '@/views/index.vue'
 
 Vue.directive('scroll', {
   inserted: function (el, binding) {
