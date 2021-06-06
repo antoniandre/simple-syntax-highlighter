@@ -1,23 +1,23 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import del from 'rollup-plugin-delete'
+import Delete from 'rollup-plugin-delete'
 import { createVuePlugin } from 'vite-plugin-vue2'
 
 const build = process.env.BUNDLE ? {
   lib: {
     entry: resolve(__dirname, '/src/components/simple-syntax-highlighter.vue'),
-    name: 'sshpre'
+    name: 'sshpre',
+    fileName: 'sshpre',
+    formats: ['es', 'umd', 'cjs']
   },
   rollupOptions: {
     plugins: [
-      // del({ targets: ['dist/{images,.htaccess,ghspa.js}', 'dist/*.{ico,txt,html}'], hook: 'generateBundle' })
+      Delete({ targets: ['dist/*.{ico,html}'], hook: 'generateBundle' })
     ],
-    // make sure to externalize deps that shouldn't be bundled
-    // into your library
+    // Make sure to externalize deps that shouldn't be bundled into library.
     external: ['vue'],
     output: {
-      // Provide global variables to use in the UMD build
-      // for externalized deps
+      // Provide global variables to use in the UMD build for externalized deps.
       globals: {
         vue: 'Vue'
       }

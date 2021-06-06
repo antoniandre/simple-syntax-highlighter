@@ -6,9 +6,19 @@
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
   "main": "dist/sshpre.common.js",
   "unpkg": "dist/sshpre.umd.min.js",
+  "module": "./dist/sshpre.es.js",
   "files": [
     "dist/"
   ],
+  "exports": {
+    "./dist/sshpre.css": "./dist/sshpre.css",
+    "./dist/sshpre.cjs.js": "./dist/sshpre.cjs.js",
+    ".": {
+      "import": "./dist/sshpre.es.js",
+      "require": "./dist/sshpre.umd.js"
+    }
+  },
+
   "keywords": [
     "syntax highlighter",
     "code highlighter",
