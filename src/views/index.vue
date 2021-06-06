@@ -18,11 +18,6 @@
     | Supports Vue 2 &amp; Vue 3
   div All the features of Simple Syntax Highlighter are working as expected in Vue 3.
 
-  highlight.mt2
-    | ...But Vue 3 compiler doesn't support whitespace preserving yet.#[br]
-    | Check the status of this PR and add a 👍!
-    a.ml2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
-      | feat(compiler-core): whitespace handling strategy
   h3.mt8
     w-icon.ml-1 material-icons chevron_right
     | Supported languages
@@ -65,9 +60,9 @@
       ...
     }
   highlight.mt4
-    | In some cases, like in vue-cli, you might need to preserve the white spaces in the project
-    | if you see a minified output from Simple Syntax Highlighter.#[br]
-    | Here is how to preserve whitespaces, add this in your vue.config.js file:
+    | In some cases, like in vue-cli or Vite, you might need to preserve the white spaces in the project
+    | (if you see all the ssh-pre contents on a single line).#[br]
+    | Here is how to preserve whitespaces in Vue. Add this in your vue.config.js file:
     ssh-pre.my1(language="js").
       module.exports = {
         chainWebpack: config =&gt; {
@@ -82,12 +77,19 @@
             })
         }
       }
-
-    .mt4
-      | Vue 3 compiler doesn't support whitespace preserving yet.#[br]
-      | Check the status of this PR and add a 👍!
-      a.ml2(href="https://github.com/vuejs/vue-next/pull/1600" target="_blank")
-        | feat(compiler-core): whitespace handling strategy
+    p Or in Vite, add this in your vite.config.js file:
+    ssh-pre.my1(language="js").
+      export default defineConfig({
+        plugins: [
+          createVuePlugin({
+            vueTemplateOptions: {
+              compilerOptions: {
+                whitespace: 'preserve'
+              }
+            }
+          })
+        ]
+      }
 
   h3.mt8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
