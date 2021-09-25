@@ -267,6 +267,10 @@
     a(href="#ex--css") CSS
     a(name="ex--css")
   ssh-pre(language="css" label="styles.css").
+    :root {
+      --primary-color: green;
+    }
+
     pre.ssh-pre {
       position: relative;
       padding: 0.5em;
