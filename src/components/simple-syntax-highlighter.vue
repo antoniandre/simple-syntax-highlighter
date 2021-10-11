@@ -56,12 +56,18 @@ const dictionary = {
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
   },
-  // @todo: in pug, add the `text` regex that should match `tag.\n\s+text`.
+  // @todo: support Pug inline tags like `#[em italic]`.
   pug: {
-    // text: /(^|\n)([ \t]+|^)([.#-\w\d]+(?:\([^)]*\))*)\.\n((?:\2[ \t]+[^\n]+(?=\n|$))+)/,
-    text2: /((?:^|\n)[ \t]+|^)\|([ \t]*)([^\n]+(?=\n|$))/,
+    // Text match for this syntax:
+    // tag
+    //   | text
+    text: /((?:^|\n)[ \t]*|^)\|([ \t]*)([^\n]+(?=\n|$))/,
+    // Text match for this syntax:
+    // tag.
+    //   text
+    text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\1[ \t]+)|(?=\1[ \t]+)[\s\S]+?(?:\n|$)*?)*)(?=\n|$)/,
     quote: regexBasics.quote,
-    comment: /(?:^|\n)([ \t]+|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\1[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
+    comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\1[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
     // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(([\s\S]*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
@@ -74,12 +80,13 @@ const dictionary = {
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
+    variable: /(--[a-zA-Z0-9\-]+)/, // Any part before '{'.
     selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
-    'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|animation|background-size|box-shadow))/,
-    'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|background(?:-(?:color|position|image|repeat|size))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
+    'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|tap-highlight-color|animation|background-size|box-shadow))/,
+    'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|pointer-events|user-select|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|backdrop-filter|background(?:-(?:color|position|image|repeat|size|attachment|origin|clip|blend-mode))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
     'value keyword vendor': /(-(?:moz|o|webkit|ms)-(?=linear-gradient))/,
+    'value keyword': /\b(inherit|initial|normal|none|unset|auto|inline(?:-(?:block|flex))?|block|flex|absolute|relative|static|fixed|sticky|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|line-through|(?:over|under)line|wavy|double|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|attr\(.*?\)|linear|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|(?:repeating-)?(?:linear|radial)-gradient|inset|pointer|(?:flex-)?(?:start|end)|space-(?:between|evenly|around)|stretch|revert|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z!])/,
     'value keyword important': /( ?!important)/,
-    'value keyword': /\b(inherit|initial|normal|none|unset|auto|inline-block|inline|block|absolute|relative|static|fixed|sticky|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|line-through|(?:over|under)line|wavy|double|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|attr\(.*?\)|linear|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|(?:repeating-)?(?:linear|radial)-gradient|inset|pointer|flex(?:-(?:start|end))?|stretch|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z])/,
     number: regexBasics.number,
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
     // punctuation: /([:,;{}@#()]+)/,// @todo Why can't use this one if text contains '<' or '>' ??
@@ -128,6 +135,7 @@ const dictionary = {
   }
 }
 
+// Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
   xml: /(\s*)([a-zA-Z\d\-:]+)=("|')([\s\S]*?)\3/g,
   html: /(\s*)([a-zA-Z-]+)=("|')([\s\S]*?)\3/g,
@@ -136,12 +144,14 @@ const attributesRegex = {
 }
 
 // Only list the classes that need multiple captures.
+// The numbers are defining the number of regex groups that are related to this match class,
+// then splitted and replaced in the syntaxHighlightContent function.
 const multiCapturesMapping = {
   shell: { quote: 2 },
   xml: { quote: 2, tag: 4 },
   html: { quote: 2, tag: 4 },
   'html-vue': { quote: 2, tag: 4 },
-  pug: { quote: 2, comment: 2, text: 4, text2: 3, tag: 6 },
+  pug: { text: 3, text2: 3, quote: 2, comment: 3, tag: 6 },
   json: { quote: 2 },
   php: { quote: 2 },
   sql: { quote: 2 },
@@ -231,7 +241,9 @@ export default {
       let attributesList = (matches[2] || '').replace(attributesRegex[this.language], renderAttributesList)
 
       if (this.language === 'pug') {
-        const idAndClasses = (matches[1] || '').replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
+        const idAndClasses = (matches[1] || '')
+          .replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
+          .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
         if (attributesList) {
           attributesList = '<span class="punctuation">(</span>' +
                            attributesList +
@@ -244,7 +256,7 @@ export default {
           `${idAndClasses}${attributesList}` +
           (matches[3] ? '<span class="punctuation">.</span>' : '') +
           (matches[4] || '') +
-          `${matches[5] ? matches[5] : ''}`
+          `${matches[5] ? `<span class="text">${matches[5]}</span>` : '' }`
         )
       }
 
@@ -269,23 +281,30 @@ export default {
       return this.unhtmlize(string).replace(new RegExp(regexPattern, 'g'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
-
-        // if (this.language === 'pug') console.log(matches)
+        const isPug = this.language === 'pug'
 
         // Get the first not undefined match from the array of matches and associate with the correct
         // capture class to perform a specific action if there is.
         let match = matches.find((m, i) => m && (Class = classMap[i]) && m)
 
         if (Class === 'quote') match = this.unhtmlize(match)
-        else if (Class === 'comment') match = this.unhtmlize(match)
-        else if (Class === 'text' && this.language === 'pug') {
-          return `${matches[0]}${matches[1]}${matches[2]}<span class="punctuation">.</span>\n<span class="text">${matches[3]}</span>`
+        else if (Class === 'comment') {
+          if (isPug) {
+            const [carretReturn, whitespaces, comment] = matches.slice(classMap.indexOf('comment'))
+            match = `${carretReturn}${whitespaces}${this.unhtmlize(comment)}`
+          }
+          else match = this.unhtmlize(match)
         }
-        else if (Class === 'text2' && this.language === 'pug') {
+        else if (Class === 'text' && isPug) {
           return `${matches[0]}<span class="punctuation">|</span>${matches[1]}<span class="text">${matches[2]}</span>`
         }
+        else if (Class === 'text2' && isPug) {
+          const [, , , tabs, tagString, text] = matches
+          const tag = this.syntaxHighlightContent(tagString)
+          return `${tabs}${tag}<span class="punctuation">.</span>\n<span class="text">${text}</span>`
+        }
         else if (Class === 'tag' && ['xml', 'html', 'html-vue', 'pug'].includes(this.language)) {
-          // Pass the matches param from the first tag capture (remove quotes, commments, etc).
+          // Pass the matches param from the first tag capture (remove quotes, comments, etc).
           return this.syntaxHighlightHtmlTag(matches.slice(classMap.indexOf('tag')))
         }
 
@@ -422,11 +441,13 @@ export default {
   &[data-type=pug] .id {color: #e3f;}
   &[data-type=pug] .class {color: #09e;}
   &[data-type=pug] .attribute {color: #f63;}
+  &[data-type=pug] .text {color: #495a70;}
 
   &[data-type=xml] .doctype {color: #02027e;}
   &[data-type=xml] .tag-name {color: #11c;}
   &[data-type=xml] .attribute {color: #f93;}
 
+  &[data-type=css] .variable {color: #29e;font-weight: bold;}
   &[data-type=css] .selector {color: #f0d;}
   &[data-type=css] .selector.class-id {color: #f0d;}
   &[data-type=css] .pseudo {color: #f35;}
@@ -468,9 +489,10 @@ export default {
 
   &[data-type=pug] .tag-name {color: #339cda;font-weight: bold;}
   &[data-type=pug] .punctuation {color: #999;}
-  &[data-type=pug] .id {color: #e67ad2;}
-  &[data-type=pug] .class {color: #329ddb;}
-  &[data-type=pug] .attribute {color: #7bcced;}
+  &[data-type=pug] .id {color: #ed9bfd;}
+  &[data-type=pug] .class {color: #0ba7b3;}
+  &[data-type=pug] .attribute {color: #8adeff;}
+  &[data-type=pug] .text {color: #c4d8f3;}
 
   &[data-type=xml] .tag-name {color: #339cda;}
   &[data-type=xml] .attribute {color: #f93;}
