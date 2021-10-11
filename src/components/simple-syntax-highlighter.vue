@@ -256,7 +256,7 @@ export default {
           `${idAndClasses}${attributesList}` +
           (matches[3] ? '<span class="punctuation">.</span>' : '') +
           (matches[4] || '') +
-          `${matches[5] ? `<span class="text">${matches[5]}</span>` : '' }`
+          (matches[5] ? `<span class="text">${matches[5]}</span>` : '')
         )
       }
 
