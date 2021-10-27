@@ -13,13 +13,24 @@
 
 <script>
 /**
- * IMPORTANT: IE and Edge don't support the `s` dotAll flag - workaround with [\s\S].
+ * /!\ WARNINGS
+ * ____________
+ *
+ * #1. JAVASCRIPT DOES NOT SUPPORT LOOKBEHIND.
+ *
+ * #2. DOTALL FLAG NOT SUPPORTED ON IE:
+ *     Works on Edge, so removing workaround. For reference the workaround was: `[\s\s]` instead of `.`
+ *
+ * #3. BACKREFERENCES:
+ *     since all the regexes are aggregated in 1 big regex, backreferences numbers should be increased by
+ *     the number of capturing groups of the prior regexes of the same language. (e.g. \4 instead of \1)
  */
 
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*?(?:\n|$)|\/\*[\s\S]*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
+  comment: /(\/\/.*?(?:\n|$)|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
+  htmlentity: /(&amp;[a-zA-Z0-9#]+;)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
@@ -38,21 +49,24 @@ const dictionary = {
   xml: {
     doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--[\s\S]*?--&gt;)/,
+    comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z\-:]+)([\s\S]*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
   },
   html: {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--[\s\S]*?--&gt;)/,
+    comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-z]\w*)([\s\S]*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
   },
   'html-vue': {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--[\s\S]*?--&gt;)/,
+    comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
   },
@@ -61,22 +75,25 @@ const dictionary = {
     // Text match for this syntax:
     // tag
     //   | text
-    text: /((?:^|\n)[ \t]*|^)\|([ \t]*)([^\n]+(?=\n|$))/,
+    text: /((?:^|\n)[ \t]*|^)\|([ \t]*)([^\n]+(?=\s*(?:\n|$)))/,
     // Text match for this syntax:
     // tag.
     //   text
-    text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\1[ \t]+)|(?=\1[ \t]+)[\s\S]+?(?:\n|$)*?)*)(?=\n|$)/,
+    // Ses warning #3 (backreferences).
+    text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
+    // text2: /^([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
     quote: regexBasics.quote,
-    comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\1[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
+    // Ses warning #3 (backreferences).
+    comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
-    // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(([\s\S]*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(([\s\S]*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
     quote: regexBasics.quote,
-    comment: /(\/\*[\s\S]*?\*\/)/,
+    comment: /(\/\*.*?\*\/)/,
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
@@ -126,7 +143,7 @@ const dictionary = {
   },
   sql: {
     quote: regexBasics.quote,
-    comment: /((?:\-\-|#)\s.*?(?:\n|$)|\/\*[\s\S]*?\*\/)/,
+    comment: /((?:\-\-|#)\s.*?(?:\n|$)|\/\*.*?\*\/)/,
     punctuation: regexBasics.punctuation,
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
@@ -137,10 +154,10 @@ const dictionary = {
 
 // Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
-  xml: /(\s*)([a-zA-Z\d\-:]+)=("|')([\s\S]*?)\3/g,
-  html: /(\s*)([a-zA-Z-]+)=("|')([\s\S]*?)\3/g,
-  'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')([\s\S]*?)\3)|)/g,
-  pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')([\s\S]*?)\3)|)/g
+  xml: /(\s*)([a-zA-Z\d\-:]+)=("|')(.*?)\3/g,
+  html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
+  'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
+  pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
 // Only list the classes that need multiple captures.
@@ -278,7 +295,7 @@ export default {
 
       const [regexPattern, classMap] = this.createRegexPattern()
 
-      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'g'), (m, ...matches) => {
+      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
         const isPug = this.language === 'pug'
@@ -415,6 +432,7 @@ export default {
   .comment * {color: inherit !important;}
   .quote {color: #c11;}
   .quote * {color: inherit !important;}
+  .htmlentity {color: #3a76ad;font-weight: bold;}
   .number {color: #c11;}
   .boolean {color: #c11;}
   .keyword {color: #33c;font-weight: bold;}
@@ -470,6 +488,7 @@ export default {
   .txt {color: #ccc;}
   .comment {font-style: italic;color: #7c6;}
   .quote {color: #da8e72;}
+  .htmlentity {color: #7ba3c9;font-weight: bold;}
   .boolean, .number {color: #adcfa4;}
   .keyword {color: #e67ad2;}
   .this {color: #329ddb;}
