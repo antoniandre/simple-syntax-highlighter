@@ -30,6 +30,7 @@ const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*?(?:\n|$)|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
+  htmlentity: /(&amp;[a-zA-Z0-9#]+;)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
@@ -49,6 +50,7 @@ const dictionary = {
     doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
   },
@@ -56,6 +58,7 @@ const dictionary = {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
   },
@@ -63,6 +66,7 @@ const dictionary = {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?--&gt;)/,
+    htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
   },
@@ -422,6 +426,7 @@ export default {
   .comment * {color: inherit !important;}
   .quote {color: #c11;}
   .quote * {color: inherit !important;}
+  .htmlentity {color: #3a76ad;font-weight: bold;}
   .number {color: #c11;}
   .boolean {color: #c11;}
   .keyword {color: #33c;font-weight: bold;}
@@ -477,6 +482,7 @@ export default {
   .txt {color: #ccc;}
   .comment {font-style: italic;color: #7c6;}
   .quote {color: #da8e72;}
+  .htmlentity {color: #7ba3c9;font-weight: bold;}
   .boolean, .number {color: #adcfa4;}
   .keyword {color: #e67ad2;}
   .this {color: #329ddb;}
