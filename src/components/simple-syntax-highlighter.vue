@@ -3,7 +3,8 @@
     class="ssh-pre"
     :class="{ 'ssh-pre--dark': dark }"
     :data-type="language"
-    :data-label="label || null">
+    :data-label="label || null"
+    :reactive="reactive && checkSlots() /* Always react to changes when the function is called from template. */ || null">
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
@@ -367,10 +368,6 @@ export default {
 
   mounted () {
     this.checkSlots()
-  },
-
-  beforeUpdate () {
-    if (this.reactive) this.checkSlots()
   }
 }
 </script>
