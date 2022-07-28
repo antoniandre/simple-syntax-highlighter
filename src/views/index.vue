@@ -9,24 +9,20 @@
     a(href="#What-is-it") What is it?
     a(name="What-is-it")
   .title4.mt5.mb3.lh3
-    strong Simple Syntax Highlighter is is a lightweight yet efficient - and very easy to use - syntax highlighter for Vue JS.#[br]
-    | It reads the source code you give it and syntax-highlights it, for Humans.
-  p With its very small size, it is not an editor but a parser.
-
-  h3.mt8
-    w-icon.ml-1 material-icons chevron_right
-    | Supports Vue 2 &amp; Vue 3
-  div All the features of Simple Syntax Highlighter are working as expected in Vue 3.
+    strong Simple Syntax Highlighter is a lightweight - yet efficient and very easy to use - syntax highlighter for Vue 2 &amp; 3.#[br]
+    | It reads the source code you provide and syntax-highlights it, for Humans.
+  p
+    | With its very small size, it is not a code editor but a parser.
 
   h3.mt8
     w-icon.ml-1 material-icons chevron_right
     | Supported languages
-  ul.lh2.ml1
+  ul.lh2.ml4
     li XML
     li HTML
     li HTML Vue JS Template
     li Pug
-    li Javascript
+    li JavaScript
     li JSON
     li CSS
     li PHP
@@ -37,15 +33,15 @@
     a(href="#installation") Installation
     a(name="installation")
   p You have two options: #[em NPM] #[strong.mx2 or] #[span.code &lt;script&gt;] tag.
+
   h3.mt8 Via NPM
-  ssh-pre(language="shell").
-    npm i simple-syntax-highlighter # Vue 2.x.
+  .w-flex.align-center.my4.xs-column
+    ssh-pre.my0(language="shell") npm i simple-syntax-highlighter # Vue 3
+    span.mx6 or
+    ssh-pre.my0(language="shell") npm i simple-syntax-highlighter@legacy # Vue 2
 
-  ssh-pre(language="shell").
-    npm i simple-syntax-highlighter@next # Vue 3.
-
-  p.mt2.grey--text.text--darken-1
-    | Edit a working Vue 3 example on Codepen:
+  p.grey--text.text--darken-1
+    | Edit a Vue 3 example on Codepen:
     a.ml2(href="https://codepen.io/antoniandre/pen/jOqgoKR" target="_blank") //codepen.io/antoniandre/pen/jOqgoKR
 
   p.mt12 Then import the component and use it:
@@ -93,13 +89,27 @@
 
   h3.mt8 Via #[span.code &lt;script&gt;] tag
   p Include the Simple Syntax Highlighter script in your document #[span.code &lt;head&gt;] as follows:
-  ssh-pre(language="html" label="HTML").
-    &lt;head&gt;
-      ...
-      &lt;script src="https://unpkg.com/vue"&gt;&lt;/script&gt;
-      &lt;script src="https://unpkg.com/simple-syntax-highlighter"&gt;&lt;/script&gt;
-      &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/sshpre.css" rel="stylesheet"&gt;
-    &lt;/head&gt;
+
+  w-tabs.my4(:items="2" content-class="pa0")
+    template(#item-title.1) Vue 3
+    template(#item-content.1)
+      ssh-pre.ma0(language="html").
+        &lt;head&gt;
+          ...
+          &lt;script src="https://unpkg.com/vue"&gt;&lt;/script&gt;
+          &lt;script src="https://unpkg.com/vue-cal"&gt;&lt;/script&gt;
+          &lt;link href="https://unpkg.com/vue-cal/dist/vuecal.css" rel="stylesheet"&gt;
+        &lt;/head&gt;
+
+    template(#item-title.2) Vue 2
+    template(#item-content.2)
+      ssh-pre.ma0(language="html").
+        &lt;head&gt;
+          ...
+          &lt;script src="https://unpkg.com/vue@legacy"&gt;&lt;/script&gt;
+          &lt;script src="https://unpkg.com/vue-cal@legacy"&gt;&lt;/script&gt;
+          &lt;link href="https://unpkg.com/vue-cal@legacy/dist/vuecal.css" rel="stylesheet"&gt;
+        &lt;/head&gt;
 
   h2
     a(href="#how-to-use") How to use
@@ -665,11 +675,11 @@
 </template>
 
 <script>
-import SimpleSyntaxHighlighter from '@/components/simple-syntax-highlighter.vue'
+import SshPre from '@/components/simple-syntax-highlighter.vue'
 import Highlight from '@/components/highlight-message.vue'
 
 export default {
-  components: { sshPre: SimpleSyntaxHighlighter, Highlight }
+  components: { SshPre, Highlight }
 }
 </script>
 
