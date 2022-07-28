@@ -51,6 +51,7 @@ ___
 
 ## Release Notes
 
+- __Version 2.0.0__ Vue 3 build
 - __Version 1.5.0__ Removed support for IE - it's finally over. :tada:
 - __Version 1.4.0__ Added Pug language support
 - __Version 1.3.0__ Added the `copy-button` option
