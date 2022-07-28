@@ -1,7 +1,7 @@
 {
   "name": "simple-syntax-highlighter",
   "version": "2.2.1",
-  "description": "A Vue.js syntax highlighter that reads the source code you give it and highlights it, for Humans.",
+  "description": "A Vue.js syntax highlighter that reads the source code you provide and highlights it, for Humans.",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
   "homepage": "https://antoniandre.github.io/simple-syntax-highlighter",
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
@@ -14,12 +14,12 @@
     "dist/"
   ],
   "exports": {
-    "./dist/sshpre.css": "./dist/sshpre.css",
-    "./dist/sshpre.cjs.js": "./dist/sshpre.cjs.js",
     ".": {
       "import": "./dist/sshpre.es.js",
       "require": "./dist/sshpre.umd.js"
-    }
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
   },
   "keywords": [
     "syntax highlighter",
