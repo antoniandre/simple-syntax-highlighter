@@ -1,6 +1,6 @@
 {
   "name": "simple-syntax-highlighter",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A Vue.js syntax highlighter that reads the source code you give it and highlights it, for Humans.",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
   "homepage": "https://antoniandre.github.io/simple-syntax-highlighter",
