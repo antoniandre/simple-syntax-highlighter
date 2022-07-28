@@ -1,6 +1,5 @@
 <template lang="pug">
-//- w-app(v-scroll="onScroll")
-w-app
+w-app(v-scroll="onScroll")
   .container
     w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
       h1.primary.top-bar__title
@@ -23,19 +22,7 @@ w-app
 </template>
 
 <script>
-// import Vue from 'vue'
 import Index from '@/views/index.vue'
-
-// Vue.directive('scroll', {
-//   inserted: function (el, binding) {
-//     const f = function (evt) {
-//       if (binding.value(evt, el)) {
-//         window.removeEventListener('scroll', f)
-//       }
-//     }
-//     window.addEventListener('scroll', f)
-//   }
-// })
 
 export default {
   name: 'app',
@@ -49,7 +36,15 @@ export default {
       this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
       this.goTopHidden = this.offsetTop < 200
     }
-  }
+  },
+  scroll: {
+    mounted: (el, binding) => {
+      const f = evt => {
+        if (binding.value(evt, el)) window.removeEventListener('scroll', f)
+      }
+      window.addEventListener('scroll', f)
+    }
+  },
 }
 </script>
 
@@ -63,7 +58,7 @@ $light-text: #ccc;
 $lighter-text: #ddd;
 
 // GLOBAL
-// =================================================
+// ========================================================
 html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -170,7 +165,7 @@ code {
 }
 
 // APPLICATION
-// =================================================
+// ========================================================
 .w-app {padding-top: 8em;}
 
 .container {
@@ -198,7 +193,7 @@ code {
 .documentation {padding-top: 12em;}
 
 // TOOLBAR
-// =================================================
+// ========================================================
 .top-bar {
   z-index: 100;
   position: absolute;
@@ -276,7 +271,7 @@ code {
 }
 
 // FOOTER
-// =================================================
+// ========================================================
 footer {
   font-size: 0.9em;
   font-style: italic;
