@@ -3,7 +3,10 @@
   "version": "2.2.0",
   "description": "A Vue.js syntax highlighter that reads the source code you give it and highlights it, for Humans.",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
+  "homepage": "https://antoniandre.github.io/simple-syntax-highlighter",
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/antoniandre",
   "main": "dist/sshpre.cjs.js",
   "unpkg": "dist/sshpre.umd.js",
   "module": "./dist/sshpre.es.js",
@@ -27,7 +30,6 @@
     "vuejs",
     "ui"
   ],
-  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build --base /simple-syntax-highlighter/",
@@ -49,8 +51,11 @@
     "sass": "^1.43.4",
     "vite": "^2.6.13",
     "vite-plugin-pug": "^0.3.0",
-    "vue": "^3.2.20",
+    "vue": "^3.2.37",
     "wave-ui": "^2.25.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.14 || ^3.2.0"
   },
   "postcss": {
     "plugins": {
