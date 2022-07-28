@@ -4,7 +4,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![npm](https://img.shields.io/npm/dt/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter)
 <!-- [![npm](https://img.shields.io/npm/dw/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter) -->
-> A very lightweight and easy to use syntax highlighter (not an editor) for Vue.js and Vue 3. Multiple coding languages supported.
+> A very lightweight and easy to use syntax highlighter (not an editor) for Vue 3 and 2. Multiple coding languages supported.
 > What I use in all my libs documentations. ;)
 
 ___
@@ -15,10 +15,10 @@ ___
 npm i simple-syntax-highlighter
 ```
 
-**Vue 3**
+**Vue 2 (legacy)**
 
 ```
-npm i simple-syntax-highlighter@next
+npm i simple-syntax-highlighter@legacy
 ```
 ___
 
@@ -40,6 +40,9 @@ If you like this library, you can buy me a beer or [become a sponsor](https://gi
 
 [![paypal](https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/antoniandre1)
 Thank you!
+
+If you are using this library for profit business, please consider [backing me](https://github.com/sponsors/antoniandre)!
+It ensures that the project your products rely on keep being actively maintained. :)
 
 ___
 
