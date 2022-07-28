@@ -1,10 +1,19 @@
-import Vue from 'vue'
-import WaveUI from './plugins/wave-ui'
+import { createApp } from 'vue'
+import WaveUI from 'wave-ui'
+import 'wave-ui/dist/wave-ui.css'
 import App from './app.vue'
 
-Vue.config.productionTip = false
+const app = createApp(App)
 
-new Vue({ // eslint-disable-line no-new
-  WaveUI,
-  render: h => h(App)
-}).$mount('#app')
+new WaveUI(app, {
+  icons: ['md', 'fa'],
+  iconsLigature: 'material-icons',
+  colors: {
+    primary: '#1b4',
+    secondary: '#666',
+    maintext: '#999',
+    lightgrey: '#eee'
+  }
+})
+
+app.mount('#app')

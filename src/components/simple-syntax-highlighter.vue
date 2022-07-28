@@ -3,7 +3,8 @@
     class="ssh-pre"
     :class="{ 'ssh-pre--dark': dark }"
     :data-type="language"
-    :data-label="label || null">
+    :data-label="label || null"
+    :reactive="reactive && checkSlots() /* Always react to changes when the function is called from template. */ || null">
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
@@ -96,7 +97,7 @@ const dictionary = {
     comment: /(\/\*.*?\*\/)/,
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
-    'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
+    'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)(?=.*\{})/,
     variable: /(--[a-zA-Z0-9\-]+)/, // Any part before '{'.
     selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|tap-highlight-color|animation|background-size|box-shadow))/,
@@ -175,6 +176,12 @@ const multiCapturesMapping = {
   css: { quote: 2 },
   js: { quote: 2 }
 }
+
+const getSlotChildrenText = children => children.map(node => {
+  if (!node.children || typeof node.children === 'string') return node.children || ''
+  else if (Array.isArray(node.children)) return getSlotChildrenText(node.children)
+  else if (node.children.default) return getSlotChildrenText(node.children.default())
+}).join('')
 
 export default {
   name: 'sshpre',
@@ -256,9 +263,9 @@ export default {
           .replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
           .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
         if (attributesList) {
-          attributesList = `<span class="punctuation">(</span>` +
+          attributesList = '<span class="punctuation">(</span>' +
                            attributesList +
-                           `<span class="punctuation">)</span>`
+                           '<span class="punctuation">)</span>'
         }
 
         return (
@@ -336,7 +343,7 @@ export default {
 
     // Keep watching the slot text content.
     checkSlots () {
-      const slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
+      const slotTexts = this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
       if (this.slotTexts !== slotTexts) {
         this.slotTexts = slotTexts
         this.content = this.syntaxHighlightContent(this.slotTexts)
@@ -361,10 +368,6 @@ export default {
 
   mounted () {
     this.checkSlots()
-  },
-
-  beforeUpdate () {
-    if (this.reactive) this.checkSlots()
   }
 }
 </script>

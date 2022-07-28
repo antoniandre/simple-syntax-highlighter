@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
+import Vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import Delete from 'rollup-plugin-delete'
-import { createVuePlugin } from 'vite-plugin-vue2'
 
 const build = process.env.BUNDLE ? {
   lib: {
@@ -12,7 +12,9 @@ const build = process.env.BUNDLE ? {
   },
   rollupOptions: {
     plugins: [
-      Delete({ targets: ['dist/*.{ico,html}'], hook: 'generateBundle' })
+      // Rollup also copies the files in the public folder.
+      // @todo: find a way to prevent adding them at all.
+      Delete({ targets: ['dist/*.ico'], hook: 'generateBundle' })
     ],
     // Make sure to externalize deps that shouldn't be bundled into library.
     external: ['vue'],
@@ -29,14 +31,14 @@ const build = process.env.BUNDLE ? {
 
 export default defineConfig({
   plugins: [
-    createVuePlugin({
-      vueTemplateOptions: {
+    Vue({
+      template: {
         compilerOptions: {
           whitespace: 'preserve'
         }
       }
     })
-  ], // https://vitejs.dev/config/
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, '/src')
