@@ -20,7 +20,9 @@ const build = process.env.BUNDLE ? {
     external: ['vue'],
     output: {
       // Provide global variables to use in the UMD build for externalized deps.
-      globals: { vue: 'Vue' }
+      globals: { vue: 'Vue' },
+      entryFileNames: 'sshpre.[format].js',
+      chunkFileNames: '[name].js'
     }
   }
 } : {
