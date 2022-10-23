@@ -9,6 +9,7 @@
   "funding": "https://github.com/sponsors/antoniandre",
   "main": "dist/sshpre.cjs.js",
   "unpkg": "dist/sshpre.umd.js",
+  "jsdelivr": "dist/sshpre.umd.js",
   "module": "./dist/sshpre.es.js",
   "files": [
     "dist/"
@@ -37,9 +38,9 @@
     "serve": "vite preview --base /simple-syntax-highlighter/"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.9",
-    "@vitejs/plugin-vue": "^1.10.2",
-    "@vue/compiler-sfc": "^3.2.37",
+    "@babel/eslint-parser": "^7.19.1",
+    "@vitejs/plugin-vue": "^3.1.2",
+    "@vue/compiler-sfc": "^3.2.41",
     "@vue/eslint-config-standard": "^6.1.0",
     "autoprefixer": "^10.4.12",
     "eslint": "^7.32.0",
@@ -48,12 +49,12 @@
     "eslint-plugin-promise": "^5.2.0",
     "eslint-plugin-vue": "^7.20.0",
     "postcss": "^8.4.18",
+    "pug": "^3.0.2",
     "rollup-plugin-delete": "^2.0.0",
-    "sass": "^1.54.0",
-    "vite": "^2.9.14",
-    "vite-plugin-pug": "^0.3.1",
-    "vue": "^3.2.37",
-    "wave-ui": "^2.40.2"
+    "sass": "^1.55.0",
+    "vite": "^3.1.8",
+    "vue": "^3.2.41",
+    "wave-ui": "^2.43.1"
   },
   "peerDependencies": {
     "vue": "^2.6.14 || ^3.2.0"
