@@ -2,12 +2,12 @@ import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import Delete from 'rollup-plugin-delete'
+import autoprefixer from 'autoprefixer'
 
 const build = process.env.BUNDLE ? {
   lib: {
     entry: resolve(__dirname, '/src/components/simple-syntax-highlighter.vue'),
     name: 'sshpre',
-    fileName: 'sshpre',
     formats: ['es', 'umd', 'cjs']
   },
   rollupOptions: {
@@ -20,9 +20,7 @@ const build = process.env.BUNDLE ? {
     external: ['vue'],
     output: {
       // Provide global variables to use in the UMD build for externalized deps.
-      globals: {
-        vue: 'Vue'
-      }
+      globals: { vue: 'Vue' }
     }
   }
 } : {
@@ -39,6 +37,11 @@ export default defineConfig({
       }
     })
   ],
+  css: {
+    postcss: {
+      plugins: [autoprefixer]
+    }
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, '/src')
