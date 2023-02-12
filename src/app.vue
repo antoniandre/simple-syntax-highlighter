@@ -1,5 +1,6 @@
 <template lang="pug">
-w-app(v-scroll="onScroll")
+//- Scroll directive from Wave UI.
+div(v-scroll="onScroll")
   .container
     w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
       h1.primary.top-bar__title
@@ -9,6 +10,15 @@ w-app(v-scroll="onScroll")
           div.top-bar__logo-title Simple Syntax Highlighter
 
     documentation
+    w-transition-bounce(v-if="!goTopHidden" appear)
+      w-button.go-top.mb8.mr2(
+        icon="wi-chevron-up"
+        fixed
+        bottom
+        right
+        xl
+        color="base-color"
+        @click="scrollTop")
 
   footer
     w-flex.container.mxa.grey-dark1(wrap justify-center)
@@ -35,16 +45,12 @@ export default {
     onScroll () {
       this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
       this.goTopHidden = this.offsetTop < 200
+    },
+    async scrollTop () {
+      await this.$nextTick()
+      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  },
-  scroll: {
-    mounted: (el, binding) => {
-      const f = evt => {
-        if (binding.value(evt, el)) window.removeEventListener('scroll', f)
-      }
-      window.addEventListener('scroll', f)
-    }
-  },
+  }
 }
 </script>
 
@@ -268,6 +274,10 @@ code {
       letter-spacing: -1.5px;
     }
   }
+}
+
+.go-top {
+  backdrop-filter: blur(6px);
 }
 
 // FOOTER
