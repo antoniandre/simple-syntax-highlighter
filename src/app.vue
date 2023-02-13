@@ -55,9 +55,9 @@ export default {
 </script>
 
 <style lang="scss">
-$primary: #1b4;
-$secondary: #666;
-$main-text: #333;
+$primary: var(--w-primary-color);
+$secondary: var(--w-secondary-color);
+$main-text: var(--w-main-text);
 $dark-text: #666;
 $darker-text: #333;
 $light-text: #ccc;
@@ -65,6 +65,22 @@ $lighter-text: #ddd;
 
 // GLOBAL
 // ========================================================
+:root[data-theme=light] {
+  --w-base-bg-color-rgb: 255, 255, 255; // #fff.
+  --w-base-color-rgb: 51, 51, 51; // #333.
+  --w-contrast-bg-color-rgb: 0, 0, 0; // #000.
+  --w-contrast-color-rgb: 255, 255, 255; // #fff.
+  --w-disabled-color-rgb: 204, 204, 204; // #ccc.
+}
+
+:root[data-theme=dark] {
+  --w-base-bg-color-rgb: 34, 34, 34; // #222.
+  --w-base-color-rgb: 255, 255, 255; // #fff.
+  --w-contrast-bg-color-rgb: 255, 255, 255; // #fff.
+  --w-contrast-color-rgb: 0, 0, 0; // #000.
+  --w-disabled-color-rgb: 74, 74, 74; // #4a4a4a.
+}
+
 html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -72,7 +88,6 @@ html {
 
 body {
   font: 13px/1.4 Roboto, Tahoma, Geneva, sans-serif;
-  color: $main-text;
 }
 
 .application.theme--light,
@@ -251,13 +266,13 @@ code {
 
   &--scrolled {
     transition: 0.6s ease-in-out all, 0.3s 0.3s ease-in-out border-color;
-    border-bottom-color: $lighter-text !important;
+    border-bottom-color: rgba(var(--w-contrast-bg-color-rgb), 0.1) !important;
     position: fixed;
     padding-top: 4px;
     padding-bottom: 4px;
 
     & .top-bar__title {
-      background-color: #fff;
+      background-color: rgb(var(--w-base-bg-color-rgb));
       width: 100%;
       padding: 0;
       transition: 0.3s ease-in-out all, 0.25s ease-in-out background-color;

@@ -1,6 +1,6 @@
 <template lang="pug">
 .documentation
-  div.mb3.title3.black Github project
+  div.mb3.title3 Github project
   w-flex.mb5(align-center shrink)
     w-icon.mr4.lightgrey(size="40") fab fa-github
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
@@ -36,16 +36,16 @@
 
   h3.mt8 Via NPM
   .w-flex.align-center.my4.xs-column
-    ssh-pre.my0(language="shell") npm i simple-syntax-highlighter # Vue 3
+    ssh-pre.my0(language="shell" :dark="$waveui.theme === 'dark'") npm i simple-syntax-highlighter # Vue 3
     span.mx6 or
-    ssh-pre.my0(language="shell") npm i simple-syntax-highlighter@legacy # Vue 2
+    ssh-pre.my0(language="shell" :dark="$waveui.theme === 'dark'") npm i simple-syntax-highlighter@legacy # Vue 2
 
   p.grey--text.text--darken-1
     | Edit a Vue 3 example on Codepen:
     a.ml2(href="https://codepen.io/antoniandre/pen/jOqgoKR" target="_blank") //codepen.io/antoniandre/pen/jOqgoKR
 
   p.mt12 Then import the component and use it:
-  ssh-pre(language="js" label="Javascript").
+  ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
     // In your VueJS component.
     import SshPre from 'simple-syntax-highlighter'
     import 'simple-syntax-highlighter/dist/sshpre.css'
@@ -59,7 +59,7 @@
     | In some cases, like in vue-cli or Vite, you might need to preserve the white spaces in the project
     | (if you see all the ssh-pre contents on a single line).#[br]
     | Here is how to preserve whitespaces in Vue. Add this in your vue.config.js file:
-    ssh-pre.my1(language="js").
+    ssh-pre.my1(language="js" :dark="$waveui.theme === 'dark'").
       module.exports = {
         chainWebpack: config =&gt; {
           // Preserve white spaces for ssh-pre component.
@@ -74,7 +74,7 @@
         }
       }
     p Or in Vite, add this in your vite.config.js file:
-    ssh-pre.my1(language="js").
+    ssh-pre.my1(language="js" :dark="$waveui.theme === 'dark'").
       export default defineConfig({
         plugins: [
           createVuePlugin({
@@ -93,7 +93,7 @@
   w-tabs.my4(:items="2" content-class="pa0")
     template(#item-title.1) Vue 3
     template(#item-content.1)
-      ssh-pre.ma0(language="html").
+      ssh-pre.ma0(language="html" :dark="$waveui.theme === 'dark'").
         &lt;head&gt;
           ...
           &lt;script src="https://unpkg.com/vue"&gt;&lt;/script&gt;
@@ -103,7 +103,7 @@
 
     template(#item-title.2) Vue 2
     template(#item-content.2)
-      ssh-pre.ma0(language="html").
+      ssh-pre.ma0(language="html" :dark="$waveui.theme === 'dark'").
         &lt;head&gt;
           ...
           &lt;script src="https://unpkg.com/vue@legacy"&gt;&lt;/script&gt;
@@ -119,7 +119,10 @@
 
   h3.mt8 For any other language than HTML
   w-flex.responsive-block(wrap align-center justify-center)
-    ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
+    ssh-pre.grow.basis-zero(
+      language="html-vue"
+      label="HTML Vue Template"
+      :dark="$waveui.theme === 'dark'").
       &lt;ssh-pre language="js" label="Javascript"&gt;
         const i = 3;
         // Some more Javascript content.
@@ -127,7 +130,10 @@
     div.mt8.mx4.text-center.arrow-block
       div renders as:
       w-icon(xl) material-icons arrow_right_alt
-    ssh-pre.grow.basis-zero(language="js" label="Javascript").
+    ssh-pre.grow.basis-zero(
+      language="js"
+      label="Javascript"
+      :dark="$waveui.theme === 'dark'").
       const i = 3;
       // Some more Javascript content.
 
@@ -136,7 +142,10 @@
     strong To use XML/HTML-like languages: you must escape the chevrons: #[code &amp;lt;] for #[code &lt;] and #[code &amp;gt;] for #[code &gt;].
     | #[br]If you want to display an #[code &amp;] character, you need to escape it with: #[code &amp;amp;amp;].
   w-flex.responsive-block(wrap align-center justify-center)
-    ssh-pre.grow.basis-zero(language="html-vue" label="HTML").
+    ssh-pre.grow.basis-zero(
+      language="html-vue"
+      label="HTML"
+      :dark="$waveui.theme === 'dark'").
       &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
         &amp;amp;lt;html lang="en"&amp;amp;gt;
           &amp;amp;lt;head&amp;amp;gt;
@@ -150,7 +159,10 @@
     div.mx4.text-center.arrow-block
       div renders as:
       w-icon(xl) material-icons arrow_right_alt
-    ssh-pre.grow.basis-zero(language="html-vue" label="HTML Vue Template").
+    ssh-pre.grow.basis-zero(
+      language="html-vue"
+      label="HTML Vue Template"
+      :dark="$waveui.theme === 'dark'").
       &lt;html lang="en"&gt;
         &lt;head&gt;
           &lt;title&gt;Title&lt;/title&gt;
@@ -201,14 +213,14 @@
   .w-flex.wrap.justify-center.mxa.mt2.responsive-block(style="max-width: 650px")
     div.grow.basis-zero.my2
       .text-bold Default
-      ssh-pre(language="html" copy-button).
+      ssh-pre(language="html" copy-button :dark="$waveui.theme === 'dark'").
         &lt;body&gt;
           &lt;div id="app"&gt;&lt;/div&gt;
         &lt;/body&gt;
     .spacer.mx1.no-grow
     div.grow.basis-zero.my2
       .text-bold Custom button content
-      ssh-pre(language="html" copy-button)
+      ssh-pre(language="html" copy-button :dark="$waveui.theme === 'dark'")
         template(#copy-button)
           w-icon(small color="primary") material-icons content_copy
         | &lt;body&gt;
@@ -219,7 +231,7 @@
     On copy button press, the #[span.code copied] event is emitted containing the copied text.#[br]
     Here is how to use the copy-button slot and the copied event.
 
-  ssh-pre(language="html-vue").
+  ssh-pre(language="html-vue" :dark="$waveui.theme === 'dark'").
     &lt;ssh-pre language="html-vue" copy-button @copied="onCopiedDoSomething"&gt;
       &lt;template #copy-button&gt;
         &lt;i class="icon material-icons"&gt;material-icons content_copy&lt;/i&gt;
@@ -234,7 +246,7 @@
   h3
     a(href="#ex--javascript") javascript
     a(name="ex--javascript")
-  ssh-pre(language="js" label="Javascript").
+  ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
     /**
      * This is some
      * multiline comments.
@@ -276,7 +288,7 @@
   h3
     a(href="#ex--css") CSS
     a(name="ex--css")
-  ssh-pre(language="css" label="styles.css").
+  ssh-pre(language="css" label="styles.css" :dark="$waveui.theme === 'dark'").
     :root {
       --primary-color: green;
     }
@@ -359,7 +371,7 @@
   h3
     a(href="#ex--html") HTML
     a(name="ex--html")
-  ssh-pre(language="xml" label="index.html").
+  ssh-pre(language="xml" label="index.html" :dark="$waveui.theme === 'dark'").
     &lt;!DOCTYPE html&gt;
     &lt;html lang="en"&gt;
     &lt;head&gt;
@@ -384,7 +396,7 @@
   p.
     Important: to put parenthesis inside quotes, you have to escape them with: #[code="&amp;#40;"]
     for #[code (] and #[code="&amp;#41;"] for #[code )].
-  ssh-pre(language="pug" label="index.pug").
+  ssh-pre(language="pug" label="index.pug" :dark="$waveui.theme === 'dark'").
     //- This is pug.
     div.mb3.title3.black Github project
 
@@ -426,7 +438,7 @@
   h3
     a(href="#ex--json") JSON
     a(name="ex--json")
-  ssh-pre(language="json" label="package.json").
+  ssh-pre(language="json" label="package.json" :dark="$waveui.theme === 'dark'").
     {
       "name": "",
       "version": "1.0.0",
@@ -458,7 +470,7 @@
   h3
     a(href="#ex--php") PHP
     a(name="ex--php")
-  ssh-pre(language="php" label="index.php").
+  ssh-pre(language="php" label="index.php" :dark="$waveui.theme === 'dark'").
     &lt;?php
 
     require_once __DIR__ . '/../autoload.php';
@@ -523,7 +535,7 @@
     a(href="#ex--sql") SQL
     a(name="ex--sql")
 
-  ssh-pre(language="sql" label="SQL").
+  ssh-pre(language="sql" label="SQL" :dark="$waveui.theme === 'dark'").
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
     SET time_zone = "+00:00";
 
@@ -579,7 +591,14 @@
   h2
     a(href="#dark-mode") Dark mode
     a(name="dark-mode")
-  p The #[span.code dark] option switches the color theme to dark. Here is an example of Javascript code in dark mode.
+  p The #[span.code dark] option switches the color theme to dark.
+  p.text-bold(v-if="$waveui.theme === 'dark'").
+    You are already viewing this page in dark mode, but you could try switching to light mode
+    to view the difference.
+  p(v-else).
+    The #[span.code dark] option switches the color theme to dark. Here is an example of Javascript
+    code in dark mode.
+
 
   ssh-pre(language="js" label="Javascript" dark).
     /**
@@ -627,7 +646,7 @@
     You can easily create your own color theme, as the highlighting is already done,
     you just need to override the colors of these classes in your css:
 
-  ssh-pre(language="css" label="CSS").
+  ssh-pre(language="css" label="CSS" :dark="$waveui.theme === 'dark'").
     .txt {color: #333;}
     .comment {color: #aaa;}
     .quote {color: #c11;}

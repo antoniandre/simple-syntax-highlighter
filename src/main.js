@@ -5,15 +5,24 @@ import App from './app.vue'
 
 const app = createApp(App)
 
-new WaveUI(app, {
+app.use(WaveUI, {
   icons: ['md', 'fa'],
   iconsLigature: 'material-icons',
   colors: {
-    primary: '#1b4',
-    secondary: '#666',
-    maintext: '#999',
-    lightgrey: '#eee'
-  }
+    light: {
+      primary: '#1b4',
+      secondary: '#666',
+      maintext: '#333',
+      lightgrey: '#eee'
+    },
+    dark: {
+      primary: '#6c8',
+      secondary: '#aaa',
+      maintext: '#999',
+      lightgrey: '#eee'
+    }
+  },
+  theme: 'auto'
 })
 
 app.mount('#app')
