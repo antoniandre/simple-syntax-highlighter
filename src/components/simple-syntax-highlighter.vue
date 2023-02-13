@@ -398,6 +398,7 @@ export default {
     right: 3px;
     border: none;
     background: none;
+    color: inherit;
   }
 
   #clipboard-textarea {
@@ -497,8 +498,10 @@ export default {
   &[data-type=shell] .keyword {color: #ff5252;}
   &[data-type=shell] .param {color: #7bcced;}
 
+  &[data-type=html] .doctype {color: #7ec1e7;}
   &[data-type=html] .tag-name {color: #339cda;}
   &[data-type=html] .attribute {color: #7bcced;}
+  &[data-type=html-vue] .doctype {color: #7ec1e7;}
   &[data-type=html-vue] .tag-name {color: #339cda;}
   &[data-type=html-vue] .punctuation {color: #99c;}
   &[data-type=html-vue] .attribute {color: #7bcced;}
@@ -510,6 +513,7 @@ export default {
   &[data-type=pug] .attribute {color: #8adeff;}
   &[data-type=pug] .text {color: #c4d8f3;}
 
+  &[data-type=xml] .doctype {color: #7ec1e7;}
   &[data-type=xml] .tag-name {color: #339cda;}
   &[data-type=xml] .attribute {color: #f93;}
 
