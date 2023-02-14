@@ -1,5 +1,12 @@
 <template lang="pug">
 .documentation
+  w-button.mr1.theme-switch(
+    fixed
+    top
+    right
+    :icon="`material-icons ${$waveui.theme === 'dark' ? 'light_mode' : 'dark_mode'}`"
+    @click="$waveui.switchTheme($waveui.theme === 'light' ? 'dark' : 'light')")
+
   div.mb3.title3 Github project
   w-flex.mb5(align-center shrink)
     w-icon.mr4.lightgrey(size="40") fab fa-github
@@ -703,6 +710,8 @@ export default {
 </script>
 
 <style lang="scss">
+.theme-switch {z-index: 100;}
+
 @media screen and (max-width: 640px) {
   .responsive-block {
     flex-direction: column;

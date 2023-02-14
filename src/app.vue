@@ -219,7 +219,7 @@ code {
   z-index: 100;
   position: absolute;
   border-bottom: 1px solid transparent !important;
-  transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
+  transition: 0.1s 0s ease-in-out border-color;
   top: 0;
   left: 0;
   right: 0;
