@@ -26,8 +26,8 @@ div(v-scroll="onScroll")
       .spacer
       .made-with
         .mb1.
-          This documentation is made with #[w-icon fab fa-vuejs], #[w-icon fab fa-html5],
-          #[w-icon fab fa-css3], #[w-icon fab fa-sass] &amp; #[w-icon.heart material-icons favorite]
+          This documentation is made with #[w-icon(title="Vue.js") fab fa-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") fab fa-html5],
+          #[w-icon(title="CSS 3") fab fa-css3], #[w-icon(title="Sass") fab fa-sass] &amp; #[w-icon.heart(title="Love") material-icons favorite]
         | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
 </template>
 
@@ -84,6 +84,7 @@ $lighter-text: #ddd;
 html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -133,7 +134,7 @@ h2 {
   font-size: 2em;
   color: $primary;
   padding-bottom: 0.3em;
-  border-bottom: 1px solid $lighter-text;
+  border-bottom: 1px solid rgba(var(--w-base-color-rgb), 0.15);
 }
 
 h3 {
