@@ -17,7 +17,7 @@ specifiers:
   sass: ^1.58.0
   vite: ^3.2.5
   vue: ^3.2.47
-  wave-ui: ^2.48.0
+  wave-ui: ^3.0.0
 
 devDependencies:
   '@babel/eslint-parser': 7.19.1_eslint@7.32.0
@@ -36,7 +36,7 @@ devDependencies:
   sass: 1.58.0
   vite: 3.2.5_sass@1.58.0
   vue: 3.2.47
-  wave-ui: 2.48.0_vue@3.2.47
+  wave-ui: 3.0.0_vue@3.2.47
 
 packages:
 
@@ -2450,8 +2450,8 @@ packages:
       '@vue/shared': 3.2.47
     dev: true
 
-  /wave-ui/2.48.0_vue@3.2.47:
-    resolution: {integrity: sha512-bNuIs9zCnhY1YPOlJw2e0rx8Rrj2hts1xQOy9fFNX2fpfkPR/S6+jvzFMdwt0V9UZ+iBhqeb/gFbL7Ya4vUsMQ==}
+  /wave-ui/3.0.0_vue@3.2.47:
+    resolution: {integrity: sha512-9ag7tgXJ9GNVb6MkwVaYpd1ptkD0zYa63MJlJzIrG2ui0lp5xlsGa+G54BzHDD0ECWAdUK0QqzwqT327hA4GmQ==}
     peerDependencies:
       vue: ^2.6.14 || ^3.2.0
     dependencies:
