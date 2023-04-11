@@ -14,10 +14,12 @@
 
 <script>
 /**
- * /!\ WARNINGS
- * ____________
+ * /!\ CAVEATS
+ * ___________
  *
- * #1. JAVASCRIPT DOES NOT SUPPORT LOOKBEHIND.
+ * #1. JAVASCRIPT LOOKBEHIND ARE NOW SUPPORTED:
+ *     https://caniuse.com/js-regexp-lookbehind
+ *     maybe a few minor refactoring could improve the regex readability (but not performance).
  *
  * #2. DOTALL FLAG NOT SUPPORTED ON IE:
  *     Works on Edge, so removing workaround. For reference the workaround was: `[\s\s]` instead of `.`
@@ -39,7 +41,7 @@ const regexBasics = {
 
 // The html tags names, attribute and inner special chars are treated inside the
 // htmlTag regex above because javascript does not support lookbehind.
-// In this dictionary the order of regexs is important as it is all concatenated later in the process.
+// In this dictionary the order of regexes is important as it is all concatenated later in the process.
 const dictionary = {
   shell: {
     quote: regexBasics.quote,
@@ -80,11 +82,11 @@ const dictionary = {
     // Text match for this syntax:
     // tag.
     //   text
-    // Ses warning #3 (backreferences).
+    // Ses caveat #3 (backreferences).
     text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
     // text2: /^([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
     quote: regexBasics.quote,
-    // Ses warning #3 (backreferences).
+    // Ses caveat #3 (backreferences).
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
