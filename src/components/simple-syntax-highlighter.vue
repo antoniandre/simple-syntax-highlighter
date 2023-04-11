@@ -3,12 +3,14 @@
     class="ssh-pre"
     :class="{ 'ssh-pre--dark': dark }"
     :data-type="language"
-    :data-label="label || null"
-    :reactive="reactive && checkSlots() /* Always react to changes when the function is called from template. */ || null">
+    :data-label="label || null">
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
-    <pre ref="code" class="ssh-pre__content" v-html="content"></pre>
+    <pre ref="code" class="ssh-pre__content"></pre>
+    <div class="ssh-pre__original">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -190,7 +192,6 @@ export default {
   props: {
     language: { type: String, default: '' },
     label: { type: [String, Boolean], default: false },
-    reactive: { type: Boolean, default: false },
     dark: { type: Boolean, default: false },
     copyButton: { type: Boolean, default: false }
   },
@@ -343,13 +344,8 @@ export default {
       })
     },
 
-    // Keep watching the slot text content.
-    checkSlots () {
-      const slotTexts = this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
-      if (this.slotTexts !== slotTexts) {
-        this.slotTexts = slotTexts
-        this.content = this.syntaxHighlightContent(this.slotTexts)
-      }
+    getSlotContent () {
+      return this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
     },
 
     copyCode (e) {
@@ -369,7 +365,15 @@ export default {
   },
 
   mounted () {
-    this.checkSlots()
+    const slotContent = this.getSlotContent()
+    this.$refs.code.innerText = slotContent
+    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
+  },
+
+  // Re-apply syntax highlighting on updated content. i.e.
+  // when the template is recomputed after a context change (variable update, slot content change).
+  beforeUpdate () {
+    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
   }
 }
 </script>
@@ -388,6 +392,8 @@ export default {
     background-color: #262626;
     color: rgba(255, 255, 255, 0.85);
   }
+
+  &__original {display: none;}
 
   &__content {
     white-space: pre-wrap;
