@@ -7,7 +7,13 @@
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
-    <pre ref="code" class="ssh-pre__content"></pre>
+    <pre
+      ref="code"
+      class="ssh-pre__content"
+      :contenteditable="editable ? 'true' : 'false'"
+      @keydown="editable && onKeydown($event)"
+      @input="highlightInPre">
+    </pre>
     <div class="ssh-pre__original">
       <slot></slot>
     </div>
@@ -192,8 +198,11 @@ export default {
   props: {
     language: { type: String, default: '' },
     label: { type: [String, Boolean], default: false },
+    // The characters that should be inserted on tab key press.
+    tab: { type: [Boolean, String], default: '  ' },
     dark: { type: Boolean, default: false },
-    copyButton: { type: Boolean, default: false }
+    copyButton: { type: Boolean, default: false },
+    editable: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -293,6 +302,70 @@ export default {
       )
     },
 
+    highlightInPre () {
+      if (this.knownLanguages.includes(this.language)) {
+        const caretPosition = this.getCaretPositionInPlainText() // Save caret position before highlighting.
+        this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
+        this.reinjectCaret(this.$refs.code.childNodes, caretPosition) // Restore the caret position.
+      }
+    },
+
+    /**
+     * Returns the user caret position in the raw non-highlighted (non-html) text.
+     * @return {Number} (integer) the caret position.
+     */
+    getCaretPositionInPlainText () {
+      const sel = window.getSelection()
+      sel.collapseToEnd()
+      const range = new Range()
+      range.setStart(this.$refs.code, 0)
+      range.setEnd(sel.extentNode, sel.extentOffset)
+
+      return range.toString().length
+    },
+
+    /**
+     * Re-injects the caret in the text of the given node at the given position.
+     * @param {Object} contentEditableNode the contenteditable DOM element where to inject the caret.
+     * @param {Number} caretPosition (integer) the caret position.
+     */
+    reinjectCaret (contentEditableNode, caretPosition) {
+      let totalStrLength = 0
+      for (const node of contentEditableNode) {
+        const nodeTextLength = node.innerText?.length || node.length
+
+        if (totalStrLength + nodeTextLength >= caretPosition) {
+          document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
+          break
+        }
+        totalStrLength += nodeTextLength
+      }
+    },
+
+    onKeydown (e) {
+      switch (e.which) {
+        case 9: // Tab.
+          this.injectAtCaret(this.tab)
+          e.preventDefault()
+          break
+        case 13: // Enter.
+          this.injectAtCaret('\n')
+          e.preventDefault()
+          break
+      }
+    },
+
+    injectAtCaret (string) {
+      const sel = window.getSelection()
+      const isTextNode = !sel.extentNode.innerHTML
+      const content = sel.extentNode[isTextNode ? 'textContent' : 'innerHTML']
+      const caretPosition = sel.extentOffset
+      const newContent = content.substring(0, caretPosition) + string + content.substring(caretPosition)
+      sel.extentNode[isTextNode ? 'textContent' : 'innerHTML'] = newContent
+
+      sel.setPosition(sel.extentNode, caretPosition + string.length)
+    },
+
     syntaxHighlightContent (string) {
       // Only process the string if the language is supported.
       if (!this.knownLanguages.includes(this.language)) return string
@@ -370,8 +443,9 @@ export default {
     this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
   },
 
-  // Re-apply syntax highlighting on updated content. i.e.
-  // when the template is recomputed after a context change (variable update, slot content change).
+  // Re-apply syntax highlighting on updated template (external variable update, slot content change)
+  // directly in the DOM and not through a variable (to avoid infinite loop).
+  // The change in this hook will not trigger another DOM update.
   beforeUpdate () {
     this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
   }
