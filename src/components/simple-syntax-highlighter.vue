@@ -54,7 +54,7 @@ const dictionary = {
   shell: {
     quote: regexBasics.quote,
     comment: /(#.*?)(?:\n|$)/,
-    keyword: /(?:^|\b)(npm|yarn|install|run)(?:\b|$)/,
+    keyword: /(?:^|\b)(p?npm|yarn|i(?:nstall)?|run|audit|outdated|update|publish|whoami|cd|sudo|chmod|chown|ls|cat|vim?|scp|rm|mv|mkdir|ln|open|cwd|which|clear|curl|ping|systemctl|echo|export|open|bash|exit)(?:\b|$)/,
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
