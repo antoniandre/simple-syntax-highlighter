@@ -54,7 +54,7 @@ const dictionary = {
   shell: {
     quote: regexBasics.quote,
     comment: /(#.*?)(?:\n|$)/,
-    keyword: /(?:^|\b)(p?npm|yarn|i(?:nstall)?|run|audit|outdated|update|publish|whoami|cd|sudo|chmod|chown|ls|cat|vim?|scp|rm|mv|mkdir|ln|open|cwd|which|clear|curl|ping|systemctl|echo|export|open|bash|exit)(?:\b|$)/,
+    keyword: /\b(p?npm|yarn|i(?:nstall)?|run|audit|outdated|update|publish|whoami|cd|sudo|chmod|chown|ls|cat|vim?|scp|rm|mv|mkdir|ln|open|cwd|which|clear|curl|ping|systemctl|echo|export|open|bash|exit)\b/,
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
@@ -90,11 +90,11 @@ const dictionary = {
     // Text match for this syntax:
     // tag.
     //   text
-    // Ses caveat #3 (backreferences).
+    // See caveat #3 (backreferences).
     text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
     // text2: /^([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
     quote: regexBasics.quote,
-    // Ses caveat #3 (backreferences).
+    // See caveat #3 (backreferences).
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
