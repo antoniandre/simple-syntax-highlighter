@@ -154,14 +154,14 @@
       label="HTML"
       :dark="$waveui.theme === 'dark'").
       &lt;ssh-pre language="html" label="HTML Vue Template"&gt;
-        &amp;amp;lt;html lang="en"&amp;amp;gt;
-          &amp;amp;lt;head&amp;amp;gt;
-            &amp;amp;lt;title&amp;amp;gt;Title&amp;amp;lt;/title&amp;amp;gt;
-          &amp;amp;lt;/head&amp;amp;gt;
-          &amp;amp;lt;body&amp;amp;gt;
+        &amp;lt;html lang="en"&amp;gt;
+          &amp;lt;head&amp;gt;
+            &amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;
+          &amp;lt;/head&amp;gt;
+          &amp;lt;body&amp;gt;
             Some content.
-          &amp;amp;lt;/body&amp;amp;gt;
-        &amp;amp;lt;/html&amp;amp;gt;
+          &amp;lt;/body&amp;gt;
+        &amp;lt;/html&amp;gt;
       &lt;/ssh-pre&gt;
     div.mx4.text-center.arrow-block
       div renders as:
