@@ -165,8 +165,8 @@ const dictionary = {
 
 // Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
-  xml: /(\s*)([a-zA-Z\d\-:]+)=("|')(.*?)\3/g,
-  html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
+  xml: /(\s*)([a-zA-Z\d\-:]+)(?:=("|')(.*?)\3)?/g,
+  html: /(\s*)([a-zA-Z-]+)(?:=("|')(.*?)\3)?/g,
   'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
   pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
@@ -263,9 +263,9 @@ export default {
         // `attribute-name`
         `${a}<span class="attribute">${b}</span>` +
         // `=`
-        (d ? '<span class="punctuation">=</span>' : '') +
+        (c || d ? '<span class="punctuation">=</span>' : '') +
         // `"attribute value"`
-        (d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
+        (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
       )
 
       let attributesList = (matches[2] || '').replace(attributesRegex[this.language], renderAttributesList)
