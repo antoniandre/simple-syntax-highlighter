@@ -124,10 +124,11 @@ const dictionary = {
     unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/
   },
   json: {
-    quote: regexBasics.quote,
+    quote: /("(?:\\"|[^"])*")/, // Only match double quotes pairs.
     number: regexBasics.number,
     boolean: regexBasics.boolean,
-    punctuation: /([[\](){}:;,-]+)/ // Override default to simplify.
+    punctuation: /([[\](){}:,]+)/, // Override default to simplify.
+    error: /(&(:?lt|gt|amp);|(?!\s).)/
   },
   js: {
     quote: regexBasics.quote,
@@ -179,7 +180,7 @@ const multiCapturesMapping = {
   html: { quote: 2, tag: 4 },
   'html-vue': { quote: 2, tag: 4 },
   pug: { text: 3, text2: 3, quote: 2, comment: 3, tag: 6 },
-  json: { quote: 2 },
+  json: {},
   php: { quote: 2 },
   sql: { quote: 2 },
   css: { quote: 2 },
@@ -409,6 +410,7 @@ export default {
         if (Class === 'color' && this.language === 'css') {
           styles = ` style="background-color: ${match};color: #${this.isColorDark(match) ? 'fff' : '000'}"`
         }
+
         return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
       })
     },
@@ -558,6 +560,9 @@ export default {
   &[data-type=css] .important {color: #f00;font-weight: bold;}
 
   &[data-type=sql] .var-type {color: #f63;font-weight: bold;}
+
+  &[data-type=json] .quote {color: #9d1515;}
+  &[data-type=json] .error {color: #f00;}
 }
 
 .ssh-pre--dark {
@@ -611,5 +616,8 @@ export default {
   &[data-type=css] .important {color: #fe4848;}
 
   &[data-type=sql] .var-type {color: #7bcced;font-weight: bold;}
+
+  &[data-type=json] .quote {color: #da8e72;}
+  &[data-type=json] .error {color: #ff4242;}
 }
 </style>
