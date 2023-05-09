@@ -100,6 +100,7 @@ const dictionary = {
     // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
     // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    htmlentity: regexBasics.htmlentity,
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
@@ -117,8 +118,7 @@ const dictionary = {
     'value keyword important': /( ?!important)/,
     number: regexBasics.number,
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
-    // punctuation: /([:,;{}@#()]+)/,// @todo Why can't use this one if text contains '<' or '>' ??
-    htmlentity: /(&.*?;)/,
+    htmlentity: regexBasics.htmlentity,
     punctuation: /([:,;{}@#()!]+|&lt;|&gt;)/,
     attribute: /([a-zA-Z-]+)(?=\s*:)/,
     unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/
@@ -137,9 +137,9 @@ const dictionary = {
     boolean: regexBasics.boolean,
     this: /\b(this)(?=\W)/,
     keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
-    punctuation: /(!==?|(?:[[\]!(){}:;,+\-%*/?=]|&lt;|&gt;)+|\.+(?![a-zA-Z])|&amp;&amp;|\|\|)/, // Override default since '.' can be part of js variable.
+    htmlentity: regexBasics.htmlentity,
+    punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-zA-Z])|&amp;&amp;|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
     variable: /(\.?[a-zA-Z_][\w\d]*)/,
-    htmlentity: /(&.*?;)/,
     'external-var': /(\$|jQuery|JSON)(?=\W|$)/ // jQuery or $ or JSON.
   },
   php: {
