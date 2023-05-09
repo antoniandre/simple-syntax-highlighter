@@ -357,13 +357,10 @@ export default {
 
     injectAtCaret (string) {
       const sel = window.getSelection()
-      const isTextNode = !sel.extentNode.innerHTML
-      const content = sel.extentNode[isTextNode ? 'textContent' : 'innerHTML']
-      const caretPosition = sel.extentOffset
-      const newContent = content.substring(0, caretPosition) + string + content.substring(caretPosition)
-      sel.extentNode[isTextNode ? 'textContent' : 'innerHTML'] = newContent
-
-      sel.setPosition(sel.extentNode, caretPosition + string.length)
+      const range = sel.getRangeAt(0)
+      const textNode = document.createTextNode(string)
+      range.insertNode(textNode)
+      sel.collapseToEnd()
     },
 
     syntaxHighlightContent (string) {
