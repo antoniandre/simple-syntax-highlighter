@@ -41,7 +41,7 @@ const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*?(?:\n|$)|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
   htmlTag: /(<([^>])*>)/,
-  htmlentity: /(&amp;[a-zA-Z0-9#]+;)/,
+  htmlentity: /(&amp;(?:[a-zA-Z]+|#x?\d+);)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
