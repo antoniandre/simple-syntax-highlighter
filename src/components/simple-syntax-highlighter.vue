@@ -79,7 +79,7 @@ const dictionary = {
     comment: /(&lt;!--.*?--&gt;)/,
     htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
+    tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)(.*?)(\/?&gt;)/
   },
   // @todo: support Pug inline tags like `#[em italic]`.
   pug: {
