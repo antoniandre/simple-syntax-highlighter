@@ -144,7 +144,7 @@ const dictionary = {
   php: {
     quote: regexBasics.quote,
     comment: regexBasics.comment,
-    special: /(&lt;\?php|\?&gt;|__(?:DIR|FILE|LINE|CLASS|METHOD|FUNCTION|NAMESPACE|TRAIT)__)/,
+    special: /(&lt;\?(?:php)?|\?&gt;|__(?:DIR|FILE|LINE|CLASS|METHOD|FUNCTION|NAMESPACE|TRAIT)__)/,
     punctuation: regexBasics.punctuation,
     number: regexBasics.number,
     boolean: regexBasics.boolean,
