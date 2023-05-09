@@ -125,7 +125,6 @@ const dictionary = {
   },
   json: {
     quote: regexBasics.quote,
-    comment: regexBasics.comment,
     number: regexBasics.number,
     boolean: regexBasics.boolean,
     punctuation: /([[\](){}:;,-]+)/ // Override default to simplify.
