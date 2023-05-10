@@ -60,7 +60,7 @@ const dictionary = {
   xml: {
     doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
@@ -68,7 +68,7 @@ const dictionary = {
   html: {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
@@ -76,7 +76,7 @@ const dictionary = {
   'html-vue': {
     doctype: /(DOCTYPE)/,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
     // A tag captures everything between < and > including the chevrons.
     tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)(.*?)(\/?&gt;)/
