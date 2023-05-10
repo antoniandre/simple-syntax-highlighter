@@ -39,7 +39,7 @@
 
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*?(?:\n|$)|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
+  comment: /(\/\/.*?(?:\n|$)|\/\*.*?(?:\*\/|$))/, // Trailing (// ...) or blocks (/* ... */) comments.
   htmlTag: /(<([^>])*>)/,
   htmlentity: /(&amp;(?:[a-zA-Z]+|#x?\d+);)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
@@ -104,8 +104,8 @@ const dictionary = {
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
   css: {
-    quote: regexBasics.quote,
-    comment: /(\/\*.*?\*\/)/,
+    comment: /(\/\*.+?(?:\*\/|$))/, // Blocks comments (/* ... */).
+    quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/,
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)(?=.*\{})/,
@@ -543,6 +543,7 @@ export default {
   &[data-type=xml] .tag-name {color: #11c;}
   &[data-type=xml] .attribute {color: #f93;}
 
+  &[data-type=css] .comment {color: #40b923;}
   &[data-type=css] .variable {color: #29e;font-weight: bold;}
   &[data-type=css] .selector {color: #f0d;}
   &[data-type=css] .selector.class-id {color: #f0d;}
