@@ -99,9 +99,10 @@ const dictionary = {
     // See caveat #3 (backreferences).
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
-    // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
-    // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
+    // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
+    // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     htmlentity: regexBasics.htmlentity,
     punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
   },
@@ -270,28 +271,32 @@ export default {
         (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
       )
 
-      const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
-      let attributesList = attributes.replace(attributesRegex[this.language], renderAttributesList)
-
       if (this.language === 'pug') {
-        const idAndClasses = (matches[1] || '')
-          .replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
+        // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
+        let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
+        idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
           .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
-        if (attributesList) {
-          attributesList = '<span class="punctuation">(</span>' +
-                           attributesList +
+
+        if (attributes) {
+          attributes = attributes.replace(attributesRegex[this.language], renderAttributesList)
+          attributes = '<span class="punctuation">(</span>' +
+                       attributes +
                            '<span class="punctuation">)</span>'
         }
 
         return (
           // The tag-name + attributes list if any.
-          `<span class="tag-name">${matches[0] || ''}</span>` +
-          `${idAndClasses}${attributesList}` +
-          (matches[3] ? '<span class="punctuation">.</span>' : '') +
-          (matches[4] || '') +
-          (matches[5] ? `<span class="text">${matches[5]}</span>` : '')
+          `<span class="tag-name">${tagName}</span>` +
+          `${idAndClasses}${attributes}` +
+          (dotForInnerText ? '<span class="punctuation">.</span>' : '') +
+          (indent || '') +
+          (innerHtml ? `<span class="text">${innerHtml}</span>` : '')
         )
       }
+
+      else {
+        const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
+        const attributesList = attributes.replace(attributesRegex[this.language], renderAttributesList)
 
       // Considering these 3 possible captures of html tags:
       // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
@@ -303,6 +308,7 @@ export default {
         // The tag end `>` or `/>`.
         `<span class="punctuation">${autoClosingSlash}&gt;</span>`
       )
+      }
     },
 
     highlightInPre () {
