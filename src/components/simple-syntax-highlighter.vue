@@ -40,7 +40,12 @@
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*?(?:\n|$)|\/\*.*?(?:\*\/|$))/, // Trailing (// ...) or blocks (/* ... */) comments.
-  htmlTag: /(<([^>])*>)/,
+  doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+  // A tag captures everything between < and >, and handles: <tag>, or <tag/>, or </tag>.
+  // The part `(?:(?!&(?:lt|amp);).)*?` makes sure not to match `<p>/p>`, `<p</p>`, `<p&p>`;
+  // but the part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|` makes sure there can be &amp; inside
+  // quoted attribute value (`attr="& < >"` or `attr='& < >'`).
+  htmlTag: /&lt;(?:([a-zA-Z][\w\d-]*)((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)(\s*\/?)|(\/?)([a-zA-Z][\w\d-]*))&gt;/,
   htmlentity: /(&amp;(?:[a-zA-Z]+|#x?\d+);)/,
   punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
@@ -58,28 +63,25 @@ const dictionary = {
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
-    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   html: {
-    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   'html-vue': {
-    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)(.*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   // @todo: support Pug inline tags like `#[em italic]`.
   pug: {
@@ -176,9 +178,9 @@ const attributesRegex = {
 // then splitted and replaced in the syntaxHighlightContent function.
 const multiCapturesMapping = {
   shell: { quote: 2 },
-  xml: { quote: 2, tag: 4 },
-  html: { quote: 2, tag: 4 },
-  'html-vue': { quote: 2, tag: 4 },
+  xml: { quote: 2, tag: 5 },
+  html: { quote: 2, tag: 5 },
+  'html-vue': { quote: 2, tag: 5 },
   pug: { text: 3, text2: 3, quote: 2, comment: 3, tag: 6 },
   json: {},
   php: { quote: 2 },
@@ -256,9 +258,9 @@ export default {
     },
 
     syntaxHighlightHtmlTag (matches) {
-      // Converts every html attribute with syntax highlighting, e.g:
+      // Converts every html attribute with syntax highlighting. E.g:
       // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
-      // ` checked` => ` <span class="attribute">checked</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`.
+      // ` checked` => ` <span class="attribute">checked</span>`.
       const renderAttributesList = (_, a, b, c, d) => (
         // `attribute-name`
         `${a}<span class="attribute">${b}</span>` +
@@ -268,7 +270,8 @@ export default {
         (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
       )
 
-      let attributesList = (matches[2] || '').replace(attributesRegex[this.language], renderAttributesList)
+      const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
+      let attributesList = attributes.replace(attributesRegex[this.language], renderAttributesList)
 
       if (this.language === 'pug') {
         const idAndClasses = (matches[1] || '')
@@ -294,11 +297,11 @@ export default {
       // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
       return (
         // The tag opening: `</` or `<`.
-        `<span class="punctuation">${matches[0]}</span>` +
+        `<span class="punctuation">&lt;${closingSlash}</span>` +
         // The tag-name + attributes list if any.
-        `<span class="tag-name">${matches[1]}</span>` + attributesList +
+        `<span class="tag-name">${tagName || tagNameEnd}</span>` + attributesList +
         // The tag end `>` or `/>`.
-        `<span class="punctuation">${matches[3]}</span>`
+        `<span class="punctuation">${autoClosingSlash}&gt;</span>`
       )
     },
 
@@ -369,7 +372,7 @@ export default {
 
       const [regexPattern, classMap] = this.createRegexPattern()
 
-      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
+      return this.unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
         const isPug = this.language === 'pug'
@@ -378,7 +381,7 @@ export default {
         // capture class to perform a specific action if there is.
         let match = matches.find((m, i) => m && (Class = classMap[i]) && m)
 
-        if (Class === 'quote') match = this.unhtmlize(match)
+        if (['punctuation', 'quote', 'htmlentity'].includes(Class)) match = this.unhtmlize(match)
         else if (Class === 'comment') {
           if (isPug) {
             const [carretReturn, whitespaces, comment] = matches.slice(classMap.indexOf('comment'))
