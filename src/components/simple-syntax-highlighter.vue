@@ -58,7 +58,7 @@ const dictionary = {
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
-    doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
+    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
@@ -66,7 +66,7 @@ const dictionary = {
     tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
   },
   html: {
-    doctype: /(DOCTYPE)/,
+    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
@@ -74,7 +74,7 @@ const dictionary = {
     tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
   },
   'html-vue': {
-    doctype: /(DOCTYPE)/,
+    doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
