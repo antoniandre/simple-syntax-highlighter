@@ -103,8 +103,8 @@ const dictionary = {
     // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
     // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
     tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    htmlentity: regexBasics.htmlentity,
-    punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
+    'inline-tag': /#\[([^\[\]]+)\]/ // Only performed inside tags inner texts.
+    // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
   css: {
     comment: /(\/\*.+?(?:\*\/|$))/, // Blocks comments (/* ... */).
@@ -278,11 +278,13 @@ export default {
           .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
 
         if (attributes) {
-          attributes = attributes.replace(attributesRegex[this.language], renderAttributesList)
+          attributes = attributes.replace(attributesRegex.pug, renderAttributesList)
           attributes = '<span class="punctuation">(</span>' +
                        attributes +
                            '<span class="punctuation">)</span>'
         }
+
+        if (innerHtml) innerHtml = this.highlightPugInlineTag(innerHtml)
 
         return (
           // The tag-name + attributes list if any.
@@ -309,6 +311,16 @@ export default {
         `<span class="punctuation">${autoClosingSlash}&gt;</span>`
       )
       }
+    },
+
+    // Syntax highlight Pug inline tags (e.g. `#[strong bold text]`).
+    highlightPugInlineTag (string) {
+      return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gs'), (_, m) => {
+        return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 's'), (m, ...matches) => {
+          matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
+          return this.syntaxHighlightHtmlTag(matches)
+        }) + '<span class="inline-tag">]</span>'
+      })
     },
 
     highlightInPre () {
@@ -344,7 +356,8 @@ export default {
         const nodeTextLength = node.innerText?.length || node.length
 
         if (totalStrLength + nodeTextLength >= caretPosition) {
-          document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
+          if (node.childNodes.length > 1) this.reinjectCaret(node.childNodes, caretPosition - totalStrLength)
+          else document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
           break
         }
         totalStrLength += nodeTextLength
@@ -396,7 +409,9 @@ export default {
           else match = this.unhtmlize(match)
         }
         else if (Class === 'text' && isPug) {
-          return `${matches[0]}<span class="punctuation">|</span>${matches[1]}<span class="text">${matches[2]}</span>`
+          let [indent1, indent2, text] = matches
+          text = this.highlightPugInlineTag(text)
+          return `${indent1}<span class="punctuation">|</span>${indent2}<span class="text">${text}</span>`
         }
         else if (Class === 'text2' && isPug) {
           const [, , , tabs, tagString, text] = matches
@@ -541,6 +556,7 @@ export default {
   &[data-type=html-vue] .punctuation {color: #128953;}
   &[data-type=html-vue] .attribute {color: #ff5252;}
 
+  &[data-type=pug] .inline-tag {color: #9a2de6;font-weight: bold;white-space: nowrap;}
   &[data-type=pug] .tag-name {color: #11c;font-weight: bold;}
   &[data-type=pug] .punctuation {color: #999;}
   &[data-type=pug] .id {color: #e3f;}
@@ -599,6 +615,7 @@ export default {
   &[data-type=html-vue] .punctuation {color: #99c;}
   &[data-type=html-vue] .attribute {color: #7bcced;}
 
+  &[data-type=pug] .inline-tag {color: #dac933;font-weight: bold;}
   &[data-type=pug] .tag-name {color: #339cda;font-weight: bold;}
   &[data-type=pug] .punctuation {color: #999;}
   &[data-type=pug] .id {color: #ed9bfd;}
