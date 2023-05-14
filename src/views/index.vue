@@ -13,28 +13,45 @@
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
-    a(href="#What-is-it") What is it?
+    a(href="#What-is-it") No chi-chi syntax highlighter for Vue 2 &amp; 3.
     a(name="What-is-it")
-  .title4.mt5.mb3.lh3
-    strong Simple Syntax Highlighter is a lightweight - yet efficient and very easy to use - syntax highlighter for Vue 2 &amp; 3.#[br]
-    | It reads the source code you provide and syntax-highlights it, for Humans.
-  p
-    | With its very small size, it is not a code editor but a parser.
+  .title4.mt4.lh3
+    ul.checklist.lh2
+      li #[span.wi-check.w-icon.success] Easy to use
+      li #[span.wi-check.w-icon.success] Easy to customize
+      li #[span.wi-check.w-icon.success] Very light weight
+      li #[span.wi-check.w-icon.success] Support multiple languages
+      li #[span.wi-check.w-icon.success] Support both reading and editing
+      li #[span.wi-check.w-icon.success] Built-in copy to clipboard button
+      li #[span.wi-check.w-icon.success] Built-in light and dark modes
 
-  h3.mt8
-    w-icon.ml-1 material-icons chevron_right
-    | Supported languages
-  ul.lh2.ml4
-    li XML
-    li HTML
-    li HTML Vue JS Template
-    li Pug
-    li JavaScript
-    li JSON
-    li CSS
-    li PHP
-    li MySQL
-    li No support for nested languages
+  h3.mt8.ml6.mb2 Supported languages
+  ul.checklist.lh2.ml2.mt0
+    li #[span.wi-check.w-icon.success] XML
+    li #[span.wi-check.w-icon.success] HTML
+    li #[span.wi-check.w-icon.success] HTML Vue JS Template
+    li #[span.wi-check.w-icon.success] Pug
+    li #[span.wi-check.w-icon.success] JavaScript
+    li #[span.wi-check.w-icon.success] JSON
+    li #[span.wi-check.w-icon.success] CSS
+    li #[span.wi-check.w-icon.success] PHP
+    li #[span.wi-check.w-icon.success] MySQL
+    li #[span.wi-cross.w-icon.error] No support for mixed nested languages
+
+
+  h2
+    a(href="#demo") demo - try it!
+    a(name="demo")
+  ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
+    /**
+     * I can syntax-highlight your JavaScript code.
+     * Try to type some code!
+     */
+
+    import Vue from 'vue'
+
+    const radius = 25 // Radius in pixels.
+    console.log(2 * Math.Pi * radius)
 
   h2
     a(href="#installation") Installation
@@ -194,10 +211,10 @@
       span.code.blue--text.text--darken-1.mx2 Default: #[strong '']
       p One of the supported programming languages to syntax highlight.
     li
-      code reactive
+      code reactive (prior v.3.0)
       span.code.cyan--text.text--darken-3.mx2 {Boolean}
       span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
-      p Makes this ssh-pre box reactive to variable changes.
+      p Makes this ssh-pre box reactive to variable changes (not needed from version 3.0).
     li
       code dark
       span.code.cyan--text.text--darken-3.mx2 {Boolean}
@@ -220,14 +237,22 @@
   .w-flex.wrap.justify-center.mxa.mt2.responsive-block(style="max-width: 650px")
     div.grow.basis-zero.my2
       .text-bold Default
-      ssh-pre(language="html" copy-button :dark="$waveui.theme === 'dark'").
+      ssh-pre(
+        language="html"
+        copy-button
+        @copied="$waveui.notify('copied to clipboard!', 'success')"
+        :dark="$waveui.theme === 'dark'").
         &lt;body&gt;
           &lt;div id="app"&gt;&lt;/div&gt;
         &lt;/body&gt;
     .spacer.mx1.no-grow
     div.grow.basis-zero.my2
       .text-bold Custom button content
-      ssh-pre(language="html" copy-button :dark="$waveui.theme === 'dark'")
+      ssh-pre(
+        language="html"
+        copy-button
+        @copied="$waveui.notify('copied to clipboard!', 'success')"
+        :dark="$waveui.theme === 'dark'")
         template(#copy-button)
           w-icon(small color="primary") material-icons content_copy
         | &lt;body&gt;
@@ -711,6 +736,7 @@ export default {
 
 <style lang="scss">
 .theme-switch {z-index: 100;}
+.checklist {list-style-type: none;}
 
 @media screen and (max-width: 640px) {
   .responsive-block {
