@@ -7,16 +7,27 @@
     <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
       <slot name="copy-button">Copy</slot>
     </button>
-    <pre ref="code" class="ssh-pre__content" v-html="content"></pre>
+    <pre
+      ref="code"
+      class="ssh-pre__content"
+      :contenteditable="editable ? 'true' : 'false'"
+      @keydown="editable && onKeydown($event)"
+      @input="highlightInPre">
+    </pre>
+    <div class="ssh-pre__original">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script>
 /**
- * /!\ WARNINGS
- * ____________
+ * /!\ CAVEATS
+ * ___________
  *
- * #1. JAVASCRIPT DOES NOT SUPPORT LOOKBEHIND.
+ * #1. JAVASCRIPT LOOKBEHIND ARE NOW SUPPORTED:
+ *     https://caniuse.com/js-regexp-lookbehind
+ *     maybe a few minor refactoring could improve the regex readability (but not performance).
  *
  * #2. DOTALL FLAG NOT SUPPORTED ON IE:
  *     Works on Edge, so removing workaround. For reference the workaround was: `[\s\s]` instead of `.`
@@ -28,47 +39,50 @@
 
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
-  comment: /(\/\/.*?(?:\n|$)|\/\*.*?\*\/)/, // Comments blocks (/* ... */) or trailing comments (// ...).
-  htmlTag: /(<([^>])*>)/,
-  htmlentity: /(&amp;[a-zA-Z0-9#]+;)/,
-  punctuation: /(!==?|(?:[[\](){}.:;,+\-?=!]|&lt;|&gt;)+|&&|\|\|)/, // Punctuation not in html tag.
+  comment: /(\/\/.*?(?:\n|$)|\/\*.*?(?:\*\/|$))/, // Trailing (// ...) or blocks (/* ... */) comments.
+  doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+  // A tag captures everything between < and >, and handles: <tag>, or <tag/>, or </tag>.
+  // The part `(?:(?!&(?:lt|amp);).)*?` makes sure not to match `<p>/p>`, `<p</p>`, `<p&p>`;
+  // but the part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|` makes sure there can be &amp; inside
+  // quoted attribute value (`attr="& < >"` or `attr='& < >'`).
+  htmlTag: /&lt;(?:([a-zA-Z][\w\d-]*)((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)(\s*\/?)|(\/?)([a-zA-Z][\w\d-]*))&gt;/,
+  htmlentity: /(&amp;(?:[a-zA-Z]+|#x?\d+);)/,
+  // Punctuation outside of html tags, quotes and comments.
+  punctuation: /(!==?|(?:[[\](){}.:,+\-?=!])+|(?<!&(?:[a-zA-Z]+|#x?\d+));|\|\||&lt;|&gt;|&amp;)/,
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
 }
 
 // The html tags names, attribute and inner special chars are treated inside the
 // htmlTag regex above because javascript does not support lookbehind.
-// In this dictionary the order of regexs is important as it is all concatenated later in the process.
+// In this dictionary the order of regexes is important as it is all concatenated later in the process.
 const dictionary = {
   shell: {
     quote: regexBasics.quote,
     comment: /(#.*?)(?:\n|$)/,
-    keyword: /(?:^|\b)(npm|yarn|install|run)(?:\b|$)/,
+    keyword: /\b(p?npm|yarn|i(?:nstall)?|run|audit|outdated|update|publish|whoami|cd|sudo|chmod|chown|ls|cat|vim?|scp|rm|mv|mkdir|ln|open|cwd|which|clear|curl|ping|systemctl|echo|export|open|bash|exit)\b/,
     param: /( --(?:save|save-dev))(?:\s|$)/
   },
   xml: {
-    doctype: /(&lt;\!DOCTYPE.*?&gt;)/,
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z\-:]+)(.*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   html: {
-    doctype: /(DOCTYPE)/,
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-z]\w*)(.*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   'html-vue': {
-    doctype: /(DOCTYPE)/,
+    doctype: regexBasics.doctype,
     quote: regexBasics.quote,
-    comment: /(&lt;!--.*?--&gt;)/,
+    comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    // A tag captures everything between < and > including the chevrons.
-    tag: /(&lt;\/?)([a-zA-Z][\w\d-]*)((?:.|\s)*?)(\/?&gt;)/
+    tag: regexBasics.htmlTag
   },
   // @todo: support Pug inline tags like `#[em italic]`.
   pug: {
@@ -79,24 +93,26 @@ const dictionary = {
     // Text match for this syntax:
     // tag.
     //   text
-    // Ses warning #3 (backreferences).
+    // See caveat #3 (backreferences).
     text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
     // text2: /^([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
     quote: regexBasics.quote,
-    // Ses warning #3 (backreferences).
+    // See caveat #3 (backreferences).
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
-    // 4 groups: 1. tag, 2. classes and id, 3. attributes, 4. inner html
-    // tag: /(?:^|\n)([ \t]+|^)([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\((.*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    punctuation: /(!==?|(?:[#[\]().,+\-?=!|]|&lt;|&gt;)+)/
+    // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
+    // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
+    // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
+    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    'inline-tag': /#\[([^\[\]]+)\]/ // Only performed inside tags inner texts.
+    // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
   css: {
-    quote: regexBasics.quote,
-    comment: /(\/\*.*?\*\/)/,
+    comment: /(\/\*.+?(?:\*\/|$))/, // Blocks comments (/* ... */).
+    quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/,
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
-    'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)/,
+    'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)(?=.*\{})/,
     variable: /(--[a-zA-Z0-9\-]+)/, // Any part before '{'.
     selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|tap-highlight-color|animation|background-size|box-shadow))/,
@@ -106,18 +122,18 @@ const dictionary = {
     'value keyword important': /( ?!important)/,
     number: regexBasics.number,
     color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
-    // punctuation: /([:,;{}@#()]+)/,// @todo Why can't use this one if text contains '<' or '>' ??
-    htmlentity: /(&.*?;)/,
-    punctuation: /([:,;{}@#()!]+|&lt;|&gt;)/,
+    htmlentity: regexBasics.htmlentity,
+    punctuation: /([:,;{}@#()!]+)/,
     attribute: /([a-zA-Z-]+)(?=\s*:)/,
-    unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/
+    unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/,
+    error: /([:,;{}@#()!]+|&lt;|&gt;|&amp;)/
   },
   json: {
-    quote: regexBasics.quote,
-    comment: regexBasics.comment,
+    quote: /("(?:\\"|[^"])*")/, // Only match double quotes pairs.
     number: regexBasics.number,
     boolean: regexBasics.boolean,
-    punctuation: /([[\](){}:;,-]+)/ // Override default to simplify.
+    punctuation: /([[\](){}:,]+)/, // Override default to simplify.
+    error: /(&(:?lt|gt|amp);|(?!\s).)/
   },
   js: {
     quote: regexBasics.quote,
@@ -125,16 +141,16 @@ const dictionary = {
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
     this: /\b(this)(?=\W)/,
-    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document|window|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN)(?=\W)/,
-    punctuation: /(!==?|(?:[[\]!(){}:;,+\-%*/?=]|&lt;|&gt;)+|\.+(?![a-zA-Z])|&amp;&amp;|\|\|)/, // Override default since '.' can be part of js variable.
+    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|console|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
+    htmlentity: regexBasics.htmlentity,
+    punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-zA-Z])|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
     variable: /(\.?[a-zA-Z_][\w\d]*)/,
-    htmlentity: /(&.*?;)/,
     'external-var': /(\$|jQuery|JSON)(?=\W|$)/ // jQuery or $ or JSON.
   },
   php: {
     quote: regexBasics.quote,
     comment: regexBasics.comment,
-    special: /(&lt;\?php|\?&gt;|__(?:DIR|FILE|LINE)__)/,
+    special: /(&lt;\?(?:php)?|\?&gt;|__(?:DIR|FILE|LINE|CLASS|METHOD|FUNCTION|NAMESPACE|TRAIT)__)/,
     punctuation: regexBasics.punctuation,
     number: regexBasics.number,
     boolean: regexBasics.boolean,
@@ -147,15 +163,15 @@ const dictionary = {
     punctuation: regexBasics.punctuation,
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
-    keyword: /\b(\*|CREATE|DATABASE|TABLE|GRANT|ALL|PRIVILEGES|IDENTIFIED|FLUSH|ALTER|MODIFY|DROP|TRUNCATE|CONSTRAINT|ADD|(?:(?:PRIMARY|FOREIGN|UNIQUE) )?KEY|REFERENCES|AUTO_INCREMENT|COMMENT|DEFAULT|UNSIGNED|CHARSET|COLLATE|CHARACTER|ENGINE|SQL_MODE|USE|IF|NOT|NULL|EXISTS|SELECT|UPDATE|DELETE|INSERT(?: INTO)?|VALUES|SET|FROM|WHERE|(?:ORDER|GROUP) BY|LIMIT|(?:(?:LEFT|RIGHT|INNER|OUTER) |)JOIN|AS|ON|COUNT|CASE|TO|WHEN|BETWEEN|AND|OR|IN|LIKE|CONCAT|CURRENT_TIMESTAMP)(?=\W|$)/,
+    keyword: /\b(\*|DECLARE|BEGIN|END|RETURNS|FUNCTION|CREATE|DATABASE|TABLE|VIEW|COLUMN|INDEX|GRANT|REVOKE|ALL|PRIVILEGES|IDENTIFIED|FLUSH|ALTER|MODIFY|DROP|TRUNCATE|CONSTRAINT|ADD|CHECK|(?:(?:PRIMARY|FOREIGN|UNIQUE) )?KEY|REFERENCES|AUTO_INCREMENT|COMMENT|DEFAULT|UNSIGNED|CHARSET|COLLATE|CHARACTER|ENGINE|SQL_MODE|USE|IF|THEN|NULL|EXISTS|UNIQUE|SELECT|UPDATE|DELETE|(?:INSERT|REPLACE)(?: INTO)?|VALUES|SET|FROM|WHERE|(?:ORDER|GROUP) BY|LIMIT|(?:(?:LEFT|RIGHT|INNER|OUTER|CROSS) |)JOIN|AS|ON|COUNT|AVG|SUM|MIN|MAX|CASE|TO|WHEN|BETWEEN|AND|OR|NOT|IN|LIKE|IS|CONCAT|SUBSTRING|CURRENT_(?:DATE|TIMESTAMP)|USING|HAVING?)(?=\W|$)/,
     'var-type': /\b((?:var)?char|(?:tiny|small|medium|big)?int|decimal|float|double|real|bit|boolean|date(?:time)?|time(?:stamp)?|year|(?:tiny|medium|long)?(?:text|blob)|enum)\b/
   }
 }
 
 // Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
-  xml: /(\s*)([a-zA-Z\d\-:]+)=("|')(.*?)\3/g,
-  html: /(\s*)([a-zA-Z-]+)=("|')(.*?)\3/g,
+  xml: /(\s*)([a-zA-Z\d\-:]+)(?:=("|')(.*?)\3)?/g,
+  html: /(\s*)([a-zA-Z-]+)(?:=("|')(.*?)\3)?/g,
   'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
   pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
@@ -165,25 +181,33 @@ const attributesRegex = {
 // then splitted and replaced in the syntaxHighlightContent function.
 const multiCapturesMapping = {
   shell: { quote: 2 },
-  xml: { quote: 2, tag: 4 },
-  html: { quote: 2, tag: 4 },
-  'html-vue': { quote: 2, tag: 4 },
+  xml: { quote: 2, tag: 5 },
+  html: { quote: 2, tag: 5 },
+  'html-vue': { quote: 2, tag: 5 },
   pug: { text: 3, text2: 3, quote: 2, comment: 3, tag: 6 },
-  json: { quote: 2 },
+  json: {},
   php: { quote: 2 },
   sql: { quote: 2 },
   css: { quote: 2 },
   js: { quote: 2 }
 }
 
+const getSlotChildrenText = children => children.map(node => {
+  if (!node.children || typeof node.children === 'string') return node.children || ''
+  else if (Array.isArray(node.children)) return getSlotChildrenText(node.children)
+  else if (node.children.default) return getSlotChildrenText(node.children.default())
+}).join('')
+
 export default {
   name: 'sshpre',
   props: {
     language: { type: String, default: '' },
     label: { type: [String, Boolean], default: false },
-    reactive: { type: Boolean, default: false },
+    // The characters that should be inserted on tab key press.
+    tab: { type: [Boolean, String], default: '  ' },
     dark: { type: Boolean, default: false },
-    copyButton: { type: Boolean, default: false }
+    copyButton: { type: Boolean, default: false },
+    editable: { type: Boolean, default: true }
   },
 
   data: () => ({
@@ -237,50 +261,130 @@ export default {
     },
 
     syntaxHighlightHtmlTag (matches) {
-      // Converts every html attribute with syntax highlighting, e.g:
+      // Converts every html attribute with syntax highlighting. E.g:
       // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
-      // ` checked` => ` <span class="attribute">checked</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`.
+      // ` checked` => ` <span class="attribute">checked</span>`.
       const renderAttributesList = (_, a, b, c, d) => (
         // `attribute-name`
         `${a}<span class="attribute">${b}</span>` +
         // `=`
-        (d ? '<span class="punctuation">=</span>' : '') +
+        (c || d ? '<span class="punctuation">=</span>' : '') +
         // `"attribute value"`
-        (d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
+        (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
       )
 
-      let attributesList = (matches[2] || '').replace(attributesRegex[this.language], renderAttributesList)
-
       if (this.language === 'pug') {
-        const idAndClasses = (matches[1] || '')
-          .replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
-          .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
-        if (attributesList) {
-          attributesList = `<span class="punctuation">(</span>` +
-                           attributesList +
-                           `<span class="punctuation">)</span>`
+        // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
+        let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
+        idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
+                                   .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
+
+        if (attributes) {
+          attributes = attributes.replace(attributesRegex.pug, renderAttributesList)
+          attributes = '<span class="punctuation">(</span>' +
+                       attributes +
+                       '<span class="punctuation">)</span>'
         }
+
+        if (innerHtml) innerHtml = this.highlightPugInlineTag(innerHtml)
 
         return (
           // The tag-name + attributes list if any.
-          `<span class="tag-name">${matches[0] || ''}</span>` +
-          `${idAndClasses}${attributesList}` +
-          (matches[3] ? '<span class="punctuation">.</span>' : '') +
-          (matches[4] || '') +
-          (matches[5] ? `<span class="text">${matches[5]}</span>` : '')
+          `<span class="tag-name">${tagName}</span>` +
+          `${idAndClasses}${attributes}` +
+          (dotForInnerText ? '<span class="punctuation">.</span>' : '') +
+          (indent || '') +
+          (innerHtml ? `<span class="text">${innerHtml}</span>` : '')
         )
       }
 
-      // Considering these 3 possible captures of html tags:
-      // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
-      return (
-        // The tag opening: `</` or `<`.
-        `<span class="punctuation">${matches[0]}</span>` +
-        // The tag-name + attributes list if any.
-        `<span class="tag-name">${matches[1]}</span>` + attributesList +
-        // The tag end `>` or `/>`.
-        `<span class="punctuation">${matches[3]}</span>`
-      )
+      else {
+        const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
+        const attributesList = attributes.replace(attributesRegex[this.language], renderAttributesList)
+
+        // Considering these 3 possible captures of html tags:
+        // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
+        return (
+          // The tag opening: `</` or `<`.
+          `<span class="punctuation">&lt;${closingSlash}</span>` +
+          // The tag-name + attributes list if any.
+          `<span class="tag-name">${tagName || tagNameEnd}</span>` + attributesList +
+          // The tag end `>` or `/>`.
+          `<span class="punctuation">${autoClosingSlash}&gt;</span>`
+        )
+      }
+    },
+
+    // Syntax highlight Pug inline tags (e.g. `#[strong bold text]`).
+    highlightPugInlineTag (string) {
+      return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gs'), (_, m) => {
+        return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 's'), (m, ...matches) => {
+          matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
+          return this.syntaxHighlightHtmlTag(matches)
+        }) + '<span class="inline-tag">]</span>'
+      })
+    },
+
+    highlightInPre () {
+      if (this.knownLanguages.includes(this.language)) {
+        const caretPosition = this.getCaretPositionInPlainText() // Save caret position before highlighting.
+        this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
+        this.reinjectCaret(this.$refs.code.childNodes, caretPosition) // Restore the caret position.
+      }
+    },
+
+    /**
+     * Returns the user caret position in the raw non-highlighted (non-html) text.
+     * @return {Number} (integer) the caret position.
+     */
+    getCaretPositionInPlainText () {
+      const sel = window.getSelection()
+      sel.collapseToEnd()
+      const range = new Range()
+      range.setStart(this.$refs.code, 0)
+      range.setEnd(sel.extentNode, sel.extentOffset)
+
+      return range.toString().length
+    },
+
+    /**
+     * Re-injects the caret in the text of the given node at the given position.
+     * @param {Object} contentEditableNode the contenteditable DOM element where to inject the caret.
+     * @param {Number} caretPosition (integer) the caret position.
+     */
+    reinjectCaret (contentEditableNode, caretPosition) {
+      let totalStrLength = 0
+      for (const node of contentEditableNode) {
+        const nodeTextLength = node.innerText?.length || node.length
+
+        if (totalStrLength + nodeTextLength >= caretPosition) {
+          if (node.childNodes.length > 1) this.reinjectCaret(node.childNodes, caretPosition - totalStrLength)
+          else document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
+          break
+        }
+        totalStrLength += nodeTextLength
+      }
+    },
+
+    onKeydown (e) {
+      switch (e.which) {
+        case 9: // Tab.
+          this.injectAtCaret(this.tab)
+          e.preventDefault()
+          break
+        case 13: // Enter.
+          this.injectAtCaret('\n')
+          e.preventDefault()
+          break
+      }
+    },
+
+    injectAtCaret (string) {
+      const sel = window.getSelection()
+      const range = sel.getRangeAt(0)
+      const textNode = document.createTextNode(string)
+      range.insertNode(textNode)
+      sel.collapseToEnd()
     },
 
     syntaxHighlightContent (string) {
@@ -289,7 +393,7 @@ export default {
 
       const [regexPattern, classMap] = this.createRegexPattern()
 
-      return this.unhtmlize(string).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
+      return this.unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
         const isPug = this.language === 'pug'
@@ -298,7 +402,7 @@ export default {
         // capture class to perform a specific action if there is.
         let match = matches.find((m, i) => m && (Class = classMap[i]) && m)
 
-        if (Class === 'quote') match = this.unhtmlize(match)
+        if (['punctuation', 'quote', 'htmlentity'].includes(Class)) match = this.unhtmlize(match)
         else if (Class === 'comment') {
           if (isPug) {
             const [carretReturn, whitespaces, comment] = matches.slice(classMap.indexOf('comment'))
@@ -307,7 +411,9 @@ export default {
           else match = this.unhtmlize(match)
         }
         else if (Class === 'text' && isPug) {
-          return `${matches[0]}<span class="punctuation">|</span>${matches[1]}<span class="text">${matches[2]}</span>`
+          let [indent1, indent2, text] = matches
+          text = this.highlightPugInlineTag(text)
+          return `${indent1}<span class="punctuation">|</span>${indent2}<span class="text">${text}</span>`
         }
         else if (Class === 'text2' && isPug) {
           const [, , , tabs, tagString, text] = matches
@@ -330,17 +436,13 @@ export default {
         if (Class === 'color' && this.language === 'css') {
           styles = ` style="background-color: ${match};color: #${this.isColorDark(match) ? 'fff' : '000'}"`
         }
+
         return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
       })
     },
 
-    // Keep watching the slot text content.
-    checkSlots () {
-      const slotTexts = (this.$slots.default || []).map(slot => slot.text || '').join('')
-      if (this.slotTexts !== slotTexts) {
-        this.slotTexts = slotTexts
-        this.content = this.syntaxHighlightContent(this.slotTexts)
-      }
+    getSlotContent () {
+      return this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
     },
 
     copyCode (e) {
@@ -360,11 +462,16 @@ export default {
   },
 
   mounted () {
-    this.checkSlots()
+    const slotContent = this.getSlotContent()
+    this.$refs.code.innerText = slotContent
+    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
   },
 
+  // Re-apply syntax highlighting on updated template (external variable update, slot content change)
+  // directly in the DOM and not through a variable (to avoid infinite loop).
+  // The change in this hook will not trigger another DOM update.
   beforeUpdate () {
-    if (this.reactive) this.checkSlots()
+    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
   }
 }
 </script>
@@ -384,6 +491,8 @@ export default {
     color: rgba(255, 255, 255, 0.85);
   }
 
+  &__original {display: none;}
+
   &__content {
     white-space: pre-wrap;
     word-break: break-word;
@@ -395,6 +504,8 @@ export default {
     right: 3px;
     border: none;
     background: none;
+    color: inherit;
+    cursor: pointer;
   }
 
   #clipboard-textarea {
@@ -448,6 +559,7 @@ export default {
   &[data-type=html-vue] .punctuation {color: #128953;}
   &[data-type=html-vue] .attribute {color: #ff5252;}
 
+  &[data-type=pug] .inline-tag {color: #9a2de6;font-weight: bold;white-space: nowrap;}
   &[data-type=pug] .tag-name {color: #11c;font-weight: bold;}
   &[data-type=pug] .punctuation {color: #999;}
   &[data-type=pug] .id {color: #e3f;}
@@ -459,6 +571,7 @@ export default {
   &[data-type=xml] .tag-name {color: #11c;}
   &[data-type=xml] .attribute {color: #f93;}
 
+  &[data-type=css] .comment {color: #40b923;}
   &[data-type=css] .variable {color: #29e;font-weight: bold;}
   &[data-type=css] .selector {color: #f0d;}
   &[data-type=css] .selector.class-id {color: #f0d;}
@@ -476,6 +589,9 @@ export default {
   &[data-type=css] .important {color: #f00;font-weight: bold;}
 
   &[data-type=sql] .var-type {color: #f63;font-weight: bold;}
+
+  &[data-type=json] .quote {color: #9d1515;}
+  &[data-type=json] .error {color: #f00;}
 }
 
 .ssh-pre--dark {
@@ -494,12 +610,15 @@ export default {
   &[data-type=shell] .keyword {color: #ff5252;}
   &[data-type=shell] .param {color: #7bcced;}
 
+  &[data-type=html] .doctype {color: #7ec1e7;}
   &[data-type=html] .tag-name {color: #339cda;}
   &[data-type=html] .attribute {color: #7bcced;}
+  &[data-type=html-vue] .doctype {color: #7ec1e7;}
   &[data-type=html-vue] .tag-name {color: #339cda;}
   &[data-type=html-vue] .punctuation {color: #99c;}
   &[data-type=html-vue] .attribute {color: #7bcced;}
 
+  &[data-type=pug] .inline-tag {color: #dac933;font-weight: bold;}
   &[data-type=pug] .tag-name {color: #339cda;font-weight: bold;}
   &[data-type=pug] .punctuation {color: #999;}
   &[data-type=pug] .id {color: #ed9bfd;}
@@ -507,6 +626,7 @@ export default {
   &[data-type=pug] .attribute {color: #8adeff;}
   &[data-type=pug] .text {color: #c4d8f3;}
 
+  &[data-type=xml] .doctype {color: #7ec1e7;}
   &[data-type=xml] .tag-name {color: #339cda;}
   &[data-type=xml] .attribute {color: #f93;}
 
@@ -526,5 +646,8 @@ export default {
   &[data-type=css] .important {color: #fe4848;}
 
   &[data-type=sql] .var-type {color: #7bcced;font-weight: bold;}
+
+  &[data-type=json] .quote {color: #da8e72;}
+  &[data-type=json] .error {color: #ff4242;}
 }
 </style>

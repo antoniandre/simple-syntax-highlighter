@@ -1,5 +1,6 @@
 <template lang="pug">
-w-app(v-scroll="onScroll")
+//- Scroll directive from Wave UI.
+div(v-scroll="onScroll")
   .container
     w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
       h1.primary.top-bar__title
@@ -9,6 +10,15 @@ w-app(v-scroll="onScroll")
           div.top-bar__logo-title Simple Syntax Highlighter
 
     documentation
+    w-transition-bounce(v-if="!goTopHidden" appear)
+      w-button.go-top.mb8.mr2(
+        icon="wi-chevron-up"
+        fixed
+        bottom
+        right
+        xl
+        color="base-color"
+        @click="scrollTop")
 
   footer
     w-flex.container.mxa.grey-dark1(wrap justify-center)
@@ -16,25 +26,13 @@ w-app(v-scroll="onScroll")
       .spacer
       .made-with
         .mb1.
-          This documentation is made with #[w-icon fab fa-vuejs], #[w-icon fab fa-html5],
-          #[w-icon fab fa-css3], #[w-icon fab fa-sass] &amp; #[w-icon.heart material-icons favorite]
+          This documentation is made with #[w-icon(title="Vue.js") fab fa-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") fab fa-html5],
+          #[w-icon(title="CSS 3") fab fa-css3], #[w-icon(title="Sass") fab fa-sass] &amp; #[w-icon.heart(title="Love") material-icons favorite]
         | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
 </template>
 
 <script>
-import Vue from 'vue'
 import Index from '@/views/index.vue'
-
-Vue.directive('scroll', {
-  inserted: function (el, binding) {
-    const f = function (evt) {
-      if (binding.value(evt, el)) {
-        window.removeEventListener('scroll', f)
-      }
-    }
-    window.addEventListener('scroll', f)
-  }
-})
 
 export default {
   name: 'app',
@@ -47,30 +45,50 @@ export default {
     onScroll () {
       this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
       this.goTopHidden = this.offsetTop < 200
+    },
+    async scrollTop () {
+      await this.$nextTick()
+      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 }
 </script>
 
 <style lang="scss">
-$primary: #1b4;
-$secondary: #666;
-$main-text: #333;
+$primary: var(--w-primary-color);
+$secondary: var(--w-secondary-color);
+$main-text: var(--w-main-text);
 $dark-text: #666;
 $darker-text: #333;
 $light-text: #ccc;
 $lighter-text: #ddd;
 
 // GLOBAL
-// =================================================
+// ========================================================
+:root[data-theme=light] {
+  --w-base-bg-color-rgb: 255, 255, 255; // #fff.
+  --w-base-color-rgb: 51, 51, 51; // #333.
+  --w-contrast-bg-color-rgb: 0, 0, 0; // #000.
+  --w-contrast-color-rgb: 255, 255, 255; // #fff.
+  --w-disabled-color-rgb: 204, 204, 204; // #ccc.
+}
+
+:root[data-theme=dark] {
+  --w-base-bg-color-rgb: 34, 34, 34; // #222.
+  --w-base-color-rgb: 255, 255, 255; // #fff.
+  --w-contrast-bg-color-rgb: 255, 255, 255; // #fff.
+  --w-contrast-color-rgb: 0, 0, 0; // #000.
+  --w-disabled-color-rgb: 74, 74, 74; // #4a4a4a.
+}
+
 html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 body {
   font: 13px/1.4 Roboto, Tahoma, Geneva, sans-serif;
-  color: $main-text;
 }
 
 .application.theme--light,
@@ -116,7 +134,7 @@ h2 {
   font-size: 2em;
   color: $primary;
   padding-bottom: 0.3em;
-  border-bottom: 1px solid $lighter-text;
+  border-bottom: 1px solid rgba(var(--w-base-color-rgb), 0.15);
 }
 
 h3 {
@@ -169,7 +187,7 @@ code {
 }
 
 // APPLICATION
-// =================================================
+// ========================================================
 .w-app {padding-top: 8em;}
 
 .container {
@@ -197,12 +215,12 @@ code {
 .documentation {padding-top: 12em;}
 
 // TOOLBAR
-// =================================================
+// ========================================================
 .top-bar {
   z-index: 100;
   position: absolute;
   border-bottom: 1px solid transparent !important;
-  transition: 0.3s ease-in-out all, 0.1s 0s ease-in-out border-color;
+  transition: 0.1s 0s ease-in-out border-color;
   top: 0;
   left: 0;
   right: 0;
@@ -249,13 +267,13 @@ code {
 
   &--scrolled {
     transition: 0.6s ease-in-out all, 0.3s 0.3s ease-in-out border-color;
-    border-bottom-color: $lighter-text !important;
+    border-bottom-color: rgba(var(--w-contrast-bg-color-rgb), 0.1) !important;
     position: fixed;
     padding-top: 4px;
     padding-bottom: 4px;
 
     & .top-bar__title {
-      background-color: #fff;
+      background-color: rgb(var(--w-base-bg-color-rgb));
       width: 100%;
       padding: 0;
       transition: 0.3s ease-in-out all, 0.25s ease-in-out background-color;
@@ -274,8 +292,12 @@ code {
   }
 }
 
+.go-top {
+  backdrop-filter: blur(6px);
+}
+
 // FOOTER
-// =================================================
+// ========================================================
 footer {
   font-size: 0.9em;
   font-style: italic;
