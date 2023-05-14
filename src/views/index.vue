@@ -13,7 +13,7 @@
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
-    a(href="#What-is-it") No chi-chi syntax highlighter for Vue 2 &amp; 3.
+    a(href="#What-is-it") No chi-chi syntax highlighter for Vue.js (2 &amp; 3).
     a(name="What-is-it")
   .title4.mt4.lh3
     ul.checklist.lh2
