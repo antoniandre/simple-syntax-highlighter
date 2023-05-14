@@ -141,7 +141,7 @@ const dictionary = {
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
     this: /\b(this)(?=\W)/,
-    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
+    keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|console|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
     htmlentity: regexBasics.htmlentity,
     punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-zA-Z])|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
     variable: /(\.?[a-zA-Z_][\w\d]*)/,
@@ -505,6 +505,7 @@ export default {
     border: none;
     background: none;
     color: inherit;
+    cursor: pointer;
   }
 
   #clipboard-textarea {
