@@ -211,10 +211,10 @@
       span.code.blue--text.text--darken-1.mx2 Default: #[strong '']
       p One of the supported programming languages to syntax highlight.
     li
-      code reactive (prior v.3.0)
+      code reactive (prior v.3.0 &amp; 1.6.0)
       span.code.cyan--text.text--darken-3.mx2 {Boolean}
       span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
-      p Makes this ssh-pre box reactive to variable changes (not needed from version 3.0).
+      p Makes this ssh-pre box reactive to variable changes (not needed from version 3+ or 1.6+).
     li
       code dark
       span.code.cyan--text.text--darken-3.mx2 {Boolean}
