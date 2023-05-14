@@ -4,8 +4,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![npm](https://img.shields.io/npm/dt/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter)
 <!-- [![npm](https://img.shields.io/npm/dw/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter) -->
-> A very lightweight and easy to use syntax highlighter (not an editor) for Vue 3 and 2. Multiple coding languages supported.
-> What I use in all my libs documentations. ;)
+> No chi-chi syntax highlighter for Vue.js (2 and 3).
 
 ___
 
@@ -54,6 +53,7 @@ ___
 
 ## Release Notes
 
+- __Version 3.0.0__ Support code editing. Improved syntax highlighting. Always reactive.
 - __Version 2.0.0__ Vue 3 build
 - __Version 1.5.0__ Removed support for IE - it's finally over. :tada:
 - __Version 1.4.0__ Added Pug language support
