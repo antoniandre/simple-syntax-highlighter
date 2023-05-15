@@ -193,9 +193,9 @@ const multiCapturesMapping = {
 }
 
 const getSlotChildrenText = children => children.map(node => {
-  if (!node.children || typeof node.children === 'string') return node.children || ''
-  else if (Array.isArray(node.children)) return getSlotChildrenText(node.children)
-  else if (node.children.default) return getSlotChildrenText(node.children.default())
+  if (!node.text || typeof node.text === 'string') return node.text || ''
+  else if (Array.isArray(node.text)) return getSlotChildrenText(node.text)
+  else if (node.text.default) return getSlotChildrenText(node.text.default)
 }).join('')
 
 export default {
@@ -442,7 +442,7 @@ export default {
     },
 
     getSlotContent () {
-      return this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
+      return this.$slots.default && getSlotChildrenText(this.$slots.default) || ''
     },
 
     copyCode (e) {
