@@ -42,7 +42,11 @@
   h2
     a(href="#demo") demo - try it!
     a#demo.anchor
-  ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
+  ssh-pre(
+    language="js"
+    label="Javascript"
+    :dark="$waveui.theme === 'dark'"
+    editable).
     /**
      * I can syntax-highlight your JavaScript code.
      * Try to type some code!
@@ -201,6 +205,21 @@
     a#options.anchor
   ul
     li
+      code copy-button
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
+      p Allow copying this ssh-pre box content to the clipboard.
+    li
+      code dark
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
+      p Switches this ssh-pre box to a dark theme.
+    li
+      code editable
+      span.code.cyan--text.text--darken-3.mx2 {Boolean}
+      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
+      p Make this ssh-pre box editable and syntax-highlight as you type.
+    li
       code label
       span.code.cyan--text.text--darken-3.mx2 {String}
       span.code.blue--text.text--darken-1.mx2 Default: #[strong '']
@@ -215,16 +234,6 @@
       span.code.cyan--text.text--darken-3.mx2 {Boolean}
       span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
       p Makes this ssh-pre box reactive to variable changes (not needed from version 3+ or 1.6+).
-    li
-      code dark
-      span.code.cyan--text.text--darken-3.mx2 {Boolean}
-      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
-      p Switches this ssh-pre box to a dark theme.
-    li
-      code copy-button
-      span.code.cyan--text.text--darken-3.mx2 {Boolean}
-      span.code.blue--text.text--darken-1.mx2 Default: #[strong false]
-      p Allow copying this ssh-pre box content to the clipboard.
 
   h2
     a(href="#copy-button") Copy button
@@ -634,7 +643,7 @@
 
   ssh-pre(language="js" label="Javascript" dark).
     /**
-     * This is some
+     * This is a
      * multiline comments.
      */
     import Vue from 'vue'
