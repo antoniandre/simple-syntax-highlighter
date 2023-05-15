@@ -207,7 +207,7 @@ export default {
     tab: { type: [Boolean, String], default: '  ' },
     dark: { type: Boolean, default: false },
     copyButton: { type: Boolean, default: false },
-    editable: { type: Boolean, default: true }
+    editable: { type: Boolean, default: false }
   },
 
   data: () => ({
