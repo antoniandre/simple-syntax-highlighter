@@ -1,34 +1,35 @@
 <template lang="pug">
-//- Scroll directive from Wave UI.
-div(v-scroll="onScroll")
-  .container
-    w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
-      h1.primary.top-bar__title
-        a.top-bar__logo-link(href="#top")
-          w-icon.top-bar__logo.mr1(color="lightgrey" lg) fa fa-terminal
-          span.code.mr3.lightgrey.top-bar__ssh SSH
-          div.top-bar__logo-title Simple Syntax Highlighter
+w-app
+  //- Scroll directive from Wave UI.
+  div(v-scroll="onScroll")
+    .container
+      w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
+        h1.primary.top-bar__title
+          a.top-bar__logo-link(href="#top")
+            w-icon.top-bar__logo.mr1(color="lightgrey" lg) fa fa-terminal
+            span.code.mr3.lightgrey.top-bar__ssh SSH
+            div.top-bar__logo-title Simple Syntax Highlighter
 
-    documentation
-    w-transition-bounce(v-if="!goTopHidden" appear)
-      w-button.go-top.mb8.mr2(
-        icon="wi-chevron-up"
-        fixed
-        bottom
-        right
-        xl
-        color="base-color"
-        @click="scrollTop")
+      documentation
+      w-transition-bounce(v-if="!goTopHidden" appear)
+        w-button.go-top.mb8.mr2(
+          icon="wi-chevron-up"
+          fixed
+          bottom
+          right
+          xl
+          color="base-color"
+          @click="scrollTop")
 
-  footer
-    w-flex.container.mxa.grey-dark1(wrap justify-center)
-      .copyright.mr2 Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
-      .spacer
-      .made-with
-        .mb1.
-          This documentation is made with #[w-icon(title="Vue.js") fab fa-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") fab fa-html5],
-          #[w-icon(title="CSS 3") fab fa-css3], #[w-icon(title="Sass") fab fa-sass] &amp; #[w-icon.heart(title="Love") material-icons favorite]
-        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
+    footer
+      w-flex.container.mxa.grey-dark1(wrap justify-center)
+        .copyright.mr2 Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
+        .spacer
+        .made-with
+          .mb1.
+            This documentation is made with #[w-icon(title="Vue.js") fab fa-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") fab fa-html5],
+            #[w-icon(title="CSS 3") fab fa-css3], #[w-icon(title="Sass") fab fa-sass] &amp; #[w-icon.heart(title="Love") material-icons favorite]
+          | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
 </template>
 
 <script>

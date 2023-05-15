@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue2'
 import { resolve } from 'path'
 import Delete from 'rollup-plugin-delete'
 import autoprefixer from 'autoprefixer'
