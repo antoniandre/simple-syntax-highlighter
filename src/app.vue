@@ -66,7 +66,9 @@ $lighter-text: #ddd;
 
 // GLOBAL
 // ========================================================
-:root[data-theme=light] {
+:root {
+  --w-primary-color: #1b4;
+  --w-secondary-color: #666;
   --w-base-bg-color-rgb: 255, 255, 255; // #fff.
   --w-base-color-rgb: 51, 51, 51; // #333.
   --w-contrast-bg-color-rgb: 0, 0, 0; // #000.
