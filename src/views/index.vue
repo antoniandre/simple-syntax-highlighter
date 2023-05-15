@@ -13,8 +13,8 @@
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
-    a(href="#What-is-it") No chi-chi syntax highlighter for Vue 2 &amp; 3.
-    a(name="What-is-it")
+    a(href="#what-is-it") No chi-chi syntax highlighter for Vue.js (2 &amp; 3).
+    a#what-is-it.anchor
   .title4.mt4.lh3
     ul.checklist.lh2
       li #[span.wi-check.w-icon.success] Easy to use
@@ -41,7 +41,7 @@
 
   h2
     a(href="#demo") demo - try it!
-    a(name="demo")
+    a#demo.anchor
   ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
     /**
      * I can syntax-highlight your JavaScript code.
@@ -55,7 +55,7 @@
 
   h2
     a(href="#installation") Installation
-    a(name="installation")
+    a#installation.anchor
   p You have two options: #[em NPM] #[strong.mx2 or] #[span.code &lt;script&gt;] tag.
 
   h3.mt8 Via NPM
@@ -137,7 +137,7 @@
 
   h2
     a(href="#how-to-use") How to use
-    a(name="how-to-use")
+    a#how-to-use.anchor
   p.
     Once included in your project, use as follows.
 
@@ -198,7 +198,7 @@
 
   h2
     a(href="#options") Options
-    a(name="options")
+    a#options.anchor
   ul
     li
       code label
@@ -228,7 +228,7 @@
 
   h2
     a(href="#copy-button") Copy button
-    a(name="copy-button")
+    a#copy-button.anchor
   p.
     With the option #[span.code copy-button], you can add a button that allows copying the
     content to the clipboard.
@@ -273,11 +273,11 @@
 
   h2
     a(href="#examples") Examples of rendering with different languages
-    a(name="examples")
+    a#examples.anchor
 
   h3
     a(href="#ex--javascript") javascript
-    a(name="ex--javascript")
+    a#ex--javascript.anchor
   ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
     /**
      * This is some
@@ -319,7 +319,7 @@
 
   h3
     a(href="#ex--css") CSS
-    a(name="ex--css")
+    a#ex--css.anchor
   ssh-pre(language="css" label="styles.css" :dark="$waveui.theme === 'dark'").
     :root {
       --primary-color: green;
@@ -402,7 +402,7 @@
 
   h3
     a(href="#ex--html") HTML
-    a(name="ex--html")
+    a#ex--html.anchor
   ssh-pre(language="xml" label="index.html" :dark="$waveui.theme === 'dark'").
     &lt;!DOCTYPE html&gt;
     &lt;html lang="en"&gt;
@@ -424,7 +424,7 @@
 
   h3
     a(href="#ex--pug") Pug
-    a(name="ex--pug")
+    a#ex--pug.anchor
   p.
     Important: to put parenthesis inside quotes, you have to escape them with: #[code="&amp;#40;"]
     for #[code (] and #[code="&amp;#41;"] for #[code )].
@@ -439,7 +439,7 @@
 
     h2
       a(href="#notes") Notes
-      a(name="notes")
+      a#notes.anchor
     p
       | This is a lightweight yet efficient and reactive Vue JS syntax highlighter.
       | #[br]It reads the source code you give it and highlights it, for Humans.
@@ -458,18 +458,18 @@
 
     h2
       a(href="#installation") Installation
-      a(name="installation")
+      a#installation.anchor
     p You have two options: #[em NPM] #[strong.mx2 or] #[span.code &lt;script&gt;] tag.
     h3.mt8 Via NPM
     ssh-pre(language="shell" label="Shell") npm i simple-syntax-highlighter
 
     h2
       a(href="#how-to-use") How to use
-      a(name="how-to-use")
+      a#how-to-use.anchor
     p Once included in your project, use as follows.
   h3
     a(href="#ex--json") JSON
-    a(name="ex--json")
+    a#ex--json.anchor
   ssh-pre(language="json" label="package.json" :dark="$waveui.theme === 'dark'").
     {
       "name": "",
@@ -501,7 +501,7 @@
 
   h3
     a(href="#ex--php") PHP
-    a(name="ex--php")
+    a#ex--php.anchor
   ssh-pre(language="php" label="index.php" :dark="$waveui.theme === 'dark'").
     &lt;?php
 
@@ -565,7 +565,7 @@
 
   h3
     a(href="#ex--sql") SQL
-    a(name="ex--sql")
+    a#ex--sql.anchor
 
   ssh-pre(language="sql" label="SQL" :dark="$waveui.theme === 'dark'").
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -622,7 +622,7 @@
 
   h2
     a(href="#dark-mode") Dark mode
-    a(name="dark-mode")
+    a#dark-mode.anchor
   p The #[span.code dark] option switches the color theme to dark.
   p.text-bold(v-if="$waveui.theme === 'dark'").
     You are already viewing this page in dark mode, but you could try switching to light mode
@@ -673,7 +673,7 @@
 
   h2
     a(href="#custom-theme") Custom theme
-    a(name="custom-theme")
+    a#custom-theme.anchor
   p.
     You can easily create your own color theme, as the highlighting is already done,
     you just need to override the colors of these classes in your css:
