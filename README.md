@@ -53,8 +53,11 @@ ___
 
 ## Release Notes
 
+### Vue 3
 - __Version 3.0.0__ Support code editing. Improved syntax highlighting. Always reactive.
 - __Version 2.0.0__ Vue 3 build
+
+### Vue 2
 - __Version 1.6.0__ Support code editing. Improved syntax highlighting. Always reactive.
 - __Version 1.5.0__ Removed support for IE - it's finally over. :tada:
 - __Version 1.4.0__ Added Pug language support
