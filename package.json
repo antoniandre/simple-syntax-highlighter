@@ -1,6 +1,6 @@
 {
   "name": "simple-syntax-highlighter",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "No chi-chi syntax highlighter for Vue.js (2 and 3).",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
   "homepage": "https://antoniandre.github.io/simple-syntax-highlighter",
