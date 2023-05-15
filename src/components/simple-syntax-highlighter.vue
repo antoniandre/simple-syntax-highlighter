@@ -45,10 +45,10 @@ const regexBasics = {
   // The part `(?:(?!&(?:lt|amp);).)*?` makes sure not to match `<p>/p>`, `<p</p>`, `<p&p>`;
   // but the part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|` makes sure there can be &amp; inside
   // quoted attribute value (`attr="& < >"` or `attr='& < >'`).
-  htmlTag: /&lt;(?:([a-zA-Z][\w\d-]*)((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)(\s*\/?)|(\/?)([a-zA-Z][\w\d-]*))&gt;/,
-  htmlentity: /(&amp;(?:[a-zA-Z]+|#x?\d+);)/,
+  htmlTag: /&lt;(?:([a-z][\w\d-]*)((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)(\s*\/?)|(\/?)([a-z][\w\d-]*))&gt;/,
+  htmlentity: /(&amp;(?:[a-z]+|#x?\d+);)/,
   // Punctuation outside of html tags, quotes and comments.
-  punctuation: /(!==?|(?:[[\](){}.:,+\-?=!])+|(?<!&(?:[a-zA-Z]+|#x?\d+));|\|\||&lt;|&gt;|&amp;)/,
+  punctuation: /(!==?|(?:[[\](){}.:,+\-?=!])+|(?<!&(?:[a-z]+|#x?\d+));|\|\||&lt;|&gt;|&amp;)/,
   number: /(-?(?:\.\d+|\d+(?:\.\d+)?))/,
   boolean: /\b(true|false)\b/
 }
@@ -103,7 +103,7 @@ const dictionary = {
     // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
     // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
     // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
-    tag: /([a-zA-Z][\w\d-]*|)([.#][a-zA-Z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    tag: /([a-z][\w\d-]*|)([.#][a-z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     'inline-tag': /#\[([^\[\]]+)\]/ // Only performed inside tags inner texts.
     // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
@@ -113,7 +113,7 @@ const dictionary = {
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)(?=.*\{})/,
-    variable: /(--[a-zA-Z0-9\-]+)/, // Any part before '{'.
+    variable: /(--[a-z0-9\-]+)/, // Any part before '{'.
     selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|tap-highlight-color|animation|background-size|box-shadow))/,
     'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|pointer-events|user-select|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|backdrop-filter|background(?:-(?:color|position|image|repeat|size|attachment|origin|clip|blend-mode))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
@@ -121,10 +121,10 @@ const dictionary = {
     'value keyword': /\b(inherit|initial|normal|none|unset|auto|inline(?:-(?:block|flex))?|block|flex|absolute|relative|static|fixed|sticky|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|line-through|(?:over|under)line|wavy|double|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|attr\(.*?\)|linear|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|(?:repeating-)?(?:linear|radial)-gradient|inset|pointer|(?:flex-)?(?:start|end)|space-(?:between|evenly|around)|stretch|revert|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z!])/,
     'value keyword important': /( ?!important)/,
     number: regexBasics.number,
-    color: /(transparent|#(?:[\da-fA-F]{6}|[\da-fA-F]{3})|rgba?\([\d., ]*\))/,
+    color: /(transparent|#(?:[\da-f]{6}|[\da-f]{3})|rgba?\([\d., ]*\))/,
     htmlentity: regexBasics.htmlentity,
     punctuation: /([:,;{}@#()!]+)/,
-    attribute: /([a-zA-Z-]+)(?=\s*:)/,
+    attribute: /([a-z-]+)(?=\s*:)/,
     unit: /(px|pt|cm|%|r?em|m?s|deg|vh|vw|vmin|vmax)(?=(?:\s*[;,{}})]|\s+[-\da-z#]))/,
     error: /([:,;{}@#()!]+|&lt;|&gt;|&amp;)/
   },
@@ -143,8 +143,8 @@ const dictionary = {
     this: /\b(this)(?=\W)/,
     keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|console|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
     htmlentity: regexBasics.htmlentity,
-    punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-zA-Z])|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
-    variable: /(\.?[a-zA-Z_][\w\d]*)/,
+    punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-z])|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
+    variable: /(\.?[a-z_][\w\d]*)/,
     'external-var': /(\$|jQuery|JSON)(?=\W|$)/ // jQuery or $ or JSON.
   },
   php: {
@@ -170,10 +170,10 @@ const dictionary = {
 
 // Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
-  xml: /(\s*)([a-zA-Z\d\-:]+)(?:=("|')(.*?)\3)?/g,
-  html: /(\s*)([a-zA-Z-]+)(?:=("|')(.*?)\3)?/g,
-  'html-vue': /(\s*)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
-  pug: /(\s*|,)([@:#]?[a-zA-Z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
+  xml: /(\s*)([a-z\d\-:]+)(?:=("|')(.*?)\3)?/g,
+  html: /(\s*)([a-z-]+)(?:=("|')(.*?)\3)?/g,
+  'html-vue': /(\s*)([@:#]?[a-z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
+  pug: /(\s*|,)([@:#]?[a-z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
 // Only list the classes that need multiple captures.
@@ -207,7 +207,7 @@ export default {
     tab: { type: [Boolean, String], default: '  ' },
     dark: { type: Boolean, default: false },
     copyButton: { type: Boolean, default: false },
-    editable: { type: Boolean, default: true }
+    editable: { type: Boolean, default: false }
   },
 
   data: () => ({
@@ -317,8 +317,8 @@ export default {
 
     // Syntax highlight Pug inline tags (e.g. `#[strong bold text]`).
     highlightPugInlineTag (string) {
-      return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gs'), (_, m) => {
-        return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 's'), (m, ...matches) => {
+      return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gsi'), (_, m) => {
+        return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 'si'), (m, ...matches) => {
           matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
           return this.syntaxHighlightHtmlTag(matches)
         }) + '<span class="inline-tag">]</span>'
@@ -393,7 +393,7 @@ export default {
 
       const [regexPattern, classMap] = this.createRegexPattern()
 
-      return this.unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gs'), (m, ...matches) => {
+      return this.unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gsi'), (m, ...matches) => {
         matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
         let Class
         const isPug = this.language === 'pug'

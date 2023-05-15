@@ -108,7 +108,7 @@ a {
   text-decoration: none;
 }
 
-a[name] {
+a.anchor {
   position: relative;
   top: -4em;
   display: block;
