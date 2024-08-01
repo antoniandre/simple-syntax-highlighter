@@ -19,5 +19,11 @@ export default [
       promise: promisePlugin
     }
   },
-  ...pluginVue.configs['flat/essential']
+  ...pluginVue.configs['flat/essential'],
+  {
+    rules: {
+      'brace-style': ['error', 'stroustrup'],
+      'no-debugger': 'warn'
+    }
+  }
 ]
