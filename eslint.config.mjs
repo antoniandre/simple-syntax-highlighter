@@ -23,7 +23,8 @@ export default [
   {
     rules: {
       'brace-style': ['error', 'stroustrup'],
-      'no-debugger': 'warn'
+      'no-debugger': 'warn',
+      'vue/multi-word-component-names': 'off'
     }
   }
 ]
