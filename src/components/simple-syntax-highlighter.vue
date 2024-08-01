@@ -40,7 +40,7 @@
 const regexBasics = {
   quote: /("(?:\\"|[^"])*")|('(?:\\'|[^'])*')/, // Match simple and double quotes by pair.
   comment: /(\/\/.*?(?:\n|$)|\/\*.*?(?:\*\/|$))/, // Trailing (// ...) or blocks (/* ... */) comments.
-  doctype: /(&lt;\!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
+  doctype: /(&lt;!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
   // A tag captures everything between < and >, and handles: <tag>, or <tag/>, or </tag>.
   // The part `(?:(?!&(?:lt|amp);).)*?` makes sure not to match `<p>/p>`, `<p</p>`, `<p&p>`;
   // but the part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|` makes sure there can be &amp; inside
@@ -104,7 +104,7 @@ const dictionary = {
     // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
     // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
     tag: /([a-z][\w\d-]*|)([.#][a-z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
-    'inline-tag': /#\[([^\[\]]+)\]/ // Only performed inside tags inner texts.
+    'inline-tag': /#\[([^[\]]+)\]/ // Only performed inside tags inner texts.
     // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
   css: {
@@ -113,7 +113,7 @@ const dictionary = {
     pseudo: /(:(?:hover|active|focus|visited|not|before|after|(?:first|last|nth)-child))/,
     'selector keyword vendor': /(@-(?:moz|o|webkit|ms)-(?=keyframes\s))/,
     'selector keyword': /((?:@(?:import|media|font-face|keyframes)|screen|print|and)(?=[\s({])|keyframes|\s(?:ul|ol|li|table|div|pre|p|a|img|br|hr|h[1-6]|em|strong|span|html|body|iframe|video|audio|input|button|form|label|fieldset|small|abbr|i|dd|dt)\b)(?=.*\{})/,
-    variable: /(--[a-z0-9\-]+)/, // Any part before '{'.
+    variable: /(--[a-z0-9-]+)/, // Any part before '{'.
     selector: /((?:[.#-\w*+ >:,[\]="~\n]|&gt;)+)(?=\s*\{)/, // Any part before '{'.
     'attribute keyword vendor': /(-(?:moz|o|webkit|ms)-(?=transform|transition|user-select|tap-highlight-color|animation|background-size|box-shadow))/,
     'attribute keyword': /\b(content|float|display|position|top|left|right|bottom|(?:(?:max|min)-)?width|(?:(?:max|min|line)-)?height|font(?:-(?:family|style|size|weight|variant|stretch))?|vertical-align|color|opacity|visibility|z-index|pointer-events|user-select|transform(?:-(?:origin|style|delay|duration|property|timing-function))?|transition(?:-(?:delay|duration))?|animation(?:-(?:name|delay|duration|direction|fill-mode))?|backface-visibility|backdrop-filter|background(?:-(?:color|position|image|repeat|size|attachment|origin|clip|blend-mode))?|(?:padding|margin|border)(?:-(?:top|left|right|bottom))?|border(?:-(?:radius|color|width|style|spacing))|white-space|text-(?:align|transform|decoration|shadow|indent)|overflow(?:-(?:x|y))?|(?:letter|word)-spacing|word-break|box-(?:sizing|shadow)|stroke(?:-(?:width|opacity|dasharray|dashoffset|linecap|linejoin))?|fill|speak|outline|user-select|cursor|flex(?:-(?:direction|flow|grow|shrink|basis|wrap))?|(?:justify|align)-(?:content|self|items))(?=\s*:)/,
@@ -159,7 +159,7 @@ const dictionary = {
   },
   sql: {
     quote: regexBasics.quote,
-    comment: /((?:\-\-|#)\s.*?(?:\n|$)|\/\*.*?\*\/)/,
+    comment: /((?:--|#)\s.*?(?:\n|$)|\/\*.*?\*\/)/,
     punctuation: regexBasics.punctuation,
     number: /\b(\d+(?:\.\d+)?|null)\b/,
     boolean: regexBasics.boolean,
@@ -192,6 +192,7 @@ const multiCapturesMapping = {
   js: { quote: 2 }
 }
 
+// eslint-disable-next-line array-callback-return
 const getSlotChildrenText = children => children.map(node => {
   if (!node.children || typeof node.children === 'string') return node.children || ''
   else if (Array.isArray(node.children)) return getSlotChildrenText(node.children)
@@ -233,7 +234,8 @@ export default {
         gDark = parseInt(rgbColor[2]) <= 100
         bDark = parseInt(rgbColor[3]) <= 100
         alphaLow = parseFloat(rgbColor[4]) < 0.3
-      } else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
+      }
+      else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
         const has3chars = hexColor[1].length === 3
         rDark = parseInt(hexColor[1][0]) <= 9
         gDark = parseInt(hexColor[1][has3chars ? 1 : 2]) <= 9
@@ -442,7 +444,7 @@ export default {
     },
 
     getSlotContent () {
-      return this.$slots.default && getSlotChildrenText(this.$slots.default()) || ''
+      return (this.$slots.default && getSlotChildrenText(this.$slots.default())) || ''
     },
 
     copyCode (e) {
@@ -471,7 +473,9 @@ export default {
   // directly in the DOM and not through a variable (to avoid infinite loop).
   // The change in this hook will not trigger another DOM update.
   beforeUpdate () {
-    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
+    if (this.$refs.code) {
+      this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
+    }
   }
 }
 </script>
