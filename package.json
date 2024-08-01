@@ -35,7 +35,8 @@
     "dev": "vite",
     "build": "vite build --base /simple-syntax-highlighter/",
     "build-bundle": "BUNDLE=true vite build && mv ./dist/style.css ./dist/sshpre.css",
-    "serve": "vite preview --base /simple-syntax-highlighter/"
+    "serve": "vite preview --base /simple-syntax-highlighter/",
+    "publish-doc": "npm run build && npm run build-bundle && git add . && git commit -m 'Publish documentation on Github.' && git push && git push --tag"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
