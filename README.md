@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <!-- [![npm](https://img.shields.io/npm/dw/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter) -->
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 > No chi-chi syntax highlighter for Vue.js 3 (and 2).
 
 ___
