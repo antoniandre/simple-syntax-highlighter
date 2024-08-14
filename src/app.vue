@@ -5,7 +5,7 @@ div(v-scroll="onScroll")
     w-toolbar.top-bar(:class="{ 'top-bar--scrolled': offsetTop > 104 }")
       h1.primary.top-bar__title
         a.top-bar__logo-link(href="#top")
-          w-icon.top-bar__logo.mr1(color="lightgrey" lg) fa fa-terminal
+          w-icon.top-bar__logo.mr1(color="lightgrey" lg) mdi mdi-console-line
           span.code.mr3.lightgrey.top-bar__ssh SSH
           div.top-bar__logo-title Simple Syntax Highlighter
 

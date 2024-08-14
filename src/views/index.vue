@@ -4,16 +4,16 @@
     fixed
     top
     right
-    :icon="`material-icons ${$waveui.theme === 'dark' ? 'light_mode' : 'dark_mode'}`"
+    :icon="`mdi ${$waveui.theme === 'light' ? 'mdi-weather-night' : 'mdi-white-balance-sunny'}`"
     @click="$waveui.switchTheme($waveui.theme === 'light' ? 'dark' : 'light')")
 
   div.mb3.title3 Github project
   w-flex.mb5(align-center shrink)
-    w-icon.mr4.lightgrey(size="40") fab fa-github
+    w-icon.mr4.lightgrey(size="40") mdi mdi-github
     a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") //github.com/antoniandre/simple-syntax-highlighter
 
   h2
-    a(href="#what-is-it") No chi-chi syntax highlighter for Vue.js (2 &amp; 3).
+    a(href="#what-is-it") No chi-chi syntax highlighter for Vue.js 3 (and 2).
     a#what-is-it.anchor
   .title4.mt4.lh3
     ul.checklist.lh2
@@ -442,7 +442,7 @@
     div.mb3.title3.black Github project
 
     w-flex.mb5(align-center shrink)
-      w-icon.mr4.lightgrey(size="40") fab fa-github
+      w-icon.mr4.lightgrey(size="40") mdi mdi-github
       a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank")
         | //github.com/antoniandre/simple-syntax-highlighter
 

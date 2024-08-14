@@ -3,11 +3,11 @@ import WaveUI from 'wave-ui'
 import 'wave-ui/dist/wave-ui.css'
 import App from './app.vue'
 
+import '@mdi/font/css/materialdesignicons.min.css'
+
 const app = createApp(App)
 
 app.use(WaveUI, {
-  icons: ['md', 'fa'],
-  iconsLigature: 'material-icons',
   colors: {
     light: {
       primary: '#1b4',

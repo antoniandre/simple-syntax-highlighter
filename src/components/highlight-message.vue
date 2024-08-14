@@ -1,6 +1,6 @@
 <template lang="pug">
 component(:class="`highlight highlight--${type}`" :is="tag")
-  w-icon(v-if="!noIcon") material-icons {{ icon }}
+  w-icon(v-if="!noIcon") {{ icon }}
   slot
 </template>
 
@@ -14,12 +14,12 @@ export default {
   computed: {
     icon () {
       switch (this.type) {
-        case 'success': return 'check'
-        case 'error': return 'close'
-        case 'warning': return 'priority_high'
-        case 'tips': return 'wb_incandescent'
-        case 'info':
-        default: return 'priority_high'
+        case 'success': return 'wi-check'
+        case 'error': return 'wi-cross'
+        case 'warning': return 'mdi mdi-exclamation-thick'
+        case 'tips': return 'mdi mdi-white-balance-sunny'
+        case 'info': return 'mdi mdi-information-symbol'
+        default: return 'wi-check'
       }
     }
   }
