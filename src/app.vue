@@ -1,3 +1,21 @@
+<script setup>
+import { ref, nextTick } from 'vue'
+import Documentation from '@/views/index.vue'
+
+const offsetTop = ref(0)
+const goTopHidden = ref(true)
+
+const onScroll = () => {
+  offsetTop.value = window.scrollY || document.documentElement.scrollTop
+  goTopHidden.value = offsetTop.value < 200
+}
+
+const scrollTop = async () => {
+  await nextTick()
+  document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
+}
+</script>
+
 <template lang="pug">
 //- Scroll directive from Wave UI.
 div(v-scroll="onScroll")
@@ -26,33 +44,10 @@ div(v-scroll="onScroll")
       .spacer
       .made-with
         .mb1.
-          This documentation is made with #[w-icon(title="Vue.js") fab fa-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") fab fa-html5],
-          #[w-icon(title="CSS 3") fab fa-css3], #[w-icon(title="Sass") fab fa-sass] &amp; #[w-icon.heart(title="Love") material-icons favorite]
-        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 fab fa-github] Github].
+          This documentation is made with #[w-icon(title="Vue.js") mdi mdi-vuejs], #[w-icon(title="Wave UI") wi-wave], #[w-icon(title="HTML 5 & Pug") mdi mdi-language-html5],
+          #[w-icon(title="CSS 3") mdi mdi-language-css3], #[w-icon(title="Sass") mdi mdi-sass] &amp; #[w-icon.heart(title="Love") mdi mdi-heart]
+        | View project on #[a(href="https://github.com/antoniandre/simple-syntax-highlighter" target="_blank") #[w-icon.ml1 mdi mdi-github] Github].
 </template>
-
-<script>
-import Index from '@/views/index.vue'
-
-export default {
-  name: 'app',
-  components: { documentation: Index },
-  data: () => ({
-    offsetTop: 0,
-    goTopHidden: true
-  }),
-  methods: {
-    onScroll () {
-      this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
-      this.goTopHidden = this.offsetTop < 200
-    },
-    async scrollTop () {
-      await this.$nextTick()
-      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 $primary: var(--w-primary-color);
