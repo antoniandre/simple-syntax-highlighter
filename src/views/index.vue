@@ -289,8 +289,8 @@
     a#ex--javascript.anchor
   ssh-pre(language="js" label="Javascript" :dark="$waveui.theme === 'dark'").
     /**
-     * This is some
-     * multiline comments.
+     * This is a
+     * multiline comment.
      */
     import Vue from 'vue'
     import router from './router'
@@ -580,7 +580,6 @@
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
     SET time_zone = "+00:00";
 
-
     -- Table: `articles`
 
     CREATE TABLE `articles` (
@@ -602,7 +601,6 @@
 
     ALTER TABLE `articles`
       MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 
     -- Table: `users`
 
@@ -640,11 +638,10 @@
     The #[span.code dark] option switches the color theme to dark. Here is an example of Javascript
     code in dark mode.
 
-
   ssh-pre(language="js" label="Javascript" dark).
     /**
      * This is a
-     * multiline comments.
+     * multiline comment.
      */
     import Vue from 'vue'
     import router from './router'
