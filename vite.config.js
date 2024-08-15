@@ -4,6 +4,7 @@ import { resolve } from 'path'
 import Delete from 'rollup-plugin-delete'
 import autoprefixer from 'autoprefixer'
 
+// eslint-disable-next-line multiline-ternary
 const build = process.env.BUNDLE ? {
   lib: {
     entry: resolve(__dirname, '/src/components/simple-syntax-highlighter.vue'),
@@ -49,5 +50,8 @@ export default defineConfig({
       '@': resolve(__dirname, '/src')
     }
   },
-  build
+  build,
+  define: {
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+  }
 })
