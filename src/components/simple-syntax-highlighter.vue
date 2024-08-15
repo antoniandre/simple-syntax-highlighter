@@ -1,26 +1,6 @@
-<template>
-  <div
-    class="ssh-pre"
-    :class="{ 'ssh-pre--dark': dark }"
-    :data-type="language"
-    :data-label="label || null">
-    <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
-      <slot name="copy-button">Copy</slot>
-    </button>
-    <pre
-      ref="code"
-      class="ssh-pre__content"
-      :contenteditable="editable ? 'true' : 'false'"
-      @keydown="editable && onKeydown($event)"
-      @input="highlightInPre">
-    </pre>
-    <div class="ssh-pre__original">
-      <slot></slot>
-    </div>
-  </div>
-</template>
+<script setup>
+import { ref, onBeforeUpdate, onMounted, useSlots } from 'vue'
 
-<script>
 /**
  * /!\ CAVEATS
  * ___________
@@ -192,6 +172,21 @@ const multiCapturesMapping = {
   js: { quote: 2 }
 }
 
+const props = defineProps({
+  language: { type: String, default: '' },
+  label: { type: [String, Boolean], default: false },
+  // The characters that should be inserted on tab key press.
+  tab: { type: [Boolean, String], default: '  ' },
+  dark: { type: Boolean, default: false },
+  copyButton: { type: Boolean, default: false },
+  editable: { type: Boolean, default: false }
+})
+
+const emit = defineEmits(['copied'])
+const knownLanguages = ref(Object.keys(dictionary))
+const codeEl = ref(null)
+const slots = useSlots()
+
 // eslint-disable-next-line array-callback-return
 const getSlotChildrenText = children => children.map(node => {
   if (!node.children || typeof node.children === 'string') return node.children || ''
@@ -199,286 +194,287 @@ const getSlotChildrenText = children => children.map(node => {
   else if (node.children.default) return getSlotChildrenText(node.children.default())
 }).join('')
 
-export default {
-  name: 'sshpre',
-  props: {
-    language: { type: String, default: '' },
-    label: { type: [String, Boolean], default: false },
-    // The characters that should be inserted on tab key press.
-    tab: { type: [Boolean, String], default: '  ' },
-    dark: { type: Boolean, default: false },
-    copyButton: { type: Boolean, default: false },
-    editable: { type: Boolean, default: false }
-  },
+const htmlize = string => {
+  return string.replace(/&(lt|gt|amp);/g, (m0, m1) => ({ lt: '<', gt: '>', amp: '&' }[m1]))
+}
 
-  data: () => ({
-    knownLanguages: Object.keys(dictionary),
-    content: '',
-    slotTexts: ''
-  }),
+const unhtmlize = string => {
+  return string.replace(/[<>]/g, m => ({ '<': '&lt;', '>': '&gt;' }[m]))
+}
 
-  methods: {
-    htmlize (string) {
-      return string.replace(/&(lt|gt|amp);/g, (m0, m1) => ({ lt: '<', gt: '>', amp: '&' }[m1]))
-    },
+const isColorDark = colorString => {
+  let rgbColor, hexColor, rDark, gDark, bDark, alphaLow
 
-    unhtmlize (string) {
-      return string.replace(/[<>]/g, m => ({ '<': '&lt;', '>': '&gt;' }[m]))
-    },
+  if ((rgbColor = colorString.match(/rgba?\((.*),\s*(.*),\s*(.*?)(?:,\s*([^)]*))\)/))) {
+    rDark = parseInt(rgbColor[1]) <= 100
+    gDark = parseInt(rgbColor[2]) <= 100
+    bDark = parseInt(rgbColor[3]) <= 100
+    alphaLow = parseFloat(rgbColor[4]) < 0.3
+  }
+  else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
+    const has3chars = hexColor[1].length === 3
+    rDark = parseInt(hexColor[1][0]) <= 9
+    gDark = parseInt(hexColor[1][has3chars ? 1 : 2]) <= 9
+    bDark = parseInt(hexColor[1][has3chars ? 2 : 4]) <= 9
+  }
 
-    isColorDark (colorString) {
-      let rgbColor, hexColor, rDark, gDark, bDark, alphaLow
+  // #00f blue is also a dark color...
+  return ((rDark && gDark && bDark) || (rDark && gDark && !bDark) || (!rDark && gDark && bDark)) && !alphaLow
+}
 
-      if ((rgbColor = colorString.match(/rgba?\((.*),\s*(.*),\s*(.*?)(?:,\s*([^)]*))\)/))) {
-        rDark = parseInt(rgbColor[1]) <= 100
-        gDark = parseInt(rgbColor[2]) <= 100
-        bDark = parseInt(rgbColor[3]) <= 100
-        alphaLow = parseFloat(rgbColor[4]) < 0.3
-      }
-      else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
-        const has3chars = hexColor[1].length === 3
-        rDark = parseInt(hexColor[1][0]) <= 9
-        gDark = parseInt(hexColor[1][has3chars ? 1 : 2]) <= 9
-        bDark = parseInt(hexColor[1][has3chars ? 2 : 4]) <= 9
-      }
+// Create a single regex pattern from concatenating the regex pieces of the selected language.
+// This regex pattern will be used all at once for the string replacement.
+const createRegexPattern = () => {
+  let pattern = ''
+  const classMap = [] // Regex captures mapping for the current dictionary language.
 
-      // #00f blue is also a dark color...
-      return ((rDark && gDark && bDark) || (rDark && gDark && !bDark) || (!rDark && gDark && bDark)) && !alphaLow
-    },
+  for (const Class in dictionary[props.language]) {
+    const capturesCount = multiCapturesMapping[props.language][Class] || 1
+    for (let i = 0; i < capturesCount; i++) classMap.push(Class)
 
-    // Create a single regex pattern from concatenating the regex pieces of the selected language.
-    // This regex pattern will be used all at once for the string replacement.
-    createRegexPattern () {
-      let pattern = ''
-      const classMap = [] // Regex captures mapping for the current dictionary language.
+    pattern += (pattern ? '|' : '') + dictionary[props.language][Class].source
+  }
 
-      for (const Class in dictionary[this.language]) {
-        const capturesCount = multiCapturesMapping[this.language][Class] || 1
-        for (let i = 0; i < capturesCount; i++) classMap.push(Class)
+  return [pattern, classMap]
+}
 
-        pattern += (pattern ? '|' : '') + dictionary[this.language][Class].source
-      }
+const syntaxHighlightHtmlTag = matches => {
+  // Converts every html attribute with syntax highlighting. E.g:
+  // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
+  // ` checked` => ` <span class="attribute">checked</span>`.
+  const renderAttributesList = (_, a, b, c, d) => (
+    // `attribute-name`
+    `${a}<span class="attribute">${b}</span>` +
+    // `=`
+    (c || d ? '<span class="punctuation">=</span>' : '') +
+    // `"attribute value"`
+    (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
+  )
 
-      return [pattern, classMap]
-    },
+  if (props.language === 'pug') {
+    // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
+    let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
+    idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
+                                .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
 
-    syntaxHighlightHtmlTag (matches) {
-      // Converts every html attribute with syntax highlighting. E.g:
-      // ` class="my-class"` => ` <span class="attribute">class</span><span class="punctuation">=</span><span class="quote">"my-class"</span>`,
-      // ` checked` => ` <span class="attribute">checked</span>`.
-      const renderAttributesList = (_, a, b, c, d) => (
-        // `attribute-name`
-        `${a}<span class="attribute">${b}</span>` +
-        // `=`
-        (c || d ? '<span class="punctuation">=</span>' : '') +
-        // `"attribute value"`
-        (c || d ? `<span class="quote">${c || ''}${d || ''}${c || ''}</span>` : '')
-      )
-
-      if (this.language === 'pug') {
-        // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
-        let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
-        idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
-                                   .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
-
-        if (attributes) {
-          attributes = attributes.replace(attributesRegex.pug, renderAttributesList)
-          attributes = '<span class="punctuation">(</span>' +
-                       attributes +
-                       '<span class="punctuation">)</span>'
-        }
-
-        if (innerHtml) innerHtml = this.highlightPugInlineTag(innerHtml)
-
-        return (
-          // The tag-name + attributes list if any.
-          `<span class="tag-name">${tagName}</span>` +
-          `${idAndClasses}${attributes}` +
-          (dotForInnerText ? '<span class="punctuation">.</span>' : '') +
-          (indent || '') +
-          (innerHtml ? `<span class="text">${innerHtml}</span>` : '')
-        )
-      }
-
-      else {
-        const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
-        const attributesList = attributes.replace(attributesRegex[this.language], renderAttributesList)
-
-        // Considering these 3 possible captures of html tags:
-        // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
-        return (
-          // The tag opening: `</` or `<`.
-          `<span class="punctuation">&lt;${closingSlash}</span>` +
-          // The tag-name + attributes list if any.
-          `<span class="tag-name">${tagName || tagNameEnd}</span>` + attributesList +
-          // The tag end `>` or `/>`.
-          `<span class="punctuation">${autoClosingSlash}&gt;</span>`
-        )
-      }
-    },
-
-    // Syntax highlight Pug inline tags (e.g. `#[strong bold text]`).
-    highlightPugInlineTag (string) {
-      return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gsi'), (_, m) => {
-        return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 'si'), (m, ...matches) => {
-          matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
-          return this.syntaxHighlightHtmlTag(matches)
-        }) + '<span class="inline-tag">]</span>'
-      })
-    },
-
-    highlightInPre () {
-      if (this.knownLanguages.includes(this.language)) {
-        const caretPosition = this.getCaretPositionInPlainText() // Save caret position before highlighting.
-        this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
-        this.reinjectCaret(this.$refs.code.childNodes, caretPosition) // Restore the caret position.
-      }
-    },
-
-    /**
-     * Returns the user caret position in the raw non-highlighted (non-html) text.
-     * @return {Number} (integer) the caret position.
-     */
-    getCaretPositionInPlainText () {
-      const sel = window.getSelection()
-      sel.collapseToEnd()
-      const range = new Range()
-      range.setStart(this.$refs.code, 0)
-      range.setEnd(sel.extentNode, sel.extentOffset)
-
-      return range.toString().length
-    },
-
-    /**
-     * Re-injects the caret in the text of the given node at the given position.
-     * @param {Object} contentEditableNode the contenteditable DOM element where to inject the caret.
-     * @param {Number} caretPosition (integer) the caret position.
-     */
-    reinjectCaret (contentEditableNode, caretPosition) {
-      let totalStrLength = 0
-      for (const node of contentEditableNode) {
-        const nodeTextLength = node.innerText?.length || node.length
-
-        if (totalStrLength + nodeTextLength >= caretPosition) {
-          if (node.childNodes.length > 1) this.reinjectCaret(node.childNodes, caretPosition - totalStrLength)
-          else document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
-          break
-        }
-        totalStrLength += nodeTextLength
-      }
-    },
-
-    onKeydown (e) {
-      switch (e.which) {
-        case 9: // Tab.
-          this.injectAtCaret(this.tab)
-          e.preventDefault()
-          break
-        case 13: // Enter.
-          this.injectAtCaret('\n')
-          e.preventDefault()
-          break
-      }
-    },
-
-    injectAtCaret (string) {
-      const sel = window.getSelection()
-      const range = sel.getRangeAt(0)
-      const textNode = document.createTextNode(string)
-      range.insertNode(textNode)
-      sel.collapseToEnd()
-    },
-
-    syntaxHighlightContent (string) {
-      // Only process the string if the language is supported.
-      if (!this.knownLanguages.includes(this.language)) return string
-
-      const [regexPattern, classMap] = this.createRegexPattern()
-
-      return this.unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gsi'), (m, ...matches) => {
-        matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
-        let Class
-        const isPug = this.language === 'pug'
-
-        // Get the first not undefined match from the array of matches and associate with the correct
-        // capture class to perform a specific action if there is.
-        let match = matches.find((m, i) => m && (Class = classMap[i]) && m)
-
-        if (['punctuation', 'quote', 'htmlentity'].includes(Class)) match = this.unhtmlize(match)
-        else if (Class === 'comment') {
-          if (isPug) {
-            const [carretReturn, whitespaces, comment] = matches.slice(classMap.indexOf('comment'))
-            match = `${carretReturn}${whitespaces}${this.unhtmlize(comment)}`
-          }
-          else match = this.unhtmlize(match)
-        }
-        else if (Class === 'text' && isPug) {
-          let [indent1, indent2, text] = matches
-          text = this.highlightPugInlineTag(text)
-          return `${indent1}<span class="punctuation">|</span>${indent2}<span class="text">${text}</span>`
-        }
-        else if (Class === 'text2' && isPug) {
-          const [, , , tabs, tagString, text] = matches
-          const tag = this.syntaxHighlightContent(tagString)
-          return `${tabs}${tag}<span class="punctuation">.</span>\n<span class="text">${text}</span>`
-        }
-        else if (Class === 'tag' && ['xml', 'html', 'html-vue', 'pug'].includes(this.language)) {
-          // Pass the matches param from the first tag capture (remove quotes, comments, etc).
-          return this.syntaxHighlightHtmlTag(matches.slice(classMap.indexOf('tag')))
-        }
-
-        else if (Class === 'variable' && match[0] === '.' && this.language === 'js') {
-          /**
-           * @todo don't apply variable color if char before '.' is not '\w'.
-           */
-          return `<span class="punctuation">.</span><span class="obj-attr">${match.substr(1)}</span>`
-        }
-
-        let styles = ''
-        if (Class === 'color' && this.language === 'css') {
-          styles = ` style="background-color: ${match};color: #${this.isColorDark(match) ? 'fff' : '000'}"`
-        }
-
-        return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
-      })
-    },
-
-    getSlotContent () {
-      return (this.$slots.default && getSlotChildrenText(this.$slots.default())) || ''
-    },
-
-    copyCode (e) {
-      e.target.insertAdjacentHTML(
-        'afterend',
-        `<textarea id="clipboard-textarea">${this.$refs.code.innerText}</textarea>`
-      )
-      const textarea = document.getElementById('clipboard-textarea')
-
-      textarea.select()
-      textarea.setSelectionRange(0, 99999) // For mobile devices.
-      document.execCommand('copy')
-      textarea.remove()
-
-      this.$emit('copied', this.$refs.code.innerText)
+    if (attributes) {
+      attributes = attributes.replace(attributesRegex.pug, renderAttributesList)
+      attributes = '<span class="punctuation">(</span>' +
+                    attributes +
+                    '<span class="punctuation">)</span>'
     }
-  },
 
-  mounted () {
-    const slotContent = this.getSlotContent()
-    this.$refs.code.innerText = slotContent
-    this.$refs.code.innerHTML = this.syntaxHighlightContent(this.$refs.code.innerText)
-  },
+    if (innerHtml) innerHtml = highlightPugInlineTag(innerHtml)
 
-  // Re-apply syntax highlighting on updated template (external variable update, slot content change)
-  // directly in the DOM and not through a variable (to avoid infinite loop).
-  // The change in this hook will not trigger another DOM update.
-  beforeUpdate () {
-    if (this.$refs.code) {
-      this.$refs.code.innerHTML = this.syntaxHighlightContent(this.getSlotContent())
-    }
+    return (
+      // The tag-name + attributes list if any.
+      `<span class="tag-name">${tagName}</span>` +
+      `${idAndClasses}${attributes}` +
+      (dotForInnerText ? '<span class="punctuation">.</span>' : '') +
+      (indent || '') +
+      (innerHtml ? `<span class="text">${innerHtml}</span>` : '')
+    )
+  }
+
+  else {
+    const [tagName, attributes = '', autoClosingSlash = '', closingSlash = '', tagNameEnd] = matches
+    const attributesList = attributes.replace(attributesRegex[props.language], renderAttributesList)
+
+    // Considering these 3 possible captures of html tags:
+    // `<tag-name attrs>` or `<tag-name attrs />` or `</tag-name>`.
+    return (
+      // The tag opening: `</` or `<`.
+      `<span class="punctuation">&lt;${closingSlash}</span>` +
+      // The tag-name + attributes list if any.
+      `<span class="tag-name">${tagName || tagNameEnd}</span>` + attributesList +
+      // The tag end `>` or `/>`.
+      `<span class="punctuation">${autoClosingSlash}&gt;</span>`
+    )
   }
 }
+
+// Syntax highlight Pug inline tags (e.g. `#[strong bold text]`).
+const highlightPugInlineTag = string => {
+  return string.replace(new RegExp(dictionary.pug['inline-tag'], 'gsi'), (_, m) => {
+    return '<span class="inline-tag">#[</span>' + m.replace(new RegExp(dictionary.pug.tag, 'si'), (m, ...matches) => {
+      matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
+      return syntaxHighlightHtmlTag(matches)
+    }) + '<span class="inline-tag">]</span>'
+  })
+}
+
+const highlightInPre = () => {
+  if (knownLanguages.value.includes(props.language)) {
+    const caretPosition = getCaretPositionInPlainText() // Save caret position before highlighting.
+    codeEl.value.innerHTML = syntaxHighlightContent(codeEl.value.innerText)
+    reinjectCaret(codeEl.value.childNodes, caretPosition) // Restore the caret position.
+  }
+}
+
+/**
+ * Returns the user caret position in the raw non-highlighted (non-html) text.
+ * @return {Number} (integer) the caret position.
+ */
+const getCaretPositionInPlainText = () => {
+  const sel = window.getSelection()
+  sel.collapseToEnd()
+  const range = new Range()
+  range.setStart(codeEl.value, 0)
+  range.setEnd(sel.extentNode, sel.extentOffset)
+
+  return range.toString().length
+}
+
+/**
+ * Re-injects the caret in the text of the given node at the given position.
+ * @param {Object} contentEditableNode the contenteditable DOM element where to inject the caret.
+ * @param {Number} caretPosition (integer) the caret position.
+ */
+const reinjectCaret = (contentEditableNode, caretPosition) => {
+  let totalStrLength = 0
+  for (const node of contentEditableNode) {
+    const nodeTextLength = node.innerText?.length || node.length
+
+    if (totalStrLength + nodeTextLength >= caretPosition) {
+      if (node.childNodes.length > 1) reinjectCaret(node.childNodes, caretPosition - totalStrLength)
+      else document.getSelection().setPosition(node.childNodes?.[0] || node, caretPosition - totalStrLength)
+      break
+    }
+    totalStrLength += nodeTextLength
+  }
+}
+
+const onKeydown = e => {
+  switch (e.which) {
+    case 9: // Tab.
+      injectAtCaret(props.tab)
+      e.preventDefault()
+      break
+    case 13: // Enter.
+      injectAtCaret('\n')
+      e.preventDefault()
+      break
+  }
+}
+
+const injectAtCaret = string => {
+  const sel = window.getSelection()
+  const range = sel.getRangeAt(0)
+  const textNode = document.createTextNode(string)
+  range.insertNode(textNode)
+  sel.collapseToEnd()
+}
+
+const syntaxHighlightContent = string => {
+  // Only process the string if the language is supported.
+  if (!knownLanguages.value.includes(props.language)) return string
+
+  const [regexPattern, classMap] = createRegexPattern()
+
+  return unhtmlize(string.replace(/&/g, '&amp;')).replace(new RegExp(regexPattern, 'gsi'), (m, ...matches) => {
+    matches = matches.slice(0, matches.length - 2) // Remove 2 last args (offset & string source).
+    let Class
+    const isPug = props.language === 'pug'
+
+    // Get the first not undefined match from the array of matches and associate with the correct
+    // capture class to perform a specific action if there is.
+    let match = matches.find((m, i) => m && (Class = classMap[i]) && m)
+
+    if (['punctuation', 'quote', 'htmlentity'].includes(Class)) match = unhtmlize(match)
+    else if (Class === 'comment') {
+      if (isPug) {
+        const [carretReturn, whitespaces, comment] = matches.slice(classMap.indexOf('comment'))
+        match = `${carretReturn}${whitespaces}${unhtmlize(comment)}`
+      }
+      else match = unhtmlize(match)
+    }
+    else if (Class === 'text' && isPug) {
+      let [indent1, indent2, text] = matches
+      text = highlightPugInlineTag(text)
+      return `${indent1}<span class="punctuation">|</span>${indent2}<span class="text">${text}</span>`
+    }
+    else if (Class === 'text2' && isPug) {
+      const [, , , tabs, tagString, text] = matches
+      const tag = syntaxHighlightContent(tagString)
+      return `${tabs}${tag}<span class="punctuation">.</span>\n<span class="text">${text}</span>`
+    }
+    else if (Class === 'tag' && ['xml', 'html', 'html-vue', 'pug'].includes(props.language)) {
+      // Pass the matches param from the first tag capture (remove quotes, comments, etc).
+      return syntaxHighlightHtmlTag(matches.slice(classMap.indexOf('tag')))
+    }
+
+    else if (Class === 'variable' && match[0] === '.' && props.language === 'js') {
+      /**
+       * @todo don't apply variable color if char before '.' is not '\w'.
+       */
+      return `<span class="punctuation">.</span><span class="obj-attr">${match.substr(1)}</span>`
+    }
+
+    let styles = ''
+    if (Class === 'color' && props.language === 'css') {
+      styles = ` style="background-color: ${match};color: #${isColorDark(match) ? 'fff' : '000'}"`
+    }
+
+    return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
+  })
+}
+
+const getSlotContent = () => {
+  return (slots.default && getSlotChildrenText(slots.default())) || ''
+}
+
+const copyCode = e => {
+  e.target.insertAdjacentHTML(
+    'afterend',
+    `<textarea id="clipboard-textarea">${codeEl.value.innerText}</textarea>`
+  )
+  const textarea = document.getElementById('clipboard-textarea')
+
+  textarea.select()
+  textarea.setSelectionRange(0, 99999) // For mobile devices.
+  document.execCommand('copy')
+  textarea.remove()
+
+  emit('copied', codeEl.value.innerText)
+}
+
+onMounted(() => {
+  const slotContent = getSlotContent()
+  codeEl.value.innerText = slotContent
+  codeEl.value.innerHTML = syntaxHighlightContent(codeEl.value.innerText)
+})
+
+// Re-apply syntax highlighting on updated template (external variable update, slot content change)
+// directly in the DOM and not through a variable (to avoid infinite loop).
+// The change in this hook will not trigger another DOM update.
+onBeforeUpdate(() => {
+  if (codeEl.value) {
+    codeEl.value.innerHTML = syntaxHighlightContent(getSlotContent())
+  }
+})
 </script>
+
+<template>
+  <div
+    class="ssh-pre"
+    :class="{ 'ssh-pre--dark': dark }"
+    :data-type="language"
+    :data-label="label || null">
+    <button v-if="copyButton" class="ssh-pre__copy" @click="copyCode">
+      <slot name="copy-button">Copy</slot>
+    </button>
+    <pre
+      ref="codeEl"
+      class="ssh-pre__content"
+      :contenteditable="editable ? 'true' : 'false'"
+      @keydown="editable && onKeydown($event)"
+      @input="highlightInPre">
+    </pre>
+    <div class="ssh-pre__original">
+      <slot></slot>
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .ssh-pre {
