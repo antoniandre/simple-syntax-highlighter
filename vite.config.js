@@ -5,7 +5,7 @@ import Delete from 'rollup-plugin-delete'
 import autoprefixer from 'autoprefixer'
 
 // eslint-disable-next-line multiline-ternary
-const build = process.env.BUNDLE ? {
+const bundleBuild = {
   lib: {
     entry: resolve(__dirname, '/src/components/simple-syntax-highlighter.vue'),
     name: 'sshpre',
@@ -26,8 +26,6 @@ const build = process.env.BUNDLE ? {
       chunkFileNames: '[name].js'
     }
   }
-} : {
-  outDir: 'docs'
 }
 
 export default defineConfig({
@@ -50,7 +48,7 @@ export default defineConfig({
       '@': resolve(__dirname, '/src')
     }
   },
-  build,
+  build: process.env.BUNDLE ? bundleBuild : { outDir: 'docs' },
   define: {
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
   }

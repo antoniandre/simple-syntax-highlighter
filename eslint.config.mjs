@@ -8,7 +8,7 @@ import standard from 'eslint-config-standard'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,vue}'] },
-  { languageOptions: { globals: globals.browser } },
+  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   pluginJs.configs.recommended,
   {
     name: 'standard',
