@@ -255,7 +255,7 @@ const syntaxHighlightHtmlTag = matches => {
     // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
     let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
     idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
-                                .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
+                               .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
 
     if (attributes) {
       attributes = attributes.replace(attributesRegex.pug, renderAttributesList)

@@ -1,3 +1,8 @@
+<script setup>
+import SshPre from '@/components/simple-syntax-highlighter.vue'
+import Highlight from '@/components/highlight-message.vue'
+</script>
+
 <template lang="pug">
 .documentation
   w-button.mr1.theme-switch(
@@ -730,15 +735,6 @@
 
     [data-type="sql"] .var-type {color: #f63;font-weight: bold;}
 </template>
-
-<script>
-import SshPre from '@/components/simple-syntax-highlighter.vue'
-import Highlight from '@/components/highlight-message.vue'
-
-export default {
-  components: { SshPre, Highlight }
-}
-</script>
 
 <style lang="scss">
 .theme-switch {z-index: 100;}
