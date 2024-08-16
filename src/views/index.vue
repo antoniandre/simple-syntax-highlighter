@@ -130,8 +130,8 @@ import Highlight from '@/components/highlight-message.vue'
         &lt;head&gt;
           ...
           &lt;script src="https://unpkg.com/vue"&gt;&lt;/script&gt;
-          &lt;script src="https://unpkg.com/vue-cal"&gt;&lt;/script&gt;
-          &lt;link href="https://unpkg.com/vue-cal/dist/vuecal.css" rel="stylesheet"&gt;
+          &lt;script src="https://unpkg.com/simple-syntax-highlighter"&gt;&lt;/script&gt;
+          &lt;link href="https://unpkg.com/simple-syntax-highlighter/dist/vuecal.css" rel="stylesheet"&gt;
         &lt;/head&gt;
 
     template(#item-title.2) Vue 2
@@ -140,8 +140,8 @@ import Highlight from '@/components/highlight-message.vue'
         &lt;head&gt;
           ...
           &lt;script src="https://unpkg.com/vue@legacy"&gt;&lt;/script&gt;
-          &lt;script src="https://unpkg.com/vue-cal@legacy"&gt;&lt;/script&gt;
-          &lt;link href="https://unpkg.com/vue-cal@legacy/dist/vuecal.css" rel="stylesheet"&gt;
+          &lt;script src="https://unpkg.com/simple-syntax-highlighter@legacy"&gt;&lt;/script&gt;
+          &lt;link href="https://unpkg.com/simple-syntax-highlighter@legacy/dist/vuecal.css" rel="stylesheet"&gt;
         &lt;/head&gt;
 
   h2
