@@ -22,10 +22,9 @@ const regexBasics = {
   comment: /(\/\/.*?(?:\n|$)|\/\*.*?(?:\*\/|$))/, // Trailing (// ...) or blocks (/* ... */) comments.
   doctype: /(&lt;!DOCTYPE.*?&gt;)/, // Doctype is case insensitive.
   // A tag captures everything between < and >, and handles: <tag>, or <tag/>, or </tag>.
-  // The part `(?:(?!&(?:lt|amp);).)*?` makes sure not to match `<p>/p>`, `<p</p>`, `<p&p>`;
-  // but the part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|` makes sure there can be &amp; inside
+  // The part `(?:[^&]|&(?:lt|amp|quot|apos|gt);)*?)` makes sure there can be &amp; inside
   // quoted attribute value (`attr="& < >"` or `attr='& < >'`).
-  htmlTag: /&lt;(?:([a-z][\w\d-]*)((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)(\s*\/?)|(\/?)([a-z][\w\d-]*))&gt;/,
+  htmlTag: /&lt;(?:([a-z][\w:-]*)((?:[\w\- ]+=(?:"[^"]*"|'[^']*'))*|(?:[^&]|&(?:lt|amp|quot|apos|gt);)*?)(\s*\/?)|(\/?)([a-z][\w:-]*))&gt;/,
   htmlentity: /(&amp;(?:[a-z]+|#x?\d+);)/,
   // Punctuation outside of html tags, quotes and comments.
   punctuation: /(!==?|(?:[[\](){}.:,+\-?=!])+|(?<!&(?:[a-z]+|#x?\d+));|\|\||&lt;|&gt;|&amp;)/,
@@ -62,7 +61,7 @@ const dictionary = {
     quote: regexBasics.quote,
     comment: /(&lt;!--.*?(?:--&gt;|$))/,
     htmlentity: regexBasics.htmlentity,
-    tag: regexBasics.htmlTag
+    tag: /&lt;(?:([a-z][\w:-]*)((?:[\w-]+\s*=(?:"[^"]*"|'[^']*'))*|(?:[^&]|&(?:lt|amp|quot|apos|gt);)*?)(\s*\/?)|(\/?)([a-z][\w:-]*))&gt;/
   },
   // @todo: support Pug inline tags like `#[em italic]`.
   pug: {
@@ -74,16 +73,16 @@ const dictionary = {
     // tag.
     //   text
     // See caveat #3 (backreferences).
-    text2: /([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
-    // text2: /^([ \t]*)([.#\-\w\d]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
+    text2: /([ \t]*)([.#\w-]+(?:\([^)]*\))*)\.\n((?:\n+(?=\4[ \t]+)|(?=\4[ \t]+).+?(?:\n|$)*?)*)(?=\s*(?:\n|$))/,
+    // text2: /^([ \t]*)([.#\w-]+(?:\([^)]*\))*)\.\n((?:(?:^\4[ \t]+)(?:[^\n]*)\n)*)/,
     quote: regexBasics.quote,
     // See caveat #3 (backreferences).
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
-    // The part `(?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
+    // The part `(?:[\w\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
     // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
-    tag: /([a-z][\w\d-]*|)([.#][a-z][-.\w\d]*|)\b(?:\(((?:[\w\d\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    tag: /([a-z][\w:-]*|)([.#][a-z][.\w-]*|)\b(?:\(((?:[\w\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     'inline-tag': /#\[([^[\]]+)\]/ // Only performed inside tags inner texts.
     // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
@@ -124,7 +123,7 @@ const dictionary = {
     keyword: /\b(new|getElementsBy(?:Tag|Class|)Name|getElementById|querySelector|querySelectorAll|arguments|if|else|do|return|case|default|(?:f|F)unction|typeof|instanceof|undefined|document(?:Element)?|window|console|while|for|forEach|switch|in|break|continue|delete|length|var|let|const|export|import|as|require|from|Class|constructor|Number|Boolean|String|Array|Object|RegExp|Integer|Date|Promise|Proxy|WeakMap|WeakSet|Symbol|SyncManager|File(?:Reader)?|DataTransfer|DocumentFragment|async|await|(?:clear|set)(?:Timeout|Interval)|parse(?:Int|Float)|Math(?=\.)|isNaN|atob|btoa|getComputedStyle)(?=\W)/,
     htmlentity: regexBasics.htmlentity,
     punctuation: /(!==?|[[\]!(){}:;,+\-%*/?=]+|\.+(?![a-z])|\|\||&lt;|&gt;|&amp;)/, // Override default since '.' can be part of js variable.
-    variable: /(\.?[a-z_][\w\d]*)/,
+    variable: /(\.?[a-z_]\w*)/,
     'external-var': /(\$|jQuery|JSON)(?=\W|$)/ // jQuery or $ or JSON.
   },
   php: {
@@ -134,7 +133,7 @@ const dictionary = {
     punctuation: regexBasics.punctuation,
     number: regexBasics.number,
     boolean: regexBasics.boolean,
-    variable: /(\$[\w\d_]+)/,
+    variable: /(\$\w+)/,
     keyword: /\b(define|echo|die|exit|print_r|var_dump|if|else|elseif|do|return|case|default|function|\$this|while|foreach|for|switch|in|break|continue|empty|isset|unset|parse_ini_file|session_(?:start|destroy|id)|header|json_(?:encode|decode)|error_log|(require|include)(:?_once)?|try|throw|new|Exception|catch|finally|preg_(?:match|replace)|list|strlen|substr|str_replace|array_(?:keys|values))(?=\W|$)/
   },
   sql: {
@@ -254,14 +253,12 @@ const syntaxHighlightHtmlTag = matches => {
   if (props.language === 'pug') {
     // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
     let [tagName, idAndClasses = '', attributes = '', dotForInnerText = '', indent = '', innerHtml = ''] = matches
-    idAndClasses = idAndClasses.replace(/#[a-z\d-]+/g, m => `<span class="id">${m}</span>`)
-                               .replace(/\.[a-z\d-]+/g, m => `<span class="class">${m}</span>`)
+    idAndClasses = idAndClasses.replace(/#[\w-]+/g, m => `<span class="id">${m}</span>`)
+                               .replace(/\.[\w-]+/g, m => `<span class="class">${m}</span>`)
 
     if (attributes) {
       attributes = attributes.replace(attributesRegex.pug, renderAttributesList)
-      attributes = '<span class="punctuation">(</span>' +
-                    attributes +
-                    '<span class="punctuation">)</span>'
+      attributes = '<span class="punctuation">(</span>' + attributes + '<span class="punctuation">)</span>'
     }
 
     if (innerHtml) innerHtml = highlightPugInlineTag(innerHtml)
