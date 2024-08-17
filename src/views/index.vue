@@ -205,14 +205,6 @@ import Highlight from '@/components/highlight-message.vue'
         &lt;/body&gt;
       &lt;/html&gt;
 
-      &lt;w-button
-        v-for="i in pagesCount"
-        :key="i"
-        @click="i !== page &amp;&amp; goToPage(i)"
-        xs&gt;
-        {{ i }}
-      &lt;/w-button&gt;
-
   h2
     a(href="#options") Options
     a#options.anchor
