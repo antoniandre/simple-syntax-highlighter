@@ -162,7 +162,7 @@ import Highlight from '@/components/highlight-message.vue'
       &lt;/ssh-pre&gt;
     div.mt8.mx4.text-center.arrow-block
       div renders as:
-      w-icon(xl) material-icons arrow_right_alt
+      w-icon.grey(xl) mdi mdi-arrow-right
     ssh-pre.grow.basis-zero(
       language="js"
       label="Javascript"
@@ -191,7 +191,7 @@ import Highlight from '@/components/highlight-message.vue'
       &lt;/ssh-pre&gt;
     div.mx4.text-center.arrow-block
       div renders as:
-      w-icon(xl) material-icons arrow_right_alt
+      w-icon.grey(xl) mdi mdi-arrow-right
     ssh-pre.grow.basis-zero(
       language="html-vue"
       label="HTML Vue Template"
@@ -204,6 +204,14 @@ import Highlight from '@/components/highlight-message.vue'
           Some content.
         &lt;/body&gt;
       &lt;/html&gt;
+
+      &lt;w-button
+        v-for="i in pagesCount"
+        :key="i"
+        @click="i !== page &amp;&amp; goToPage(i)"
+        xs&gt;
+        {{ i }}
+      &lt;/w-button&gt;
 
   h2
     a(href="#options") Options
@@ -268,7 +276,7 @@ import Highlight from '@/components/highlight-message.vue'
         @copied="$waveui.notify('copied to clipboard!', 'success')"
         :dark="$waveui.theme === 'dark'")
         template(#copy-button)
-          w-icon(small color="primary") material-icons content_copy
+          w-icon(small color="primary") mdi mdi-content-copy
         | &lt;body&gt;
         |   &lt;div id="app"&gt;&lt;/div&gt;
         | &lt;/body&gt;
@@ -280,7 +288,7 @@ import Highlight from '@/components/highlight-message.vue'
   ssh-pre(language="html-vue" :dark="$waveui.theme === 'dark'").
     &lt;ssh-pre language="html-vue" copy-button @copied="onCopiedDoSomething"&gt;
       &lt;template #copy-button&gt;
-        &lt;i class="icon material-icons"&gt;material-icons content_copy&lt;/i&gt;
+        &lt;i class="icon mdi mdi-content-copy"&gt;&lt;/i&gt;
       &lt;/template&gt;
       ...
     &lt;/ssh-pre&gt;
