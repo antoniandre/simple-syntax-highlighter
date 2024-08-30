@@ -150,8 +150,8 @@ const dictionary = {
 // Once the tag is matched in above rules, split the tag into pieces and isolate attributes.
 const attributesRegex = {
   xml: /(\s*)([a-z\d\-:]+)(?:=("|')(.*?)\3)?/g,
-  html: /(\s*)([a-z-]+)(?:=("|')(.*?)\3)?/g,
-  'html-vue': /(\s*)([@:#]?[a-z\d-]+)(?:(?:=("|')(.*?)\3)|)/g,
+  html: /(\s*)([a-z-]+)(?:=("|')(.*?)\3)?/gs,
+  'html-vue': /(\s*)([@:#]?[a-z\d-]+)(?:(?:=("|')(.*?)\3)|)/gs,
   pug: /(\s*|,)([@:#]?[a-z\d-]+)(?:(?:=("|')(.*?)\3)|)/g
 }
 
