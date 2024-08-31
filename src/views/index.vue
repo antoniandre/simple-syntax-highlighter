@@ -43,7 +43,6 @@ import Highlight from '@/components/highlight-message.vue'
     li #[span.wi-check.w-icon.success] MySQL
     li #[span.wi-cross.w-icon.error] No support for mixed nested languages
 
-
   h2
     a(href="#demo") demo - try it!
     a#demo.anchor
