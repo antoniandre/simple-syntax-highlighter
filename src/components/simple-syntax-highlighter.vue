@@ -80,9 +80,11 @@ const dictionary = {
     comment: /(^|\n)([ \t]*|^)(\/\/-[ \t]*(?:[^\n]*?(?:\n\10[ \t]+[^\n]*)+|[^\n]+(?=\n|$)))/,
     // A tag captures everything like `tag`, `.tag(attrs)`, `#tag(attrs)`, `div.tag(attrs)`.
     // 6 groups: 1. tag, 2. class & id, 3. attrs, 4. dot or not, 5. indent before content, 6. inner html.
-    // The part `(?:[\w\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?` makes sure not to match `p() p)`,
-    // and that htmlentities (e.g. &amp;) can be used within quotes of attribute values.
-    tag: /([a-z][\w:-]*|)([.#][a-z][.\w-]*|)\b(?:\(((?:[\w\- ]+=(?:"[^"]*"|'[^']*'))*|(?:(?!&(?:lt|amp);).)*?)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
+    // The part `(?:[@:]?[a-z][\w-]+(?:=(?:"[^"]*"|'[^']*'))*\s*)*` matches all the attributes together.
+    // It's a repeated group (0+) of attribute key-value pairs or key only. If there is an attribute
+    // value, it makes sure the attribute is formed with matching quotes or double quotes and any character
+    // inside.
+    tag: /([a-z][\w:-]*)?([.#][a-z][.\w-]*)?(?:\((\s*(?:[@:]?[a-z][\w-]+(?:=(?:"[^"]*"|'[^']*'))*\s*)*)\))?/,
     'inline-tag': /#\[([^[\]]+)\]/ // Only performed inside tags inner texts.
     // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
