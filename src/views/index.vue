@@ -88,9 +88,23 @@ import Highlight from '@/components/highlight-message.vue'
       ...
     }
   highlight.mt4
-    | In some cases, like in vue-cli or Vite, you might need to preserve the white spaces in the project
+    | In some cases, like in Vite or vue-cli, you may need to preserve the white spaces in the project
     | (if you see all the ssh-pre contents on a single line).#[br]
-    | Here is how to preserve whitespaces in Vue. Add this in your vue.config.js file:
+    | Here is how to preserve white spaces in Vite. Add this in your vite.config.js file:
+    ssh-pre.my1(language="js" :dark="$waveui.theme === 'dark'").
+      export default defineConfig({
+        plugins: [
+          vue({
+            template: {
+              compilerOptions: {
+                whitespace: 'preserve'
+              }
+            }
+          })
+        ],
+        ...
+
+    p Or in Vue CLI, add this in your vue.config.js file:
     ssh-pre.my1(language="js" :dark="$waveui.theme === 'dark'").
       module.exports = {
         chainWebpack: config =&gt; {
@@ -104,19 +118,6 @@ import Highlight from '@/components/highlight-message.vue'
               return options
             })
         }
-      }
-    p Or in Vite, add this in your vite.config.js file:
-    ssh-pre.my1(language="js" :dark="$waveui.theme === 'dark'").
-      export default defineConfig({
-        plugins: [
-          createVuePlugin({
-            vueTemplateOptions: {
-              compilerOptions: {
-                whitespace: 'preserve'
-              }
-            }
-          })
-        ]
       }
 
   h3.mt8 Via #[span.code &lt;script&gt;] tag
