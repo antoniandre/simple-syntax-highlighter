@@ -84,7 +84,7 @@ const dictionary = {
     // It's a repeated group (0+) of attribute key-value pairs or key only. If there is an attribute
     // value, it makes sure the attribute is formed with matching quotes or double quotes and any character
     // inside.
-    tag: /([a-z][\w:-]*|)([.#][a-z][.\w-]*|)\b(?:\((\s*(?:[#@:]?[a-z][\w-.:]+(?:=(?:"[^"]*"|'[^']*'))*\s*)*)\))?/,
+    tag: /([a-z][\w:-]*|)([.#][a-z][.\w-]*|)\b(?:\((\s*(?:[#@:]?[a-z][\w-.:]+(?:=(?:"[^"]*"|'[^']*'))*\s*)*)\))?(\.?)([ \t]*)([^\n]+)?(?=\n|$)/,
     'inline-tag': /#\[([^[\]]+)\]/ // Only performed inside tags inner texts.
     // htmlentity: regexBasics.htmlentity // Only performed inside tags inner texts.
   },
