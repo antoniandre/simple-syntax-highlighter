@@ -4,7 +4,6 @@ import { resolve } from 'path'
 import Delete from 'rollup-plugin-delete'
 import autoprefixer from 'autoprefixer'
 
-// eslint-disable-next-line multiline-ternary
 const bundleBuild = {
   lib: {
     entry: resolve(__dirname, '/src/components/simple-syntax-highlighter.vue'),
@@ -29,6 +28,12 @@ const bundleBuild = {
 }
 
 export default defineConfig({
+  server: {
+    // Helps reducing the number of open files and open file descriptor count using HMR.
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**']
+    }
+  },
   plugins: [
     Vue({
       template: {
