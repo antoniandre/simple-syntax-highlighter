@@ -7,7 +7,7 @@
   "repository": "https://github.com/antoniandre/simple-syntax-highlighter",
   "license": "MIT",
   "funding": "https://github.com/sponsors/antoniandre",
-  "main": "dist/sshpre.cjs.js",
+  "main": "dist/sshpre.es.js",
   "unpkg": "dist/sshpre.umd.js",
   "jsdelivr": "dist/sshpre.umd.js",
   "module": "./dist/sshpre.es.js",
@@ -22,15 +22,18 @@
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
+  "type": "module",
+  "sideEffects": ["dist/*.css"],
   "keywords": [
-    "syntax highlighter",
-    "code highlighter",
-    "code mirror",
-    "vue",
-    "vue3",
-    "vuejs",
-    "ui"
-  ],
+    "syntax highlighting",
+    "code highlighting",
+    "vue syntax highlighter",
+    "vue component",
+    "highlight.js alternative",
+    "syntax",
+    "vue ui",
+    "vue 3"
+    ],
   "scripts": {
     "dev": "vite",
     "build": "vite build --base /simple-syntax-highlighter/",
@@ -61,5 +64,9 @@
   },
   "peerDependencies": {
     "vue": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
   }
 }
