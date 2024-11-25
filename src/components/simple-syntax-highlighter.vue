@@ -204,6 +204,8 @@ const unhtmlize = string => {
 }
 
 const colorInfo = colorString => {
+  if (colorString === 'transparent') return { dark: false, alpha: 0 }
+
   const calculateLuminance = value => {
     return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)
   }
@@ -428,7 +430,7 @@ const syntaxHighlightContent = string => {
     let styles = ''
     if (Class === 'color' && props.language === 'css') {
       const { dark, alpha } = colorInfo(match)
-      Class += ` color--${dark ? 'dark' : 'light'}${alpha < 0.4 ? ' color--transparent' : ''}`
+      Class += ` color--${dark ? 'dark' : 'light'}${alpha < 0.4 || match === 'transparent' ? ' color--transparent' : ''}`
       styles = ` style="background-color: ${match}"`
     }
 
