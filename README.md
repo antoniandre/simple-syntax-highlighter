@@ -56,6 +56,7 @@ ___
 ## Release Notes
 
 ### Vue 3
+- __Version 3.1.0__ Defaults to ES build for modern browsers.
 - __Version 3.0.0__ Support code editing. Improved syntax highlighting. Always reactive.
 - __Version 2.0.0__ Vue 3 build
 
