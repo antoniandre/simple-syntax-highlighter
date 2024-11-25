@@ -102,7 +102,7 @@ const dictionary = {
     'value keyword': /\b(inherit|initial|normal|none|unset|auto|inline(?:-(?:block|flex))?|block|flex|absolute|relative|static|fixed|sticky|hidden|visible|top|left|right|bottom|center|middle|baseline|solid|dotted|dashed|line-through|(?:over|under)line|wavy|double|(?:pre-|no)?wrap|pre|break-word|(?:upper|lower)case|capitalize|italic|bold|attr\(.*?\)|linear|ease(?:-in)?(?:-out)?|all|infinite|cubic-bezier|(?:translate|rotate)(?:[X-Z]|3d)?|skew[XY]?|scale|(?:no-)?repeat|repeat(?:-x|-y)|contain|cover|url|(?:repeating-)?(?:linear|radial)-gradient|inset|pointer|(?:flex-)?(?:start|end)|space-(?:between|evenly|around)|stretch|revert|row(?:-reverse)?|column(?:-reverse)?)(?=\s*[,;}(]|\s+[\da-z!])/,
     'value keyword important': /( ?!important)/,
     number: regexBasics.number,
-    color: /(transparent|#(?:[\da-f]{6}|[\da-f]{3})|rgba?\([\d., ]*\))/,
+    color: /(transparent|#(?:[\da-f]{8}|[\da-f]{6}|[\da-f]{3})|rgba?\([\d., ]*\))/,
     htmlentity: regexBasics.htmlentity,
     punctuation: /([:,;{}@#()!]+)/,
     attribute: /([a-z-]+)(?=\s*:)/,
@@ -203,24 +203,40 @@ const unhtmlize = string => {
   return string.replace(/[<>]/g, m => ({ '<': '&lt;', '>': '&gt;' }[m]))
 }
 
-const isColorDark = colorString => {
-  let rgbColor, hexColor, rDark, gDark, bDark, alphaLow
-
-  if ((rgbColor = colorString.match(/rgba?\((.*),\s*(.*),\s*(.*?)(?:,\s*([^)]*))\)/))) {
-    rDark = parseInt(rgbColor[1]) <= 100
-    gDark = parseInt(rgbColor[2]) <= 100
-    bDark = parseInt(rgbColor[3]) <= 100
-    alphaLow = parseFloat(rgbColor[4]) < 0.3
-  }
-  else if ((hexColor = colorString.match(/#([\da-f]{3}(?:[\da-f]{3})?)/))) {
-    const has3chars = hexColor[1].length === 3
-    rDark = parseInt(hexColor[1][0]) <= 9
-    gDark = parseInt(hexColor[1][has3chars ? 1 : 2]) <= 9
-    bDark = parseInt(hexColor[1][has3chars ? 2 : 4]) <= 9
+const colorInfo = colorString => {
+  const calculateLuminance = value => {
+    return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)
   }
 
-  // #00f blue is also a dark color...
-  return ((rDark && gDark && bDark) || (rDark && gDark && !bDark) || (!rDark && gDark && bDark)) && !alphaLow
+  let r = 0, g = 0, b = 0, a = 1
+
+  const rgbaMatch = colorString.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+  const hexMatch = colorString.match(/^#([\da-f]{3,8})$/i)
+
+  if (rgbaMatch) {
+    r = parseInt(rgbaMatch[1]) / 255
+    g = parseInt(rgbaMatch[2]) / 255
+    b = parseInt(rgbaMatch[3]) / 255
+    if (rgbaMatch[4]) a = parseFloat(rgbaMatch[4])
+  }
+  else if (hexMatch) {
+    const hex = hexMatch[1]
+    const isShort = hex.length === 3 || hex.length === 4
+    r = parseInt(isShort ? hex[0] + hex[0] : hex.substring(0, 2), 16) / 255
+    g = parseInt(isShort ? hex[1] + hex[1] : hex.substring(2, 4), 16) / 255
+    b = parseInt(isShort ? hex[2] + hex[2] : hex.substring(4, 6), 16) / 255
+    if (hex.length === 4 || hex.length === 8) {
+      a = parseInt(isShort ? hex[3] + hex[3] : hex.substring(6, 8), 16) / 255
+    }
+  }
+
+  const luminance = 0.2126 * calculateLuminance(r) + 0.7152 * calculateLuminance(g) + 0.0722 * calculateLuminance(b)
+
+  // Adjust luminance based on transparency (alpha).
+  const blendedLuminance = a * luminance + (1 - a) * 1 // Assume background is white.
+
+  // Return true if blended luminance indicates a dark color.
+  return { dark: blendedLuminance <= 0.45, alpha: a }
 }
 
 // Create a single regex pattern from concatenating the regex pieces of the selected language.
@@ -411,7 +427,9 @@ const syntaxHighlightContent = string => {
 
     let styles = ''
     if (Class === 'color' && props.language === 'css') {
-      styles = ` style="background-color: ${match};color: #${isColorDark(match) ? 'fff' : '000'}"`
+      const { dark, alpha } = colorInfo(match)
+      Class += ` color--${dark ? 'dark' : 'light'}${alpha < 0.4 ? ' color--transparent' : ''}`
+      styles = ` style="background-color: ${match}"`
     }
 
     return (Class && `<span class="${Class}"${styles}>${match}</span>`) || ''
@@ -583,7 +601,8 @@ onBeforeUpdate(() => {
   &[data-type=css] .vendor {color: #0c8;}
   &[data-type=css] .value {color: #c11;}
   &[data-type=css] .vendor {color: #0c8;}
-  &[data-type=css] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 3px;}
+  &[data-type=css] .color {background: #eee;padding: 0px 3px;border: 1px solid rgba(0, 0, 0, 0.1);border-radius: 3px;color: #000;}
+  &[data-type=css] .color--dark {color: #fff;}
   &[data-type=css] .unit {color: #0bc;}
   &[data-type=css] .important {color: #f00;font-weight: bold;}
 
@@ -641,6 +660,7 @@ onBeforeUpdate(() => {
   &[data-type=css] .value {color: #cf3838;}
   &[data-type=css] .vendor {color: #0c8;}
   &[data-type=css] .color {background: #111;border-color: rgba(255, 255, 255, 0.25);}
+  &[data-type=css] .color--light.color--transparent {color: #fff;}
   &[data-type=css] .unit {color: #0bc;}
   &[data-type=css] .important {color: #fe4848;}
 
