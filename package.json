@@ -1,6 +1,6 @@
 {
   "name": "simple-syntax-highlighter",
-  "version": "3.0.10",
+  "version": "3.1.0",
   "description": "No chi-chi syntax highlighter for Vue.js 3 (and 2).",
   "author": "Antoni Andre <antoniandre.web@gmail.com>",
   "homepage": "https://antoniandre.github.io/simple-syntax-highlighter",
@@ -23,7 +23,9 @@
     "./dist/*": "./dist/*"
   },
   "type": "module",
-  "sideEffects": ["dist/*.css"],
+  "sideEffects": [
+    "dist/*.css"
+  ],
   "keywords": [
     "syntax highlighting",
     "code highlighting",
@@ -33,7 +35,7 @@
     "syntax",
     "vue ui",
     "vue 3"
-    ],
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build --base /simple-syntax-highlighter/",
