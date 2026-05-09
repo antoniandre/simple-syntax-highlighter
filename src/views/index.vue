@@ -29,6 +29,7 @@ import Highlight from '@/components/highlight-message.vue'
       li #[span.wi-check.w-icon.success] Support both reading and editing
       li #[span.wi-check.w-icon.success] Built-in copy to clipboard button
       li #[span.wi-check.w-icon.success] Built-in light and dark modes
+      li #[span.wi-check.w-icon.success] Supports SSR and CSR (Nuxt 4, Vite)
 
   h3.mt8.ml6.mb2 Supported languages
   ul.checklist.lh2.ml2.mt0
