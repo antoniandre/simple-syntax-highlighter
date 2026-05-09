@@ -7,6 +7,7 @@
 <!-- [![npm](https://img.shields.io/npm/dw/simple-syntax-highlighter.svg)](https://www.npmjs.com/package/simple-syntax-highlighter) -->
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 > No chi-chi syntax highlighter for Vue.js 3 (and 2).
+> SSR ready — works out of the box with Nuxt 4 (no hydration mismatch).
 
 ___
 
@@ -56,6 +57,7 @@ ___
 ## Release Notes
 
 ### Vue 3
+- __Version 3.2.0__ SSR-safe rendering — no more hydration mismatch under Nuxt 4 / Nitro.
 - __Version 3.1.0__ Defaults to ES build for modern browsers.
 - __Version 3.0.0__ Support code editing. Improved syntax highlighting. Always reactive.
 - __Version 2.0.0__ Vue 3 build
