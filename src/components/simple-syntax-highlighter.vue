@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeUpdate, onMounted, useSlots } from 'vue'
+import { ref, computed, useSlots } from 'vue'
 
 /**
  * /!\ CAVEATS
@@ -442,6 +442,13 @@ const getSlotContent = () => {
   return (slots.default && getSlotChildrenText(slots.default())) || ''
 }
 
+// SSR-safe rendered HTML: computed during render so server and client output match
+// exactly, eliminating any hydration mismatch. Re-evaluates on every render, so
+// reactive slot content (e.g. `<ssh-pre>{{ someRef }}</ssh-pre>`) keeps working.
+const renderedHtml = computed(() => {
+  return syntaxHighlightContent(getSlotContent())
+})
+
 const copyCode = e => {
   e.target.insertAdjacentHTML(
     'afterend',
@@ -457,20 +464,10 @@ const copyCode = e => {
   emit('copied', codeEl.value.innerText)
 }
 
-onMounted(() => {
-  const slotContent = getSlotContent()
-  codeEl.value.innerText = slotContent
-  codeEl.value.innerHTML = syntaxHighlightContent(codeEl.value.innerText)
-})
-
-// Re-apply syntax highlighting on updated template (external variable update, slot content change)
-// directly in the DOM and not through a variable (to avoid infinite loop).
-// The change in this hook will not trigger another DOM update.
-onBeforeUpdate(() => {
-  if (codeEl.value) {
-    codeEl.value.innerHTML = syntaxHighlightContent(getSlotContent())
-  }
-})
+// Note on editable mode: while the user types, `highlightInPre` updates the DOM
+// directly (via `@input`) to preserve caret position. The `v-html` driven render
+// covers the initial paint and any reactive slot updates, with identical markup
+// on SSR and CSR — so no hydration mismatch.
 </script>
 
 <template>
@@ -486,12 +483,9 @@ onBeforeUpdate(() => {
       ref="codeEl"
       class="ssh-pre__content"
       :contenteditable="editable ? 'true' : 'false'"
+      v-html="renderedHtml"
       @keydown="editable && onKeydown($event)"
-      @input="highlightInPre">
-    </pre>
-    <div class="ssh-pre__original">
-      <slot></slot>
-    </div>
+      @input="highlightInPre"></pre>
   </div>
 </template>
 
@@ -509,8 +503,6 @@ onBeforeUpdate(() => {
     background-color: #262626;
     color: rgba(255, 255, 255, 0.85);
   }
-
-  &__original {display: none;}
 
   &__content {
     white-space: pre-wrap;
